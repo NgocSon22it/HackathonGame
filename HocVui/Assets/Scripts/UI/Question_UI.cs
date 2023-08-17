@@ -10,10 +10,11 @@ public class Question_UI : MonoBehaviour
 
     private void Start()
     {
-      /*  transform.position = new Vector3(transform.position.x, PreviousView.transform.position.y + 1920, 0); */
+        
     }
     public void fadeLeft()
     {
+        transform.position = new Vector3(transform.position.x, PreviousView.transform.position.y + 1920, 0);
         Debug.Log(PreviousView.transform.position.x);
         this.gameObject.LeanMoveLocalX(PreviousView.transform.position.x - 1920, duration);
     }
