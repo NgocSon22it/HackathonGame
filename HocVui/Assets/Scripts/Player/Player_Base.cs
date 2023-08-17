@@ -1,11 +1,16 @@
+using Pathfinding;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class Player_Base : MonoBehaviour
 {
-    [SerializeField] GameObject Effect;
+
+    [Header("UI")]
+    [SerializeField] RectTransform UI_Transform;
 
     [Header("Component")]
     [SerializeField] string playerName;
@@ -16,32 +21,41 @@ public class Player_Base : MonoBehaviour
     [SerializeField] Collider2D collider2d;
     [SerializeField] PlayerInput playerInput;
     [SerializeField] Animator animator;
+    [SerializeField] Player_Pool player_Pool;
 
     [Header("Player Movement")]
-    [SerializeField] Vector2 MoveDirection;
-    Vector3 Movement;
+    [SerializeField] Transform MovingPoint;
+    [SerializeField] AIPath aIPath;
+    [SerializeField] AIDestinationSetter destinationSetter;
+    GameObject Effect_ClickToMove;
+    bool FacingRight = true;
+    Vector3 TargetPoint, MovePosition;
+    float LocalScaleX, LocalScaleY;
+
+    [Header("Object Pool")]
+    [SerializeField] GameObject ObjectPool;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        ObjectPool.transform.SetParent(null);
+        LocalScaleX = transform.localScale.x;
+        LocalScaleY = transform.localScale.y;
     }
 
     // Update is called once per frame
     void Update()
     {
-        MoveDirection = playerInput.actions["Movement"].ReadValue<Vector2>();
+        MovePosition = aIPath.desiredVelocity;
+
+        animator.SetFloat("Horizontal", MovePosition.x);
+        animator.SetFloat("Vertical", MovePosition.y);
+        animator.SetFloat("Speed", MovePosition.sqrMagnitude);
     }
 
     void FixedUpdate()
     {
-        Walk();
-    }
 
-    public void Walk()
-    {
-        Movement = new Vector3(MoveDirection.x, MoveDirection.y, 0f);
-        transform.Translate(Movement * 5 * Time.fixedDeltaTime);
     }
 
     private void OnMouseOver()
@@ -58,8 +72,59 @@ public class Player_Base : MonoBehaviour
     {
         if (isMouseOver)
         {
-            Instantiate(Effect, new(transform.position.x, transform.position.y - 0.45f, transform.position.z), Quaternion.identity);
             Debug.Log("Object Name: " + playerName);
         }
     }
+
+    public void Move(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            TargetPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            TargetPoint.z = transform.position.z;
+
+            MovingPoint.position = TargetPoint;
+            TurnDirection_Check(TargetPoint);
+
+            Effect_ClickToMove = player_Pool.GetEffect_ClickToMove();
+            if(Effect_ClickToMove != null) 
+            {
+                Effect_ClickToMove.transform.position = TargetPoint;
+                Effect_ClickToMove.SetActive(true);
+            }
+        }
+    }
+
+    #region Turn Direction
+    public void TurnDirection_Check(Vector3 direction)
+    {
+        if (direction.x > transform.position.x && !FacingRight)
+        {
+            TurnDirection();
+        }
+        else if (direction.x < transform.position.x && FacingRight)
+        {
+            TurnDirection();
+        }
+    }
+
+    public void TurnDirection()
+    {
+        FacingRight = !FacingRight;
+        LocalScaleX *= -1f;
+
+        SetUpFlip(LocalScaleX, LocalScaleY, 1f);
+    }
+
+    public void SetUpFlip(float x, float y, float z)
+    {
+        transform.localScale = new Vector3(x, y, z);
+        if (UI_Transform.gameObject != null)
+        {
+            UI_Transform.localScale = new Vector3(x, y, z);
+        }
+    }
+
+    #endregion
+
 }
