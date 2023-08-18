@@ -4,6 +4,19 @@ using UnityEngine;
 using Photon.Pun;
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    [Header("Player")]
+    public GameObject PlayerManager;
+
+    [Header("Instance")]
+    public static GameManager Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+        PlayerManager = GameObject.FindGameObjectWithTag("Player");
+    }
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -18,7 +31,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void ConnectServer()
     {
-        PhotonNetwork.NickName = References.GenerateRandomString(10);      
+        PhotonNetwork.NickName = References.GenerateRandomString(10);
         PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.AutomaticallySyncScene = true;
 
@@ -30,6 +43,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 }
