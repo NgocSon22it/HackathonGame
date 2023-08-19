@@ -1,6 +1,9 @@
+using Microsoft.SqlServer.Server;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PanelShowQuestion : MonoBehaviour
 {
@@ -8,29 +11,44 @@ public class PanelShowQuestion : MonoBehaviour
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
     [SerializeField] float time;
+
+    [SerializeField] TMP_Text TextCount;
+    Coroutine startTimer;
+
+    [SerializeField] Image objImage;
+
     private void Start()
     {
-        setDefault();
+        objImage.transform.position = new Vector3(0f, 1000f, 0f);
+        open();
+
+        startTimer = StartCoroutine(counter());
     }
+
     public void open()
     {
-        LeanTween.moveLocalY(gameObject, 0, duration).setEase(typeOpen);
+        objImage.transform.position = new Vector3(0f, 1000f, 0f);
+        LeanTween.moveLocalY(objImage.gameObject, 0f, duration).setEase(typeOpen);
     }
 
-    public void close()
+     public void close()
     {
-        LeanTween.moveLocalY(gameObject, -1000, duration).setEase(typeClose);
-        setDefault();
-    }
-
-    private void setDefault()
-    {
-        gameObject.transform.position = new Vector3(0, 1000, 0);
+        LeanTween.moveLocalY(objImage.gameObject, -1000f, duration).setEase(typeClose);
     }
 
     IEnumerator counter()
     {
+        
+       while(time > 0)
+        {
+            TextCount.text = string.Format("{0}", time);
+            yield return new WaitForSeconds(1f);
+            time--;
+        }
 
-        yield return new WaitForSeconds(1f);
+       if(time <= 0)
+        {
+            close();
+        }
     }
 }
