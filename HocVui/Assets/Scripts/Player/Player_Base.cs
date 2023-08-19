@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 
 public class Player_Base : MonoBehaviour
 {
-
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
 
@@ -34,6 +33,14 @@ public class Player_Base : MonoBehaviour
 
     [Header("Object Pool")]
     [SerializeField] GameObject ObjectPool;
+
+    [Header("Pile")]
+    [SerializeField] SpriteRenderer Pile_Handle;
+    [SerializeField] bool IsPile;
+
+    [Header("Effect")]
+    [SerializeField] GameObject MouseOverEffect_Pile;
+
 
     // Start is called before the first frame update
     void Start()
@@ -95,6 +102,12 @@ public class Player_Base : MonoBehaviour
         }
     }
 
+    public void CollectPile()
+    {
+        Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
+        IsPile = true;
+    }
+
     #region Turn Direction
     public void TurnDirection_Check(Vector3 direction)
     {
@@ -123,6 +136,20 @@ public class Player_Base : MonoBehaviour
         {
             UI_Transform.localScale = new Vector3(x, y, z);
         }
+    }
+
+    #endregion
+
+    #region Effect
+    public void MouseOverEffect_Pile_On(Vector3 Position)
+    {
+        MouseOverEffect_Pile.transform.position = Position;
+        MouseOverEffect_Pile.SetActive(true);
+    }
+
+    public void MouseOverEffect_Pile_Off()
+    {
+        MouseOverEffect_Pile.SetActive(false);
     }
 
     #endregion
