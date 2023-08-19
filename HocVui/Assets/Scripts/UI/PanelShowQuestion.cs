@@ -1,5 +1,7 @@
+using Microsoft.SqlServer.Server;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PanelShowQuestion : MonoBehaviour
@@ -8,13 +10,17 @@ public class PanelShowQuestion : MonoBehaviour
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
     [SerializeField] float time;
+
+    [SerializeField] TMP_Text TextCount;
+    Coroutine startTimer;
     private void Start()
     {
         setDefault();
+        startTimer = StartCoroutine(counter());
     }
     public void open()
     {
-        LeanTween.moveLocalY(gameObject, 0, duration).setEase(typeOpen);
+        LeanTween.moveLocal(gameObject, new Vector3(0, 0, 0), duration);
     }
 
     public void close()
@@ -30,7 +36,16 @@ public class PanelShowQuestion : MonoBehaviour
 
     IEnumerator counter()
     {
+        
+       while(time >=0)
+        {
+            TextCount.text = string.Format("{0}", time);
+            yield return new WaitForSeconds(1f);
+            time--;
+        }
 
-        yield return new WaitForSeconds(1f);
+       if(time <0) {
+            close();
+        }
     }
 }
