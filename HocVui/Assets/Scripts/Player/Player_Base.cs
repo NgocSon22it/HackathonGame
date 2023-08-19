@@ -8,7 +8,6 @@ using UnityEngine.InputSystem;
 
 public class Player_Base : MonoBehaviour
 {
-
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
 
@@ -23,6 +22,10 @@ public class Player_Base : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField] Player_Pool player_Pool;
 
+    [Header("Player Instance")]
+    [SerializeField] GameObject PlayerAllUIPrefabs;
+    GameObject PlayerAllUIInstance;
+
     [Header("Player Movement")]
     [SerializeField] Transform MovingPoint;
     [SerializeField] AIPath aIPath;
@@ -35,12 +38,21 @@ public class Player_Base : MonoBehaviour
     [Header("Object Pool")]
     [SerializeField] GameObject ObjectPool;
 
+    [Header("Pile")]
+    [SerializeField] SpriteRenderer Pile_Handle;
+    [SerializeField] bool IsPile;
+
+    [Header("Effect")]
+    [SerializeField] GameObject MouseOverEffect_Pile;
+
+
     // Start is called before the first frame update
     void Start()
     {
         ObjectPool.transform.SetParent(null);
         LocalScaleX = transform.localScale.x;
         LocalScaleY = transform.localScale.y;
+        PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
     }
 
     // Update is called once per frame
@@ -87,11 +99,32 @@ public class Player_Base : MonoBehaviour
             TurnDirection_Check(TargetPoint);
 
             Effect_ClickToMove = player_Pool.GetEffect_ClickToMove();
-            if(Effect_ClickToMove != null) 
+            if (Effect_ClickToMove != null)
             {
                 Effect_ClickToMove.transform.position = TargetPoint;
                 Effect_ClickToMove.SetActive(true);
             }
+        }
+    }
+
+
+    public bool GetIsPile()
+    {
+        return IsPile;
+    }
+
+    public void CollectPile(GameObject pile)
+    {
+        if (IsPile)
+        {
+            PlayerAllUIInstance.GetComponent<Player_AllUI>().PickUp_Already_Show();
+        }
+        else
+        {
+            Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
+            IsPile = true;
+            Destroy(pile);
+            MouseOverEffect_Pile_Off();
         }
     }
 
@@ -123,6 +156,20 @@ public class Player_Base : MonoBehaviour
         {
             UI_Transform.localScale = new Vector3(x, y, z);
         }
+    }
+
+    #endregion
+
+    #region Effect
+    public void MouseOverEffect_Pile_On(Vector3 Position)
+    {
+        MouseOverEffect_Pile.transform.position = Position;
+        MouseOverEffect_Pile.SetActive(true);
+    }
+
+    public void MouseOverEffect_Pile_Off()
+    {
+        MouseOverEffect_Pile.SetActive(false);
     }
 
     #endregion
