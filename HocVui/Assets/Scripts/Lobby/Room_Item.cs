@@ -16,12 +16,14 @@ public class Room_Item : MonoBehaviour
     public void SetUp(RoomInfo _Roominformation)
     {
         Roominformation = _Roominformation;
-
-        NumberPlayerTxt.text = Roominformation.PlayerCount + " / " + Roominformation.MaxPlayers;
+        Room_IDTxt.text = Roominformation.CustomProperties["RoomID"].ToString();
+        Room_NameTxt.text = Roominformation.Name;
+        Room_MapTxt.text = Roominformation.CustomProperties["Map"].ToString();
+        NumberPlayerTxt.text = (Roominformation.PlayerCount - 1) + " / " + (Roominformation.MaxPlayers - 1);
     }
 
     public void Onclick()
     {
-        Lobby_Manager.Instance.JoinRoom(Roominformation);
+        Lobby_Manager.Instance.SelectRoom(Roominformation);
     }
 }
