@@ -91,17 +91,9 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
         Chat_Manager.Instance.ConnectToChat(PhotonNetwork.CurrentRoom.Name);
 
-        if (PhotonNetwork.IsMasterClient == false)
+        if (!PhotonNetwork.IsMasterClient)
         {
-            foreach (Transform trans in PlayerContent)
-            {
-                Destroy(trans.gameObject);
-            }
-
-            for (int i = 0; i < listPlayers.Length; i++)
-            {
-                Instantiate(PlayerItem, PlayerContent).GetComponent<Player_Item>().SetUp(listPlayers[i]);
-            }
+           PhotonNetwork.Instantiate(PlayerItem.name, PlayerContent.position, Quaternion.identity).GetComponent<Player_Item>().SetUp(PhotonNetwork.LocalPlayer);
         }
 
         Debug.Log("JoinRoom");
