@@ -22,6 +22,10 @@ public class Player_Base : MonoBehaviour
     [SerializeField] Animator animator;
     [SerializeField] Player_Pool player_Pool;
 
+    [Header("Player Instance")]
+    [SerializeField] GameObject PlayerAllUIPrefabs;
+    GameObject PlayerAllUIInstance;
+
     [Header("Player Movement")]
     [SerializeField] Transform MovingPoint;
     [SerializeField] AIPath aIPath;
@@ -48,6 +52,7 @@ public class Player_Base : MonoBehaviour
         ObjectPool.transform.SetParent(null);
         LocalScaleX = transform.localScale.x;
         LocalScaleY = transform.localScale.y;
+        PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
     }
 
     // Update is called once per frame
@@ -94,7 +99,7 @@ public class Player_Base : MonoBehaviour
             TurnDirection_Check(TargetPoint);
 
             Effect_ClickToMove = player_Pool.GetEffect_ClickToMove();
-            if(Effect_ClickToMove != null) 
+            if (Effect_ClickToMove != null)
             {
                 Effect_ClickToMove.transform.position = TargetPoint;
                 Effect_ClickToMove.SetActive(true);
@@ -102,10 +107,25 @@ public class Player_Base : MonoBehaviour
         }
     }
 
-    public void CollectPile()
+
+    public bool GetIsPile()
     {
-        Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
-        IsPile = true;
+        return IsPile;
+    }
+
+    public void CollectPile(GameObject pile)
+    {
+        if (IsPile)
+        {
+            PlayerAllUIInstance.GetComponent<Player_AllUI>().PickUp_Already_Show();
+        }
+        else
+        {
+            Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
+            IsPile = true;
+            Destroy(pile);
+            MouseOverEffect_Pile_Off();
+        }
     }
 
     #region Turn Direction
