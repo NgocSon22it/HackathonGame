@@ -87,26 +87,36 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        listPlayers = PhotonNetwork.PlayerList;
-
         SetUp_Inroom(true);
+
+        Chat_Manager.Instance.ConnectToChat(PhotonNetwork.CurrentRoom.Name);
+
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            foreach (Transform trans in PlayerContent)
+            {
+                Destroy(trans.gameObject);
+            }
+
+            for (int i = 0; i < listPlayers.Length; i++)
+            {
+                Instantiate(PlayerItem, PlayerContent).GetComponent<Player_Item>().SetUp(listPlayers[i]);
+            }
+        }
 
         Debug.Log("JoinRoom");
 
-        foreach (Transform trans in PlayerContent)
-        {
-            Destroy(trans.gameObject);
-        }
-
-        for (int i = 0; i < listPlayers.Length; i++)
-        {
-            Instantiate(PlayerItem, PlayerContent).GetComponent<Player_Item>().SetUp(listPlayers[i]);
-        }
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
+        Inroom_CountPlayer();
         Instantiate(PlayerItem, PlayerContent).GetComponent<Player_Item>().SetUp(newPlayer);
+    }
+
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        Inroom_CountPlayer();
     }
 
     public void LeaveRoom()
@@ -126,7 +136,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         if (value)
         {
             Inroom_RoomNameTxt.text = PhotonNetwork.CurrentRoom.Name;
-            Inroom_PlayerQuantityTxt.text = $"{listPlayers.Length} Người chơi";
+            Inroom_CountPlayer();
 
             if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("RoomID"))
             {
@@ -136,6 +146,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
         InRoom.SetActive(value);
         Outside.SetActive(!value);
+    }
+
+    public void Inroom_CountPlayer()
+    {
+        listPlayers = PhotonNetwork.PlayerList;
+        Inroom_PlayerQuantityTxt.text = $"{listPlayers.Length - 1} Người chơi";
     }
 
     public void CreateRoom_OnNumberPlayerChange()
