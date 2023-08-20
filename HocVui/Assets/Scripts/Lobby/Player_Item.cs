@@ -22,12 +22,12 @@ public class Player_Item : MonoBehaviourPunCallbacks
     {
         if (player == otherPlayer)
         {
-            Destroy(gameObject);
+           PhotonNetwork.Destroy(gameObject);
         }
     }
 
     public override void OnLeftRoom()
     {
-        Destroy(gameObject);
+        PhotonNetwork.Destroy(gameObject);
     }
 }
