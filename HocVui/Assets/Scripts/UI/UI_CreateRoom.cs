@@ -8,13 +8,36 @@ public class UI_CreateRoom : MonoBehaviour
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
 
-    public void open()
+    public void openTimeOut(float time)
     {
-        LeanTween.moveLocalX(gameObject, -960f, duration).setEase(typeOpen);
+        show();
+        Invoke(nameof(open), time);
     }
 
-    public void close()
+    public void closeTimeOut(float time)
     {
-        LeanTween.moveLocalX(gameObject, 960f, duration).setEase(typeClose);
+        close();
+        Invoke(nameof(hide), time);
+    }
+    private void open()
+    {
+       
+        LeanTween.scale(gameObject, Vector3.one, duration).setEase(typeOpen);
+    }
+
+    private void close()
+    {
+        LeanTween.scale(gameObject, Vector3.zero, duration).setEase(typeClose);
+    }
+
+    private void show()
+    {
+        gameObject.SetActive(true);
+        gameObject.transform.localScale = Vector3.zero;
+    }
+
+    private void hide()
+    {
+        gameObject.SetActive(false);
     }
 }
