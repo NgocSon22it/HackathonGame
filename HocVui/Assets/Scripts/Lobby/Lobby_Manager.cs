@@ -1,7 +1,6 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -19,9 +18,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     [Header("Outside")]
     [Header("List Room")]
+    RoomInfo SelectedRoom;
     [SerializeField] GameObject Room_Item;
     [SerializeField] Transform Room_Content;
     public static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
+    List<RoomInfo> roomList = new List<RoomInfo>();
+    List<RoomInfo> checkList = new List<RoomInfo>();
 
     [Header("Create Room")]
     [SerializeField] TMP_InputField CreateRoom_NameInput;
@@ -30,10 +32,21 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text CreateRoom_NumberPlayerTxt, CreateRoom_AnswerTimeTxt;
     [SerializeField] Toggle CreateRoom_UseSpellToggle;
 
+    [Header("Find Room")]
+    [SerializeField] TMP_InputField FindRoom_NameInput;
+    string keyword;
+
     [Header("In room")]
     [SerializeField] TMP_Text Inroom_RoomNameTxt;
     [SerializeField] TMP_Text Inroom_PlayerQuantityTxt;
     [SerializeField] TMP_Text Inroom_RoomIDtxt;
+    [SerializeField] List<Image> ListSpell;
+
+    [Header("SpellInformation")]
+    [SerializeField] GameObject SpellInformation_Panel;
+    [SerializeField] TMP_Text SpellInformation_Name;
+    [SerializeField] TMP_Text SpellInformation_Description;
+
 
     [Header("List Player")]
     [SerializeField] GameObject PlayerItem;
@@ -49,16 +62,19 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         ConnectServer();
     }
 
-    public void JoinRoom(RoomInfo Room)
+    public void JoinRoom()
     {
-        PhotonNetwork.JoinRoom(Room.Name);
+        if (SelectedRoom != null)
+        {
+            PhotonNetwork.JoinRoom(SelectedRoom.Name);
+        }
     }
 
     public void CreateRoom()
     {
         string roomID = References.GenerateRandomString(5);
         string roomName = CreateRoom_NameInput.text;
-        int NumberPlayer = Convert.ToInt32(CreateRoom_NumberPlayerSlider.value);
+        int NumberPlayer = Convert.ToInt32(CreateRoom_NumberPlayerSlider.value) + 1;
         int AnswerTime = Convert.ToInt32(CreateRoom_AnswerTimeSlider.value);
         string map = "Sông Bạch Đằng";
         bool useSpell = CreateRoom_UseSpellToggle.isOn;
@@ -69,7 +85,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
         if (roomName.Length > 0)
         {
-            Debug.Log($"RoomID la {roomID} roomname la {roomName} numberplayer la {NumberPlayer}  answertime la {AnswerTime}  map la {map} usespell la {useSpell}");
             roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
             roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID" };
 
@@ -87,13 +102,22 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        SetRandomSpell();
         SetUp_Inroom(true);
 
         Chat_Manager.Instance.ConnectToChat(PhotonNetwork.CurrentRoom.Name);
 
-        if (!PhotonNetwork.IsMasterClient)
+        foreach (Transform trans in PlayerContent)
         {
-           PhotonNetwork.Instantiate(PlayerItem.name, PlayerContent.position, Quaternion.identity).GetComponent<Player_Item>().SetUp(PhotonNetwork.LocalPlayer);
+            Destroy(trans.gameObject);
+        }
+
+        for (int i = 0; i < listPlayers.Length; i++)
+        {
+            if (listPlayers[i].IsMasterClient == false)
+            {
+                Instantiate(PlayerItem, PlayerContent).GetComponent<Player_Item>().SetUp(listPlayers[i]);
+            }
         }
 
         Debug.Log("JoinRoom");
@@ -111,13 +135,33 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         Inroom_CountPlayer();
     }
 
+    public override void OnJoinRoomFailed(short returnCode, string message)
+    {
+        Debug.Log($"Room join failed with error code {returnCode} and error message {message}");
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        Debug.Log($"Room join failed with error code {returnCode} and error message {message}");
+    }
+
     public void LeaveRoom()
     {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
         PhotonNetwork.LeaveRoom();
     }
 
+    public override void OnMasterClientSwitched(Player newMasterClient)
+    {
+        PhotonNetwork.LeaveRoom();
+    }
     public override void OnLeftRoom()
     {
+        Chat_Manager.Instance.DisconnectFromChat();
         SetUp_Inroom(false);
         cachedRoomList.Clear();
         Debug.Log("LeftRoom");
@@ -176,10 +220,60 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
             }
         }
 
+
+        checkList.Clear();
+        foreach (RoomInfo room in cachedRoomList.Values)
+        {
+            checkList.Add(room);
+        }
+
+        InitRoomList(checkList);
+
         foreach (KeyValuePair<string, RoomInfo> entry in cachedRoomList)
         {
-            Instantiate(Room_Item, Room_Content).GetComponent<Room_Item>().SetUp(cachedRoomList[entry.Key]);
+            if (string.IsNullOrEmpty(keyword))
+            {
+                Instantiate(Room_Item, Room_Content).GetComponent<Room_Item>().SetUp(cachedRoomList[entry.Key]);
+            }
+            else
+            {
+                if (entry.Value.CustomProperties.ContainsKey("RoomID"))
+                {
+                    if (entry.Value.CustomProperties["RoomID"].ToString().Contains(keyword))
+                    {
+                        Instantiate(Room_Item, Room_Content).GetComponent<Room_Item>().SetUp(cachedRoomList[entry.Key]);
+                    }
+                }
+            }
         }
+    }
+
+    public void InitRoomList(List<RoomInfo> roomList)
+    {
+        this.roomList.Clear();
+        this.roomList = roomList;
+    }
+
+    public void Refresh()
+    {
+        keyword = "";
+        FindRoom_NameInput.text = "";
+        OnRoomListUpdate(roomList);
+    }
+
+    public void Findroom_OnKeyWordChange(string value)
+    {
+        keyword = value;
+    }
+
+    public void FindRoom()
+    {
+        OnRoomListUpdate(roomList);
+    }
+
+    public void SelectRoom(RoomInfo roomInfo)
+    {
+        SelectedRoom = roomInfo;
     }
 
     public override void OnConnectedToMaster()
@@ -198,4 +292,33 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         Debug.Log(PhotonNetwork.NickName + " JoinLobby");
         Debug.Log("Connect to Server");
     }
+
+    public void SetRandomSpell()
+    {
+        References.SetRandomSpell();
+
+        for(int i = 0; i < 3; i++)
+        {
+            ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
+        }
+    }
+
+    public void SpellInformation_On(int Index)
+    {
+        SpellInformation_Name.text = References.ListSpell_Own[Index].Name;
+        SpellInformation_Description.text = References.ListSpell_Own[Index].Description;
+        SpellInformation_Panel.SetActive(true);
+    }
+
+    public void SpellInformation_Off()
+    {
+        SpellInformation_Panel.SetActive(false);
+    }
 }
+
+
+
+
+
+
+

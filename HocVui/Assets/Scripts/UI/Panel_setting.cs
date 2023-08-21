@@ -4,20 +4,34 @@ using UnityEngine;
 
 public class Panel_setting : MonoBehaviour
 {
+    [SerializeField] GameObject ojb;
     [SerializeField] float duration;
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
+    [SerializeField] GameObject menu;
+    
 
-    private void Start()
+    public void fadeIn()
     {
-        gameObject.transform.localScale = Vector3.zero;
+        ojb.SetActive(true);
+        menu.transform.localScale = Vector3.zero;
+        LeanTween.scale(menu, Vector3.one, duration).setEase(typeOpen);
     }
+
+    public void fadeOut()
+    {
+        LeanTween.scale(menu, Vector3.zero, duration).setEase(typeClose);
+        Invoke(nameof(close), duration);
+    }
+
     public void open()
     {
-        LeanTween.scale(gameObject, Vector3.one, duration).setEase(typeOpen);
+        ojb.SetActive(true);
     }
 
-    public void close() { 
-        LeanTween.scale(gameObject, Vector3.zero, duration).setEase(typeClose);
+    public void close()
+    {
+        ojb.SetActive(false);
     }
+
 }
