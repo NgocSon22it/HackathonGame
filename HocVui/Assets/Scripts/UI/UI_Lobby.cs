@@ -9,12 +9,25 @@ public class UI_Lobby : MonoBehaviour
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
 
-    public void open()
+
+    public void FadeIn(float time)
+    {
+        show();
+        Invoke(nameof(open), time);
+    }
+
+    public void FadeOut(float time)
+    {
+        close();
+        Invoke(nameof(hide), time);
+    }
+
+    private void open()
     {
         LeanTween.scale(gameObject, Vector3.one, duration).setEase(typeOpen);
     }
 
-    public void close()
+    private void close()
     {
         LeanTween.scale(gameObject, Vector3.zero, duration).setEase(typeOpen);
     }
@@ -26,5 +39,16 @@ public class UI_Lobby : MonoBehaviour
 
     public void moveDefaultY() { 
         LeanTween.moveLocalY(gameObject, 0, duration).setEase(typeClose);
+    }
+
+    private void show()
+    {
+        gameObject.SetActive(true);
+        gameObject.transform.localScale = Vector3.zero;
+    }
+
+    private void hide()
+    {
+        gameObject.SetActive(false);
     }
 }
