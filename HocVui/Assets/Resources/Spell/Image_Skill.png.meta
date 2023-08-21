@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 10eeb74c5b1443c47a15e209b2dfb4db
+guid: a0b50379ec2e4164e9042330084b87f7
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,117 +117,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_heath-bar-01_0
+      name: Image_Skill_0
       rect:
         serializedVersion: 2
-        x: 26
-        y: 455
-        width: 129
-        height: 122
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f5eaa4d28b8f1b74d996902aac7e9576
-      internalID: -1214713728
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_heath-bar-01_1
-      rect:
-        serializedVersion: 2
-        x: 217
-        y: 461
-        width: 106
-        height: 110
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8153e134a7351fb46b54d5ffc44113cb
-      internalID: 1617458096
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_heath-bar-01_2
-      rect:
-        serializedVersion: 2
-        x: 378
-        y: 460
-        width: 90
-        height: 116
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 930424c52dcf53f4ab11143dc104b983
-      internalID: 1014666529
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_heath-bar-01_3
-      rect:
-        serializedVersion: 2
-        x: 516
-        y: 493
-        width: 300
-        height: 74
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 8357eab76e780f347b2ee142349b1e10
-      internalID: 2073199518
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_heath-bar-01_4
-      rect:
-        serializedVersion: 2
-        x: 20
-        y: 300
-        width: 69
-        height: 69
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fa9bb0392440f6e4e883cb2b3383853c
-      internalID: 1556030452
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: UI_heath-bar-01_5
-      rect:
-        serializedVersion: 2
-        x: 130
-        y: 276
-        width: 128
+        x: 437
+        y: 409
+        width: 120
         height: 126
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -236,20 +131,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1490a1ed5baf4064d9fa926b7bdf2475
-      internalID: 375577078
+      spriteID: 91bb91d555619ec4cb2e9978c57fbd5f
+      internalID: -1227389280
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_6
+      name: Image_Skill_1
       rect:
         serializedVersion: 2
-        x: 276
-        y: 324
-        width: 6
-        height: 6
+        x: 724
+        y: 409
+        width: 123
+        height: 124
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,20 +152,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e8ad59b182314424eba31f39c8e6d40c
-      internalID: -1272839852
+      spriteID: eda62ea8bbf488f4d9839e41714ccc5a
+      internalID: -1812055837
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_7
+      name: Image_Skill_2
       rect:
         serializedVersion: 2
-        x: 282
-        y: 260
-        width: 552
-        height: 158
+        x: 1006
+        y: 407
+        width: 125
+        height: 123
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -278,20 +173,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 01e525f3812ec27469fcaa0a465d6c70
-      internalID: 1910774466
+      spriteID: 5373616d70421b94d95c779b0fa2dd16
+      internalID: 493069751
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_8
+      name: Image_Skill_3
       rect:
         serializedVersion: 2
-        x: 198
-        y: 247
-        width: 6
-        height: 5
+        x: 436
+        y: 237
+        width: 196
+        height: 125
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -299,20 +194,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5c6f73a565e8b7a489f8859a09786fd8
-      internalID: 1465773639
+      spriteID: 959912895157d2f46bf2a8c0007bf687
+      internalID: -1031616466
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_9
+      name: Image_Skill_4
       rect:
         serializedVersion: 2
-        x: 25
-        y: 176
-        width: 305
-        height: 23
+        x: 721
+        y: 237
+        width: 125
+        height: 125
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -320,20 +215,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 500edd95724dee84ab5a3cf510c2790e
-      internalID: 859293957
+      spriteID: 972c6c03c9344cd48a4d28df8f7cccbb
+      internalID: 1882484753
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_10
+      name: Image_Skill_5
       rect:
         serializedVersion: 2
-        x: 390
-        y: 170
-        width: 384
-        height: 29
+        x: 1004
+        y: 235
+        width: 122
+        height: 123
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -341,20 +236,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1b60aa58f9f26ee4c96125e967ef1021
-      internalID: 312644056
+      spriteID: cd2ea528c06836f418c104fae44a8bfb
+      internalID: -1767587485
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_11
+      name: Image_Skill_6
       rect:
         serializedVersion: 2
-        x: 24
-        y: 96
-        width: 338
-        height: 43
+        x: 436
+        y: 61
+        width: 167
+        height: 127
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -362,20 +257,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 855c186dd194c304da698ac2ff1e5770
-      internalID: 1893283171
+      spriteID: 6d9c3a15ff9db2c4581e7a7908429d47
+      internalID: -1696977656
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_12
+      name: Image_Skill_7
       rect:
         serializedVersion: 2
-        x: 390
-        y: 86
-        width: 434
-        height: 52
+        x: 721
+        y: 62
+        width: 123
+        height: 124
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -383,20 +278,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 956f4776507173a41885fce92713e6aa
-      internalID: -1383782785
+      spriteID: cc8cf64fe4d10b4409e9b27828d3b6a3
+      internalID: 599506608
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_13
+      name: Image_Skill_8
       rect:
         serializedVersion: 2
-        x: 24
-        y: 36
-        width: 306
-        height: 22
+        x: 878
+        y: 179
+        width: 63
+        height: 11
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -404,20 +299,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8a250668b26cb5e4e881abe9d390f040
-      internalID: -1803447288
+      spriteID: 7e09322a2a5e0a446ab127efe36dce4b
+      internalID: 1846756665
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_heath-bar-01_14
+      name: Image_Skill_9
       rect:
         serializedVersion: 2
-        x: 390
-        y: 30
-        width: 400
-        height: 28
+        x: 1007
+        y: 63
+        width: 141
+        height: 124
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -425,8 +320,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3ec0a6ee7e8729e40a174c9adcb03e23
-      internalID: 172917773
+      spriteID: a58771cce8d04cc458075381a2af1457
+      internalID: -1482204033
       vertices: []
       indices: 
       edges: []
@@ -442,21 +337,16 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      UI_heath-bar-01_0: -1214713728
-      UI_heath-bar-01_1: 1617458096
-      UI_heath-bar-01_10: 312644056
-      UI_heath-bar-01_11: 1893283171
-      UI_heath-bar-01_12: -1383782785
-      UI_heath-bar-01_13: -1803447288
-      UI_heath-bar-01_14: 172917773
-      UI_heath-bar-01_2: 1014666529
-      UI_heath-bar-01_3: 2073199518
-      UI_heath-bar-01_4: 1556030452
-      UI_heath-bar-01_5: 375577078
-      UI_heath-bar-01_6: -1272839852
-      UI_heath-bar-01_7: 1910774466
-      UI_heath-bar-01_8: 1465773639
-      UI_heath-bar-01_9: 859293957
+      Image_Skill_0: -1227389280
+      Image_Skill_1: -1812055837
+      Image_Skill_2: 493069751
+      Image_Skill_3: -1031616466
+      Image_Skill_4: 1882484753
+      Image_Skill_5: -1767587485
+      Image_Skill_6: -1696977656
+      Image_Skill_7: 599506608
+      Image_Skill_8: 1846756665
+      Image_Skill_9: -1482204033
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

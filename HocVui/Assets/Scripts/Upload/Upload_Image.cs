@@ -4,12 +4,11 @@ using Firebase.Storage;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.UI;
 
-public class Image : MonoBehaviour
+public class Upload_Image : MonoBehaviour
 {
     public RawImage rawImage;
 
