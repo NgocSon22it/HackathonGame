@@ -28528,6 +28528,7 @@ MonoBehaviour:
   CreateRoom_NumberPlayerTxt: {fileID: 8093060375350760972}
   CreateRoom_AnswerTimeTxt: {fileID: 2075650862}
   CreateRoom_UseSpellToggle: {fileID: 1572100562}
+  FindRoom_NameInput: {fileID: 0}
   Inroom_RoomNameTxt: {fileID: 4677896764368211337}
   Inroom_PlayerQuantityTxt: {fileID: 4677896764050764697}
   Inroom_RoomIDtxt: {fileID: 4677896765565389515}

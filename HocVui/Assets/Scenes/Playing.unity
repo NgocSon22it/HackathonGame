@@ -434,7 +434,7 @@ GameObject:
   - component: {fileID: 955897819}
   - component: {fileID: 955897821}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: PanelQuestion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -516,7 +516,7 @@ MonoBehaviour:
   typeClose: 21
   time: 10
   TextCount: {fileID: 2037587351}
-  objImage: {fileID: 1125653105}
+  objImage: {fileID: 0}
 --- !u!1 &988392249
 GameObject:
   m_ObjectHideFlags: 0
