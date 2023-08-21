@@ -7,7 +7,7 @@ using TMPro;
 
 namespace Assets.Scripts.Login
 {
-    public class UI_Message : Panel_setting
+    public class UI_Login : Panel_setting
     {
         public TMP_Text MessageError;
 
