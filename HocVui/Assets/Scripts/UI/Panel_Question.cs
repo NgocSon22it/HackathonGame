@@ -7,6 +7,7 @@ public class Panel_Question : MonoBehaviour
     [SerializeField] GameObject obj;
     [SerializeField] float duration;
     [SerializeField] LeanTweenType type;
+    [SerializeField] GameObject menu;   
 
     private void Start()
     {
