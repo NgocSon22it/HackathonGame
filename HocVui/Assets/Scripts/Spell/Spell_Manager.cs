@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Spell_Manager : MonoBehaviour
 {
@@ -54,10 +55,10 @@ public class Spell_Manager : MonoBehaviour
     {
         foreach (Image image in ListContainer)
         {
-            //image.sprite = DefaultContainer;
+            image.sprite = DefaultContainer;
         }
 
-        //ListContainer[Index].sprite = SelectContainer;
+       ListContainer[Index].sprite = SelectContainer;
     }
 
     public void FindAllPlayer()

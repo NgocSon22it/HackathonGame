@@ -1,9 +1,7 @@
 ﻿using Photon.Pun;
 using Photon.Realtime;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Security.Principal;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,6 +40,13 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text Inroom_RoomNameTxt;
     [SerializeField] TMP_Text Inroom_PlayerQuantityTxt;
     [SerializeField] TMP_Text Inroom_RoomIDtxt;
+    [SerializeField] List<Image> ListSpell;
+
+    [Header("SpellInformation")]
+    [SerializeField] GameObject SpellInformation_Panel;
+    [SerializeField] TMP_Text SpellInformation_Name;
+    [SerializeField] TMP_Text SpellInformation_Description;
+
 
     [Header("List Player")]
     [SerializeField] GameObject PlayerItem;
@@ -97,6 +102,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
+        SetRandomSpell();
         SetUp_Inroom(true);
 
         Chat_Manager.Instance.ConnectToChat(PhotonNetwork.CurrentRoom.Name);
@@ -215,6 +221,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         }
 
 
+        checkList.Clear();
         foreach (RoomInfo room in cachedRoomList.Values)
         {
             checkList.Add(room);
@@ -285,4 +292,33 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         Debug.Log(PhotonNetwork.NickName + " JoinLobby");
         Debug.Log("Connect to Server");
     }
+
+    public void SetRandomSpell()
+    {
+        References.SetRandomSpell();
+
+        for(int i = 0; i < 3; i++)
+        {
+            ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
+        }
+    }
+
+    public void SpellInformation_On(int Index)
+    {
+        SpellInformation_Name.text = References.ListSpell_Own[Index].Name;
+        SpellInformation_Description.text = References.ListSpell_Own[Index].Description;
+        SpellInformation_Panel.SetActive(true);
+    }
+
+    public void SpellInformation_Off()
+    {
+        SpellInformation_Panel.SetActive(false);
+    }
 }
+
+
+
+
+
+
+
