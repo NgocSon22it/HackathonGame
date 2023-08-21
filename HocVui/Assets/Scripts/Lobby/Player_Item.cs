@@ -22,7 +22,7 @@ public class Player_Item : MonoBehaviourPunCallbacks
     {
         if (player == otherPlayer)
         {
-            Destroy(gameObject);
+           Destroy(gameObject);
         }
     }
 
