@@ -56,9 +56,26 @@ public static class References
         return result;
     }
 
+    public static string Hash(string text)
+    {
+        System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+        byte[] hash = md5.ComputeHash(Encoding.UTF8.GetBytes(text));
+        StringBuilder hashSb = new StringBuilder();
+        foreach (byte b in hash)
+        {
+            hashSb.Append(b.ToString("X2"));
+        }
+        return hashSb.ToString();
+    }
+
 }
 
 public enum Spell
 {
     FiftyFifty, DoubleScore, TimeFreeze, PlayerFreeze, RemovePile, Lock
+}
+
+public enum Role
+{
+    Student = 1, Teacher = 2
 }
