@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using UnityEngine;
 
@@ -19,6 +20,31 @@ public static class Account_DAO
                 cmd.Parameters.AddWithValue("@UserID", UserID);
                 connection.Open();
                 cmd.ExecuteNonQuery();
+            }
+            catch (SqlException ex)
+            {
+
+                Console.WriteLine("SQL Exception: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+        }
+    }
+
+    public static void CheckUsername(string Username)
+    {
+        using (SqlConnection connection = new SqlConnection(ConnectionStr))
+        {
+            try
+            {
+                
+
             }
             catch (SqlException ex)
             {

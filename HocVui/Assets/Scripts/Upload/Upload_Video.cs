@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 using UnityEngine.Video;
 
-public class Video : MonoBehaviour
+public class Upload_Video : MonoBehaviour
 {
     public VideoPlayer videoPlayer;
 
@@ -76,21 +76,4 @@ public class Video : MonoBehaviour
             }
         });
     }
-
-
-    IEnumerator LoadVideo(string MediaUrl)
-    {
-        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl); //Create a request
-        yield return request.SendWebRequest(); //Wait for the request to complete
-        if (request.isNetworkError || request.isHttpError)
-        {
-            Debug.Log(request.error);
-        }
-        else
-        {
-            //rawImage.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-            // setting the loaded image to our object
-        }
-    }
-
 }
