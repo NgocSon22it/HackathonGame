@@ -58,7 +58,7 @@ public class Spell_Manager : MonoBehaviour
             image.sprite = DefaultContainer;
         }
 
-        ListContainer[Index].sprite = SelectContainer;
+       ListContainer[Index].sprite = SelectContainer;
     }
 
     public void FindAllPlayer()

@@ -1915,9 +1915,9 @@ MonoBehaviour:
   DefaultContainer: {fileID: 2065833410, guid: 495837354a44f1444bf01127e4bd180b, type: 3}
   SelectContainer: {fileID: -913437557, guid: 495837354a44f1444bf01127e4bd180b, type: 3}
   ListContainer:
-  - {fileID: 5361401713603804489}
-  - {fileID: 5361401713942001889}
-  - {fileID: 5361401713032061789}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   SpellInformation_Panel: {fileID: 5361401713322495571}
   SpellInformation_Name: {fileID: 5361401712968532928}
   SpellInformation_Description: {fileID: 5361401712514107535}

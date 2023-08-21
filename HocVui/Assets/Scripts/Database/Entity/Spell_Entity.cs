@@ -6,12 +6,14 @@ public class Spell_Entity
 {
     public string Name;
     public string Description;
-    public SpellType Type;
+    public string Image;
+    public Spell Spell;
 
-    public Spell_Entity(string name, string description,  SpellType type)
+    public Spell_Entity(string name, string description, string image, Spell spell)
     {
         Name = name;
         Description = description;
-        Type = type;
+        Image = image;
+        Spell = spell;
     }
 }
