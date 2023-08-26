@@ -18,7 +18,6 @@ public static class References
 
     public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>();
 
-
     public static string GenerateRandomString(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
