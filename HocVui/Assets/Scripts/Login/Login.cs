@@ -1,11 +1,13 @@
 ﻿using Assets.Scripts.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using WebSocketSharp;
 
 namespace Assets.Scripts.Login
@@ -38,9 +40,11 @@ namespace Assets.Scripts.Login
             }
             else
             {
-                if (Account_DAO.Login(usernametxt, passtxt) != null)
+                References.account = Account_DAO.Login(usernametxt, passtxt);
+                if (References.account != null)
                 {
-                    Debug.Log("Login success");
+                    if (References.account.IsFirst) SceneManager.LoadScene(Scenes.Creator);
+                    else SceneManager.LoadScene(Scenes.Lobby);
                 }
                 else
                 {
