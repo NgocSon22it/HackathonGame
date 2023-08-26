@@ -6,7 +6,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class Question : MonoBehaviour
+public class QuestionPanel : MonoBehaviour
 {
     [SerializeField] GameObject QuestionField;
     [SerializeField] GameObject title;
