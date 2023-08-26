@@ -7,6 +7,7 @@ public class ShowLeader : MonoBehaviour
     [SerializeField] GameObject AvatarPlayer;
     [SerializeField] GameObject NamePlayer;
     [SerializeField] GameObject ScorePlayer;
+    [SerializeField] GameObject ListScore;
 
     [SerializeField] LeanTweenType typeFadeIn;
     [SerializeField] LeanTweenType typeFadeOut;
@@ -18,10 +19,22 @@ public class ShowLeader : MonoBehaviour
     [SerializeField] GameObject Top3Player;
     [SerializeField] GameObject Leader;
 
-
+    public void Start()
+    {
+        ResetUI();
+    }
     public void startAnimation()
     {
+        ResetUI();
         StartCoroutine(AnimationStartAll());
+
+    }
+
+    private void ResetUI()
+    {
+        ScorePlayer.SetActive(false);
+        Leader.SetActive(false);
+        ListScore.SetActive(false);
     }
 
     IEnumerator AnimationStartAll()
@@ -34,11 +47,16 @@ public class ShowLeader : MonoBehaviour
         yield return new WaitForSeconds(duration * 2);
         StartCoroutine(EffectAnimation(NamePlayer));
         yield return new WaitForSeconds(duration * 2);
+
+        // Show top player
+        Leader.SetActive(true);
         StartCoroutine(Top3Effect());
         yield return new WaitForSeconds(2f);
         StartCoroutine(Top2Effect());
         yield return new WaitForSeconds(2f);
         StartCoroutine(Top1Effect());
+        yield return new WaitForSeconds(2f);
+        ListScore.SetActive(true);
     }
 
     IEnumerator EffectAnimation(GameObject obj)
@@ -50,7 +68,6 @@ public class ShowLeader : MonoBehaviour
         yield return new WaitForSeconds(duration);
         obj.SetActive(false);
     }
-
 
     private void FadeIn(GameObject obj)
     {
