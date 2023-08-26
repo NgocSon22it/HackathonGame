@@ -1512,18 +1512,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6996134924384332746, guid: 64c1c598b26d3a7489da1e747139172b, type: 3}
+      propertyPath: m_text
+      value: "Ng\u1ECDc S\u01A1n"
+      objectReference: {fileID: 0}
     - target: {fileID: 6996134925189043936, guid: 64c1c598b26d3a7489da1e747139172b, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    - target: {fileID: 6996134925189043936, guid: 64c1c598b26d3a7489da1e747139172b, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 6996134925189043937, guid: 64c1c598b26d3a7489da1e747139172b, type: 3}
-      propertyPath: PlayerAllUIPrefabs
-      value: 
-      objectReference: {fileID: 5361401713192937681, guid: bcc2cb1cdaf7df643b0e6237fa2547ef, type: 3}
     - target: {fileID: 6996134925189043967, guid: 64c1c598b26d3a7489da1e747139172b, type: 3}
       propertyPath: m_RootOrder
       value: 2
