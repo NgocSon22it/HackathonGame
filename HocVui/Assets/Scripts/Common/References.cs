@@ -13,10 +13,13 @@ public static class References
         new Spell_Entity("Khóa chân", "Khiến 1 người chơi không thể di chuyển trong 5 giây","Spell/Image_Skill_4", Spell.PlayerFreeze),
         new Spell_Entity("Giấu giếm", "Làm 1 cọc bị biến mất trong 5 giây","Spell/Image_Skill_5", Spell.RemovePile),
         new Spell_Entity("Khóa cửa", "Khóa vùng cắm cọc trong 5 giây","Spell/Image_Skill_9", Spell.Lock),
-
     };
 
+    public static List<Question_Entity> ListQuestionCreate = new List<Question_Entity>();
+
     public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>();
+
+    public static Collection_Entity SelectCollection = new Collection_Entity();
 
     public static string GenerateRandomString(int length)
     {

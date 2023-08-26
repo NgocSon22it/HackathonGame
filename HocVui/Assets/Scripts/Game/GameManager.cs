@@ -36,7 +36,10 @@ public class GameManager : MonoBehaviourPunCallbacks
 
 
     // Start is called before the first frame update
-    
+    private void Start()
+    {
+        StartCoroutine(CountDown_ShowQuestion());
+    }
 
     // Update is called once per frame
     void Update()
