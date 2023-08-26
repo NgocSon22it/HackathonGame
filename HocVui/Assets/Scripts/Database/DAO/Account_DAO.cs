@@ -6,7 +6,6 @@ using System.Data;
 using System.Data.SqlClient;
 using UnityEngine;
 using UnityEngine.Networking.Types;
-using static UnityEditor.ShaderData;
 
 public static class Account_DAO
 {

@@ -4,9 +4,14 @@ using UnityEngine;
 using Photon.Pun;
 using TMPro;
 using Photon.Pun.Demo.PunBasics;
+using UnityEngine.TextCore.Text;
+using System.IO;
+using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
+    [SerializeField] GameObject player;
+
     [Header("Player")]
     public GameObject PlayerManager;
 
@@ -31,14 +36,36 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void Awake()
     {
         Instance = this;
-        PlayerManager = GameObject.FindGameObjectWithTag("Player");
+        //PlayerManager = GameObject.FindGameObjectWithTag("Player");
     }
 
 
     // Start is called before the first frame update
     private void Start()
     {
-        StartCoroutine(CountDown_ShowQuestion());
+        //StartCoroutine(CountDown_ShowQuestion());
+        //PhotonNetwork.Instantiate(Path.Combine("Player/", player.name), new(0,0,0), Quaternion.identity);
+
+        PhotonNetwork.NickName = References.GenerateRandomString(10);
+        PhotonNetwork.ConnectUsingSettings();
+
+    }
+
+    public override void OnJoinedRoom()
+    {
+        PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        if (PhotonNetwork.IsConnectedAndReady)
+        {
+            RoomOptions roomOptions = new RoomOptions();
+            roomOptions.MaxPlayers = 0;
+            roomOptions.IsOpen = true;
+            roomOptions.BroadcastPropsChangeToAll = true;
+            PhotonNetwork.JoinOrCreateRoom("1", roomOptions, TypedLobby.Default);
+        }
     }
 
     // Update is called once per frame
