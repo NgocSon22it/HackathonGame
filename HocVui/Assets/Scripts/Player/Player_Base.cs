@@ -1,12 +1,16 @@
+using Assets.Scripts.Database.Entity;
 using Pathfinding;
+using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
-public class Player_Base : MonoBehaviour
+public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 {
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
@@ -32,8 +36,9 @@ public class Player_Base : MonoBehaviour
     [SerializeField] AIDestinationSetter destinationSetter;
     GameObject Effect_ClickToMove;
     bool FacingRight = true;
-    Vector3 TargetPoint, MovePosition;
+    Vector3 TargetPoint;
     float LocalScaleX, LocalScaleY;
+
 
     [Header("Object Pool")]
     [SerializeField] GameObject ObjectPool;
@@ -46,27 +51,73 @@ public class Player_Base : MonoBehaviour
     [SerializeField] GameObject MouseOverEffect_Pile;
 
 
+    // Lag Reduce
+    Vector3 realPosition;
+    Quaternion realRotation;
+    float currentTime = 0;
+    double currentPacketTime = 0;
+    double lastPacketTime = 0;
+    Vector3 positionAtLastPacket = Vector3.zero;
+    Quaternion rotationAtLastPacket = Quaternion.identity;
+
     // Start is called before the first frame update
     void Start()
     {
         ObjectPool.transform.SetParent(null);
+
         LocalScaleX = transform.localScale.x;
         LocalScaleY = transform.localScale.y;
-        PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
+
+        if (photonView.IsMine)
+        {
+            PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
+        }
+        else
+        {
+
+        }
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        MovePosition = aIPath.desiredVelocity;
-
-        animator.SetFloat("Horizontal", MovePosition.x);
-        animator.SetFloat("Vertical", MovePosition.y);
-        animator.SetFloat("Speed", MovePosition.sqrMagnitude);
+        if (photonView.IsMine)
+        {
+            animator.SetFloat("Horizontal", realPosition.x);
+            animator.SetFloat("Vertical", realPosition.y);
+            animator.SetFloat("Speed", realPosition.sqrMagnitude);
+        }
     }
 
-    void FixedUpdate()
+    public void FixedUpdate()
     {
+
+        if (photonView.IsMine)
+        {
+
+            if (aIPath != null && aIPath.reachedEndOfPath)
+            {
+                // Player has reached the destination, so set canMove to false
+                aIPath.canMove = false;
+                realPosition = Vector3.zero;
+
+            }
+            else
+            {
+                // Player is still moving, so set canMove to true
+                aIPath.canMove = true;
+                realPosition = aIPath.desiredVelocity;
+            }
+        }
+        else
+        {
+            double timeToReachGoal = currentPacketTime - lastPacketTime;
+            currentTime += Time.deltaTime;
+
+            transform.position = Vector3.Lerp(positionAtLastPacket, realPosition, (float)(currentTime / timeToReachGoal));
+        }
+
 
     }
 
@@ -90,7 +141,7 @@ public class Player_Base : MonoBehaviour
 
     public void Move(InputAction.CallbackContext context)
     {
-        if (context.performed)
+        if (context.performed && photonView.IsMine)
         {
             TargetPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TargetPoint.z = transform.position.z;
@@ -172,6 +223,37 @@ public class Player_Base : MonoBehaviour
         MouseOverEffect_Pile.SetActive(false);
     }
 
+
     #endregion
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+
+            stream.SendNext(transform.position);
+            stream.SendNext(transform.localScale);
+            stream.SendNext(UI_Transform.localScale);
+
+            stream.SendNext(aIPath.canMove);
+
+        }
+        else
+        {
+            realPosition = (Vector3)stream.ReceiveNext();
+            transform.localScale = (Vector3)stream.ReceiveNext();
+            UI_Transform.localScale = (Vector3)stream.ReceiveNext();
+
+            aIPath.canMove = (bool)stream.ReceiveNext();
+
+
+            //Lag compensation
+            currentTime = 0.0f;
+            lastPacketTime = currentPacketTime;
+            currentPacketTime = info.SentServerTime;
+            positionAtLastPacket = transform.position;
+            rotationAtLastPacket = transform.rotation;
+        }
+    }
 
 }
