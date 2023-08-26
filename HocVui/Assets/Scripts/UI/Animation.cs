@@ -1,22 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Animation : MonoBehaviour
 {
+
     [SerializeField] GameObject obj;
-    [SerializeField] float scaleValue;
-    [SerializeField] float durationValue;
+    [SerializeField] LeanTweenType type;
+    [SerializeField] float duration;
 
-    private void Start()
+    public void fadeInScale(float scale)
     {
-        obj = GetComponent<GameObject>();
-     
+        LeanTween.scale(gameObject, new Vector3(scale, scale, 0), duration).setEase(type);
     }
-    
-    void fadeInScale()
+        
+    public void fadeOutScale(float scale)
     {
-        LeanTween.scale(obj, new Vector3(scaleValue, scaleValue, 0), durationValue);
+        LeanTween.scale(gameObject, new Vector3(scale, scale, 0), duration).setEase(type);
     }
-
 }
