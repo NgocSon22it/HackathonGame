@@ -11,8 +11,6 @@ using UnityEngine.Video;
 
 public class Upload_Video : MonoBehaviour
 {
-    public VideoPlayer videoPlayer;
-
     void Start()
     {
         FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
@@ -23,7 +21,7 @@ public class Upload_Video : MonoBehaviour
         });
     }
 
-    public void UploadVideo(string imagePath)
+    public void UploadVideo(string path)
     {
         // Reference to Firebase Storage
         FirebaseStorage storage = FirebaseStorage.DefaultInstance;
@@ -35,7 +33,7 @@ public class Upload_Video : MonoBehaviour
         StorageReference imageRef = storageRef.Child("video").Child("abc.mp4");
 
         // Upload the image
-        imageRef.PutFileAsync(imagePath).ContinueWith(task =>
+        imageRef.PutFileAsync(path).ContinueWith(task =>
         {
             if (task.IsFaulted || task.IsCanceled)
             {
@@ -64,11 +62,9 @@ public class Upload_Video : MonoBehaviour
         {
             if (!task.IsFaulted && !task.IsCanceled)
             {
-                Debug.Log("Success to get video download URL.");
-
                 string videoUrl = task.Result.ToString();
-                videoPlayer.url = videoUrl;
-                videoPlayer.Play();
+
+                Debug.Log("Success to get video download URL." + videoUrl);
             }
             else
             {

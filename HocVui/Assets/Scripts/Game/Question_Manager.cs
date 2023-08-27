@@ -1,9 +1,13 @@
-﻿using System;
+﻿using Firebase.Storage;
+using Firebase;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
+using Firebase.Extensions;
 
 public class Question_Manager : MonoBehaviour
 {
@@ -236,6 +240,81 @@ public class Question_Manager : MonoBehaviour
         Debug.Log("Tạo Bộ câu hỏi thành công");
         Debug.Log(References.SelectCollection.ListQuestion.Count);
 
+    }
+
+    public void SelectVideoUpload()
+    {
+        // Use Unity's cross-platform file picker
+        string selectedFilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "mp4");
+
+        if (!string.IsNullOrEmpty(selectedFilePath))
+        {
+            Debug.Log(selectedFilePath);
+
+            UploadVideo(selectedFilePath);
+        }
+    }
+
+    void Start()
+    {
+        FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task =>
+        {
+            FirebaseApp app = FirebaseApp.DefaultInstance;
+            // Initialize Firebase Storage
+            FirebaseStorage storage = FirebaseStorage.DefaultInstance;
+        });
+    }
+
+    public void UploadVideo(string path)
+    {
+        // Reference to Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
+
+        // Reference to the storage bucket
+        StorageReference storageRef = storage.GetReferenceFromUrl("gs://hocvui-51d2c.appspot.com");
+
+        // Create a reference to the image in the storage bucket
+        StorageReference imageRef = storageRef.Child("video").Child("abc.mp4");
+
+        // Upload the image
+        imageRef.PutFileAsync(path).ContinueWith(task =>
+        {
+            if (task.IsFaulted || task.IsCanceled)
+            {
+                Debug.LogError("Video upload failed.");
+            }
+            else if (task.IsCompleted)
+            {
+                Debug.Log("Video upload successful.");
+            }
+        });
+    }
+
+    public void DownloadVideo()
+    {
+        // Reference to Firebase Storage
+        FirebaseStorage storage = FirebaseStorage.DefaultInstance;
+
+        // Reference to the storage bucket
+        StorageReference storageRef = storage.GetReferenceFromUrl("gs://hocvui-51d2c.appspot.com");
+
+        // Reference to the remote video in the storage bucket
+        StorageReference videoRef = storageRef.Child("video").Child("abc.mp4");
+
+        // Download the video to local storage
+        videoRef.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
+        {
+            if (!task.IsFaulted && !task.IsCanceled)
+            {
+                string videoUrl = task.Result.ToString();
+
+                Debug.Log("Success to get video download URL." + videoUrl);
+            }
+            else
+            {
+                Debug.LogError("Failed to get video download URL.");
+            }
+        });
     }
 
 }
