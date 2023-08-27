@@ -17,6 +17,7 @@ namespace Assets.Scripts.Database.Entity
         public string EyeID { get; set; }
         public string SkinID { get; set; }
         public string MouthID { get; set; }
+        public bool IsFirst { get; set; }
 
     }
 }
