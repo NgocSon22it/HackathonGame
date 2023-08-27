@@ -1,14 +1,14 @@
-using ExitGames.Client.Photon.StructWrapping;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class Pile : MonoBehaviourPunCallbacks
+public class Pile_Base : MonoBehaviourPunCallbacks
 {
     public float collectionRadius = 2.0f;
-    private bool isActive = true;
+    private bool isActive;
+    [SerializeField] GameObject IsPile;
+    [SerializeField] int Index;
 
     private void OnMouseEnter()
     {
@@ -26,7 +26,7 @@ public class Pile : MonoBehaviourPunCallbacks
     {
         if (IsPlayerCloseEnough())
         {
-            CollectWood();
+            PuttingPile();
         }
     }
 
@@ -34,7 +34,7 @@ public class Pile : MonoBehaviourPunCallbacks
     void SyncActivation(bool newState)
     {
         isActive = newState;
-        gameObject.SetActive(isActive);
+        IsPile.SetActive(isActive);
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
@@ -46,7 +46,7 @@ public class Pile : MonoBehaviourPunCallbacks
         else
         {
             isActive = (bool)stream.ReceiveNext();
-            gameObject.SetActive(isActive);
+            IsPile.SetActive(isActive);
         }
     }
 
@@ -57,17 +57,20 @@ public class Pile : MonoBehaviourPunCallbacks
         return distance <= collectionRadius;
     }
 
-    private void CollectWood()
+    private void PuttingPile()
     {
         Player_Base refer = GameManager.Instance.PlayerManager.GetComponent<Player_Base>();
 
-        if (!refer.IsPile)
+        if (!refer.IsPileBase)
         {
-            isActive = !isActive;
-            photonView.RPC(nameof(SyncActivation), RpcTarget.All, isActive);
+            if (refer.IsPile)
+            {
+                isActive = true;
+                photonView.RPC(nameof(SyncActivation), RpcTarget.All, isActive);
+            }
+
         }
 
-        refer.CollectPile();
-
+        refer.PuttingPile(Index);
     }
 }
