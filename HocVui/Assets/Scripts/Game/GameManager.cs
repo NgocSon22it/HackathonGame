@@ -53,7 +53,8 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinedRoom()
     {
-        PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
+        PlayerManager = PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
+        StartCoroutine(CountDown_ShowQuestion());
     }
 
     public override void OnConnectedToMaster()
