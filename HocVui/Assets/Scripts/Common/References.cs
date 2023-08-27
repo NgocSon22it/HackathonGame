@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Database.Entity;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 public static class References
 {
+    public static Account_Entity account;
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {
         new Spell_Entity("50/50", "Loại bỏ 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty),
@@ -13,11 +15,13 @@ public static class References
         new Spell_Entity("Khóa chân", "Khiến 1 người chơi không thể di chuyển trong 5 giây","Spell/Image_Skill_4", Spell.PlayerFreeze),
         new Spell_Entity("Giấu giếm", "Làm 1 cọc bị biến mất trong 5 giây","Spell/Image_Skill_5", Spell.RemovePile),
         new Spell_Entity("Khóa cửa", "Khóa vùng cắm cọc trong 5 giây","Spell/Image_Skill_9", Spell.Lock),
-
     };
+
+    public static List<Question_Entity> ListQuestionCreate = new List<Question_Entity>();
 
     public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>();
 
+    public static Collection_Entity SelectCollection = new Collection_Entity();
 
     public static string GenerateRandomString(int length)
     {
@@ -78,4 +82,9 @@ public enum Spell
 public enum Role
 {
     Student = 1, Teacher = 2
+}
+
+public enum TypeLayout
+{
+    Hair, Eye, Mouth, Skin
 }

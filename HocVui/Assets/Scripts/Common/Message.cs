@@ -16,5 +16,8 @@ namespace Assets.Scripts.Common
         public static string Confirm = "Mật khẩu không khớp";
         public static string RegisterSuccess = "Đăng kí thành công";
         public static string LoginFail = "Tên đăng nhập hoặc mật khẩu không đúng";
+
+        public static string NameExist = "Tên nhân vật đã tồn tại";
+
     }
 }

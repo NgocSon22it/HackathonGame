@@ -32,6 +32,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text CreateRoom_NumberPlayerTxt, CreateRoom_AnswerTimeTxt;
     [SerializeField] Toggle CreateRoom_UseSpellToggle;
 
+    [Header("Question Information")]
+    [SerializeField] TMP_Text Information_Question;
+    [SerializeField] List<TMP_Text> Information_Answer;
+    [SerializeField] List<Image> Information_IsCorrect;
+    [SerializeField] List<Image> Information_IsCorrectColor;
+
     [Header("Find Room")]
     [SerializeField] TMP_InputField FindRoom_NameInput;
     string keyword;
@@ -51,6 +57,10 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [Header("List Player")]
     [SerializeField] GameObject PlayerItem;
     [SerializeField] Transform PlayerContent;
+
+    [Header("Paging")]
+    [SerializeField] TMP_Text CurrentPaging;
+    int CurrentIndex;
 
     private void Awake()
     {
@@ -313,6 +323,62 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     public void SpellInformation_Off()
     {
         SpellInformation_Panel.SetActive(false);
+    }
+
+    public void Information_LoadCurrentQuestion(int Index)
+    {
+        Information_Question.text = (Index + 1) + ". " + References.ListQuestionCreate[Index].questionText;
+
+        for (int i = 0; i < 4; i++)
+        {
+            Information_Answer[i].text = References.ListQuestionCreate[Index].answers[i];
+        }
+
+        foreach (var item in Information_IsCorrect)
+        {
+            item.gameObject.SetActive(false);
+        }
+
+        foreach (var item in Information_IsCorrectColor)
+        {
+            item.color = Color.white;
+        }
+
+
+        Information_IsCorrect[References.ListQuestionCreate[Index].correctAnswerIndex].gameObject.SetActive(true);
+
+        Information_IsCorrectColor[References.ListQuestionCreate[Index].correctAnswerIndex].color = Color.yellow;
+
+        CurrentPaging.text = (CurrentIndex + 1) + " / " + (References.SelectCollection.ListQuestion.Count).ToString();
+    }
+
+    public void Next()
+    {
+        if (References.SelectCollection.ListQuestion.Count > 0)
+        {
+            CurrentIndex++;
+            if (CurrentIndex >= References.SelectCollection.ListQuestion.Count)
+            {
+                CurrentIndex = 0;
+            }
+
+            Information_LoadCurrentQuestion(CurrentIndex);
+        }
+    }
+
+
+    public void Previous()
+    {
+        if (References.SelectCollection.ListQuestion.Count > 0)
+        {
+            CurrentIndex--;
+            if (CurrentIndex < 0)
+            {
+                CurrentIndex = References.SelectCollection.ListQuestion.Count - 1;
+            }
+
+            Information_LoadCurrentQuestion(CurrentIndex);
+        }
     }
 }
 
