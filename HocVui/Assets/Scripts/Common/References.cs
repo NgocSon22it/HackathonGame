@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Database.Entity;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 
 public static class References
 {
+    public static Account_Entity account;
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {
         new Spell_Entity("50/50", "Loại bỏ 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty),
@@ -80,4 +82,9 @@ public enum Spell
 public enum Role
 {
     Student = 1, Teacher = 2
+}
+
+public enum TypeLayout
+{
+    Hair, Eye, Mouth, Skin
 }
