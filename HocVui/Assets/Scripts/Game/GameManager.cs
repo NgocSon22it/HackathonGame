@@ -7,8 +7,10 @@ using Photon.Pun.Demo.PunBasics;
 using UnityEngine.TextCore.Text;
 using System.IO;
 using Photon.Realtime;
+using ExitGames.Client.Photon;
+using UnityEngine.PlayerLoop;
 
-public class GameManager : MonoBehaviourPunCallbacks
+public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     [SerializeField] GameObject player;
 
@@ -33,18 +35,22 @@ public class GameManager : MonoBehaviourPunCallbacks
     GameObject[] ListPlayer;
     string PlayerTag = "Player";
 
+    [Header("Event")]
+    private const byte Start_CountDownEventCode = 1;
+
+    ExitGames.Client.Photon.Hashtable PlayerProperties = new ExitGames.Client.Photon.Hashtable();
+
+
     private void Awake()
     {
         Instance = this;
-        //PlayerManager = GameObject.FindGameObjectWithTag("Player");
     }
 
 
     // Start is called before the first frame update
     private void Start()
     {
-        //StartCoroutine(CountDown_ShowQuestion());
-        //PhotonNetwork.Instantiate(Path.Combine("Player/", player.name), new(0,0,0), Quaternion.identity);
+
 
         PhotonNetwork.NickName = References.GenerateRandomString(10);
         PhotonNetwork.ConnectUsingSettings();
@@ -54,7 +60,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         PlayerManager = PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
-        StartCoroutine(CountDown_ShowQuestion());
+
     }
 
     public override void OnConnectedToMaster()
@@ -72,7 +78,10 @@ public class GameManager : MonoBehaviourPunCallbacks
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.H) && PhotonNetwork.IsMasterClient)
+        {
+            ShowEndgamePanel();
+        }
     }
 
     #region Set Up Pile
@@ -94,10 +103,9 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void SetRandomPile()
     {
-        FindAllPlayer();
         for (int i = 0; i < ListPile.Count; i++)
         {
-            ListPile[i].transform.position = GetRandomPosition();   
+            ListPile[i].transform.position = GetRandomPosition();
             ListPile[i].gameObject.SetActive(true);
         }
     }
@@ -126,4 +134,25 @@ public class GameManager : MonoBehaviourPunCallbacks
         Countdown_ShowQuestionTxt.gameObject.SetActive(false);
         SetRandomPile();
     }
+
+    public void ShowEndgamePanel()
+    {
+        PhotonNetwork.RaiseEvent(Start_CountDownEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == Start_CountDownEventCode)
+        {
+            //StartCoroutine(CountDown_ShowQuestion());
+            SetRandomPile();
+        }
+    }
+    public void SelectOption(int Index)
+    {
+        PlayerProperties["SelectOption"] = Index;
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProperties);
+    }
+
 }
