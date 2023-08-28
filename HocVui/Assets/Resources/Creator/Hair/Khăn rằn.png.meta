@@ -117,7 +117,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Kh\u0103n r\u1EB1n_0"
+      name: "Kh\u0103n r\u1EB1n_hair"
       rect:
         serializedVersion: 2
         x: 474
@@ -125,7 +125,7 @@ TextureImporter:
         width: 354
         height: 218
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -148,7 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "Kh\u0103n r\u1EB1n_0": 1063225155
+      "Kh\u0103n r\u1EB1n_hair": 1063225155
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
