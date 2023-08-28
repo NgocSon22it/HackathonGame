@@ -6,20 +6,16 @@ using UnityEngine;
 [Serializable]
 public class Collection_Entity
 {
+    public int ID;
+    public int AccountID;
     public string Name;
-    public List<Question_Entity> ListQuestion;
-    public string Video;
+    public int AmountQuestion;
+    public string LinkVideo;
 
 
     public Collection_Entity()
     {
 
-    }
-    public Collection_Entity(string Name, List<Question_Entity> ListQuestion, string Video)
-    {
-        this.Name = Name;
-        this.ListQuestion = ListQuestion;
-        this.Video = Video;
     }
 
 }

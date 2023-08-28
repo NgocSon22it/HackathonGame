@@ -10,22 +10,22 @@ public class Collection_UI : MonoBehaviour
     [SerializeField] LeanTweenType typeClose;
     public void fadeTop()
     {
-        gameObject.LeanMoveY(this.transform.position.y + 1080, duration).setEase(typeFadeIn);
+        gameObject.LeanMoveLocalY(0, duration).setEase(typeFadeIn);
     }
 
     public void fadeDown()
     {
-        gameObject.LeanMoveY(this.transform.position.y - 1080, duration).setEase(typeFadeOut);
+        gameObject.LeanMoveLocalY(- 1080, duration).setEase(typeFadeOut);
     }
 
     public void fadeLeft()
     {
-        gameObject.LeanMoveX(this.transform.position.x - 1920, duration).setEase(typeFadeIn);
+        gameObject.LeanMoveLocalX(-1920, duration).setEase(typeFadeIn);
     }
 
     public void fadeRight()
     {
-        gameObject.LeanMoveX(this.transform.position.x + 1920, duration).setEase(typeFadeOut);
+        gameObject.LeanMoveLocalX(1920, duration).setEase(typeFadeOut);
     }
 
     public void close()
