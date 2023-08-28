@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 307cbad8a9556284f96d1675e77a3262
+guid: b1bd59aa89086fc438d2ba2c20fb5297
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,22 +117,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Kh\u0103n r\u1EB1n_hair"
+      name: "N\xF3n k\u1EBFt_hair"
       rect:
         serializedVersion: 2
-        x: 474
-        y: 360
-        width: 354
-        height: 218
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 450
+        y: 273
+        width: 389
+        height: 381
+      alignment: 9
+      pivot: {x: 0.5442632, y: 0.7}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a87fb54ceb4baff4291878035c8179b6
-      internalID: 1063225155
+      spriteID: 8f94805632c19b341a921c9d9eaf64fe
+      internalID: -1594532305
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "Kh\u0103n r\u1EB1n_hair": 1063225155
+      "N\xF3n k\u1EBFt_hair": -1594532305
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

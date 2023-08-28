@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 307cbad8a9556284f96d1675e77a3262
+guid: cc34c3109b278d143810ea9467b7bbc9
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,22 +117,22 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "Kh\u0103n r\u1EB1n_hair"
+      name: "T\xF3c shinsuka_0"
       rect:
         serializedVersion: 2
-        x: 474
-        y: 360
-        width: 354
-        height: 218
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 416
+        y: 311
+        width: 501
+        height: 365
+      alignment: 9
+      pivot: {x: 0.5, y: 0.7024565}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a87fb54ceb4baff4291878035c8179b6
-      internalID: 1063225155
+      spriteID: 592616dd6d382c644ba55db8c0ccede5
+      internalID: 192930031
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "Kh\u0103n r\u1EB1n_hair": 1063225155
+      "T\xF3c shinsuka_0": 192930031
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

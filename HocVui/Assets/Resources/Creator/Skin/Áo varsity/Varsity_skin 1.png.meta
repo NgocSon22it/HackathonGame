@@ -117,7 +117,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Varsity_skin_item
+      name: Varsity_skin-item
       rect:
         serializedVersion: 2
         x: 376
@@ -148,7 +148,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Varsity_skin_item: -2139933770
+      Varsity_skin-item: -2139933770
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
