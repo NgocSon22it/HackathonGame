@@ -12,12 +12,12 @@ public class PanelBXH : MonoBehaviour
     [SerializeField] LeanTweenType fadeInType;
     [SerializeField] LeanTweenType fadeOutType;
 
-    public void open()
+    public void StartAnimation()
     {
         ModalFadeIn();
     }
 
-    public void  close()
+    public void  StopAnimation()
     {
        StartCoroutine(ModalFadeOut());
     }
