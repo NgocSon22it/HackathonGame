@@ -2,6 +2,7 @@ using Assets.Scripts.Database.Entity;
 using Pathfinding;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -45,11 +46,21 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("Pile")]
     [SerializeField] SpriteRenderer Pile_Handle;
-    [SerializeField] bool IsPile;
+    [SerializeField] public bool IsPile, IsPileBase;
 
     [Header("Effect")]
     [SerializeField] GameObject MouseOverEffect_Pile;
 
+    [Header("Select Question")]
+    [SerializeField] int SelectionIndex;
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        if (targetPlayer != null && targetPlayer.Equals(photonView.Owner))
+        {
+            SelectionIndex = (int)changedProps["SelectOption"];
+        }
+    }
 
     // Lag Reduce
     Vector3 realPosition;
@@ -121,7 +132,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
-    private void OnMouseOver()
+/*    private void OnMouseOver()
     {
         isMouseOver = true;
     }
@@ -138,7 +149,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             Debug.Log("Object Name: " + playerName);
         }
     }
-
+*/
     public void Move(InputAction.CallbackContext context)
     {
         if (context.performed && photonView.IsMine)
@@ -158,24 +169,65 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    public void Click(InputAction.CallbackContext context)
+    {
+        if (context.performed && photonView.IsMine)
+        {
+
+        }
+    }
+
 
     public bool GetIsPile()
     {
         return IsPile;
     }
 
-    public void CollectPile(GameObject pile)
+    public void CollectPile()
     {
-        if (IsPile)
+        if (photonView.IsMine)
         {
-            PlayerAllUIInstance.GetComponent<Player_AllUI>().PickUp_Already_Show();
+            if (IsPile)
+            {
+                PlayerAllUIInstance.GetComponent<Player_AllUI>().PickUp_Already_Show();
+            }
+            else
+            {
+                photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, true);
+                IsPile = true;
+                MouseOverEffect_Pile_Off();
+            }
+        }
+    }
+
+    public void PuttingPile(int Index)
+    {
+        if (photonView.IsMine)
+        {
+            if (IsPile && !IsPileBase)
+            {
+                photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, false);
+                GameManager.Instance.SelectOption(Index);
+                IsPileBase = true;
+                MouseOverEffect_Pile_Off();
+            }
+            else
+            {
+                Debug.Log("Cam r ai cho rut");
+            }
+        }
+    }
+
+    [PunRPC]
+    void SyncSpriteChange(bool value)
+    {
+        if (value)
+        {
+            Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
         }
         else
         {
-            Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
-            IsPile = true;
-            Destroy(pile);
-            MouseOverEffect_Pile_Off();
+            Pile_Handle.sprite = null;
         }
     }
 
