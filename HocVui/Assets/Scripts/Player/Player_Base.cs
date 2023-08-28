@@ -3,6 +3,7 @@ using Pathfinding;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -15,9 +16,10 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 {
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
+    [SerializeField] TMP_Text PlayerNameTxt;
 
     [Header("Component")]
-    [SerializeField] string playerName;
+    [SerializeField] public string playerName;
     private bool isMouseOver = false;
 
     [Header("Component")]
@@ -50,9 +52,10 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("Effect")]
     [SerializeField] GameObject MouseOverEffect_Pile;
+    [SerializeField] List<GameObject> SpellPoint_Effect;
 
     [Header("Select Question")]
-    [SerializeField] int SelectionIndex;
+    [SerializeField] public int SelectionIndex;
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
@@ -78,6 +81,9 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
         LocalScaleX = transform.localScale.x;
         LocalScaleY = transform.localScale.y;
+
+        playerName = photonView.Owner.NickName;
+        PlayerNameTxt.text = playerName;
 
         if (photonView.IsMine)
         {
@@ -132,14 +138,20 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
-/*    private void OnMouseOver()
+    private void OnMouseOver()
     {
-        isMouseOver = true;
+        if (!photonView.IsMine)
+        {
+            isMouseOver = true;
+            MouseOverEffect_Pile_On(transform.position);
+        }
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
+        MouseOverEffect_Pile_Off();
+
     }
 
     private void OnMouseDown()
@@ -149,7 +161,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             Debug.Log("Object Name: " + playerName);
         }
     }
-*/
+
     public void Move(InputAction.CallbackContext context)
     {
         if (context.performed && photonView.IsMine)
@@ -173,6 +185,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (context.performed && photonView.IsMine)
         {
+
 
         }
     }
@@ -208,6 +221,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             {
                 photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, false);
                 GameManager.Instance.SelectOption(Index);
+                GameManager.Instance.SubmitValue(photonView.Owner.NickName, Index);
                 IsPileBase = true;
                 MouseOverEffect_Pile_Off();
             }
@@ -275,6 +289,18 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         MouseOverEffect_Pile.SetActive(false);
     }
 
+    public void SpellPoint_On(Transform Position)
+    {
+        SpellPoint_Effect[0].GetComponent<Spell_Point>().TargetPosition = Position;
+        SpellPoint_Effect[0].SetActive(true);
+        
+    }
+
+    public void SpellPoint_Off()
+    {
+        SpellPoint_Effect[0].SetActive(false);
+
+    }
 
     #endregion
 
