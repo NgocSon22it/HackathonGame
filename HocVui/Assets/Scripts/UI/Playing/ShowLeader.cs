@@ -1,13 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+
 public class ShowLeader : MonoBehaviour
 {
     [SerializeField] GameObject RankImg;
     [SerializeField] GameObject AvatarPlayer;
-    [SerializeField] GameObject NamePlayer;
+    [SerializeField] GameObject PlayerName;
     [SerializeField] GameObject ScorePlayer;
     [SerializeField] GameObject ListScore;
+    [SerializeField] GameObject Background;
 
     [SerializeField] LeanTweenType typeFadeIn;
     [SerializeField] LeanTweenType typeFadeOut;
@@ -19,44 +23,63 @@ public class ShowLeader : MonoBehaviour
     [SerializeField] GameObject Top3Player;
     [SerializeField] GameObject Leader;
 
-    public void Start()
-    {
-        ResetUI();
-    }
-    public void startAnimation()
-    {
-        ResetUI();
-        StartCoroutine(AnimationStartAll());
 
+    public List<Sprite> TopRank;
+
+    public void run()
+    {
+        ResetUI();
+        StartCoroutine(startAnimation());
+    }
+    IEnumerator startAnimation()
+    {
+        Background.SetActive(true);
+
+        StartCoroutine(AnimationShowPlayerTop(3, 100, "", "Thien"));
+        yield return new WaitForSeconds(6);
+        StartCoroutine(AnimationShowPlayerTop(2, 200, "", "Son"));
+        yield return new WaitForSeconds(6);
+        StartCoroutine(AnimationShowPlayerTop(1, 300, "", "Tien"));
+        yield return new WaitForSeconds(6);
+        ShowListRank();
+        Background.SetActive(false);
     }
 
     private void ResetUI()
     {
         ScorePlayer.SetActive(false);
-        Leader.SetActive(false);
         ListScore.SetActive(false);
+        Background.SetActive(false);
     }
 
-    IEnumerator AnimationStartAll()
+    private void ShowListRank()
     {
+        ListScore.SetActive(true);
+    }
+    IEnumerator AnimationShowPlayerTop(int rank, float score, string avatar, string name)
+    {
+        RankImg.GetComponent<Image>().sprite = TopRank[rank - 1 ];
+        ScorePlayer.GetComponent<TMP_Text>().text = score.ToString();
+        /*AvatarPlayer.GetComponent<Image>().sprite = avatar;*/
+        PlayerName.GetComponent<TMP_Text>().text = name;
+
         StartCoroutine(EffectAnimation(RankImg));
         yield return new WaitForSeconds(duration * 2);
         StartCoroutine(EffectAnimation(ScorePlayer));
         yield return new WaitForSeconds(duration * 2);
         StartCoroutine(EffectAnimation(AvatarPlayer));
         yield return new WaitForSeconds(duration * 2);
-        StartCoroutine(EffectAnimation(NamePlayer));
+        StartCoroutine(EffectAnimation(PlayerName));
         yield return new WaitForSeconds(duration * 2);
+        
+        switch(rank)
+        {
+            case 1: StartCoroutine(Top1Effect()); break;
+            case 2: StartCoroutine(Top2Effect()); break;    
+            case 3: StartCoroutine(Top3Effect()); break;
 
-        // Show top player
-        Leader.SetActive(true);
-        StartCoroutine(Top3Effect());
-        yield return new WaitForSeconds(2f);
-        StartCoroutine(Top2Effect());
-        yield return new WaitForSeconds(2f);
-        StartCoroutine(Top1Effect());
-        yield return new WaitForSeconds(2f);
-        ListScore.SetActive(true);
+            default: break;
+        }
     }
 
     IEnumerator EffectAnimation(GameObject obj)
@@ -83,7 +106,6 @@ public class ShowLeader : MonoBehaviour
     IEnumerator Top1Effect()
     {
         Top1Player.SetActive(true);
-
         Top1Player.gameObject.transform.position = this.gameObject.transform.position;
         Top1Player.gameObject.transform.localScale = Vector3.zero;
 
