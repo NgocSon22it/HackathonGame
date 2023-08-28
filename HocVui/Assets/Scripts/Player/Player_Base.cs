@@ -11,12 +11,15 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 {
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
     [SerializeField] TMP_Text PlayerNameTxt;
+    [SerializeField] UnityEngine.UI.Slider BlockProgress;
 
     [Header("Component")]
     [SerializeField] public string playerName;
@@ -52,7 +55,13 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("Effect")]
     [SerializeField] GameObject MouseOverEffect_Pile;
-    [SerializeField] List<GameObject> SpellPoint_Effect;
+    [SerializeField] GameObject MouseOverEffect_Player;
+    bool LoseControl;
+    Coroutine BlockPlayer_Coroutine;
+    public float animationDuration = 5f;
+    private float startValue;
+    private float targetValue;
+    private float startTime;
 
     [Header("Select Question")]
     [SerializeField] public int SelectionIndex;
@@ -112,19 +121,26 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
         if (photonView.IsMine)
         {
-
-            if (aIPath != null && aIPath.reachedEndOfPath)
+            if (LoseControl)
             {
-                // Player has reached the destination, so set canMove to false
                 aIPath.canMove = false;
                 realPosition = Vector3.zero;
-
             }
             else
             {
-                // Player is still moving, so set canMove to true
-                aIPath.canMove = true;
-                realPosition = aIPath.desiredVelocity;
+                if (aIPath != null && aIPath.reachedEndOfPath)
+                {
+                    // Player has reached the destination, so set canMove to false
+                    aIPath.canMove = false;
+                    realPosition = Vector3.zero;
+
+                }
+                else
+                {
+                    // Player is still moving, so set canMove to true
+                    aIPath.canMove = true;
+                    realPosition = aIPath.desiredVelocity;
+                }
             }
         }
         else
@@ -143,14 +159,14 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine)
         {
             isMouseOver = true;
-            MouseOverEffect_Pile_On(transform.position);
+            MouseOverEffect_Player_On(transform.position);
         }
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
-        MouseOverEffect_Pile_Off();
+        MouseOverEffect_Player_Off();
 
     }
 
@@ -158,7 +174,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (isMouseOver)
         {
-            Debug.Log("Object Name: " + playerName);
+            photonView.RPC(nameof(BlockPlayer), RpcTarget.All);
         }
     }
 
@@ -245,6 +261,26 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
 
+    [PunRPC]
+    void BlockPlayer()
+    {
+        LoseControl = true;
+        if (BlockPlayer_Coroutine != null)
+        {
+            StopCoroutine(BlockPlayer_Coroutine);
+        }
+
+        BlockPlayer_Coroutine = StartCoroutine(BlockPlayer_Start());
+
+    }
+
+    [PunRPC]
+    public void ClearEffect()
+    {
+        BlockProgress.value = 5f;
+        LoseControl = false;
+    }
+
     #region Turn Direction
     public void TurnDirection_Check(Vector3 direction)
     {
@@ -289,17 +325,15 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         MouseOverEffect_Pile.SetActive(false);
     }
 
-    public void SpellPoint_On(Transform Position)
+    public void MouseOverEffect_Player_On(Vector3 Position)
     {
-        SpellPoint_Effect[0].GetComponent<Spell_Point>().TargetPosition = Position;
-        SpellPoint_Effect[0].SetActive(true);
-        
+        MouseOverEffect_Player.transform.position = Position;
+        MouseOverEffect_Player.SetActive(true);
     }
 
-    public void SpellPoint_Off()
+    public void MouseOverEffect_Player_Off()
     {
-        SpellPoint_Effect[0].SetActive(false);
-
+        MouseOverEffect_Player.SetActive(false);
     }
 
     #endregion
@@ -314,6 +348,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(UI_Transform.localScale);
 
             stream.SendNext(aIPath.canMove);
+
 
         }
         else
@@ -332,6 +367,29 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             positionAtLastPacket = transform.position;
             rotationAtLastPacket = transform.rotation;
         }
+    }
+
+    IEnumerator BlockPlayer_Start()
+    {
+        startValue = 5f;
+        targetValue = 0f;
+
+        startTime = Time.time;
+        BlockProgress.gameObject.SetActive(true);
+
+        while (Time.time - startTime < animationDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float t = elapsed / animationDuration;
+
+            BlockProgress.value = Mathf.Lerp(startValue, targetValue, t);
+
+            yield return null;
+        }
+
+        BlockProgress.value = targetValue;
+        BlockProgress.gameObject.SetActive(false);
+        photonView.RPC(nameof(ClearEffect), RpcTarget.All);
     }
 
 }

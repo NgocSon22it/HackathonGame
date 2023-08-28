@@ -5009,14 +5009,13 @@ GameObject:
   - component: {fileID: 1878173758304588993}
   - component: {fileID: 1878173758304589054}
   - component: {fileID: 1878173758304588994}
-  - component: {fileID: 304278880307479936}
   m_Layer: 0
-  m_Name: Freeze
+  m_Name: HoverPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1878173758304588992
 Transform:
   m_ObjectHideFlags: 0
@@ -9802,19 +9801,6 @@ SortingGroup:
   m_SortingLayerID: -1618179023
   m_SortingLayer: 1
   m_SortingOrder: 0
---- !u!114 &304278880307479936
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1878173758304589055}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38c144b3666805545b0cf22f00f8449b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TargetPosition: {fileID: 0}
 --- !u!1 &2728037503218011491
 GameObject:
   m_ObjectHideFlags: 0
