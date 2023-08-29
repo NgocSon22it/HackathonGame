@@ -3,6 +3,7 @@ using Pathfinding;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -10,14 +11,18 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 {
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
+    [SerializeField] TMP_Text PlayerNameTxt;
+    [SerializeField] UnityEngine.UI.Slider BlockProgress;
 
     [Header("Component")]
-    [SerializeField] string playerName;
+    [SerializeField] public string playerName;
     private bool isMouseOver = false;
 
     [Header("Component")]
@@ -50,9 +55,16 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("Effect")]
     [SerializeField] GameObject MouseOverEffect_Pile;
+    [SerializeField] GameObject MouseOverEffect_Player;
+    bool LoseControl;
+    Coroutine BlockPlayer_Coroutine;
+    public float animationDuration = 5f;
+    private float startValue;
+    private float targetValue;
+    private float startTime;
 
     [Header("Select Question")]
-    [SerializeField] int SelectionIndex;
+    [SerializeField] public int SelectionIndex;
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
@@ -78,6 +90,9 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
         LocalScaleX = transform.localScale.x;
         LocalScaleY = transform.localScale.y;
+
+        playerName = photonView.Owner.NickName;
+        PlayerNameTxt.text = playerName;
 
         if (photonView.IsMine)
         {
@@ -106,19 +121,26 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
         if (photonView.IsMine)
         {
-
-            if (aIPath != null && aIPath.reachedEndOfPath)
+            if (LoseControl)
             {
-                // Player has reached the destination, so set canMove to false
                 aIPath.canMove = false;
                 realPosition = Vector3.zero;
-
             }
             else
             {
-                // Player is still moving, so set canMove to true
-                aIPath.canMove = true;
-                realPosition = aIPath.desiredVelocity;
+                if (aIPath != null && aIPath.reachedEndOfPath)
+                {
+                    // Player has reached the destination, so set canMove to false
+                    aIPath.canMove = false;
+                    realPosition = Vector3.zero;
+
+                }
+                else
+                {
+                    // Player is still moving, so set canMove to true
+                    aIPath.canMove = true;
+                    realPosition = aIPath.desiredVelocity;
+                }
             }
         }
         else
@@ -132,24 +154,30 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     }
 
-/*    private void OnMouseOver()
+    private void OnMouseOver()
     {
-        isMouseOver = true;
+        if (!photonView.IsMine)
+        {
+            isMouseOver = true;
+            MouseOverEffect_Player_On(transform.position);
+        }
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
+        MouseOverEffect_Player_Off();
+
     }
 
     private void OnMouseDown()
     {
         if (isMouseOver)
         {
-            Debug.Log("Object Name: " + playerName);
+            photonView.RPC(nameof(BlockPlayer), RpcTarget.All);
         }
     }
-*/
+
     public void Move(InputAction.CallbackContext context)
     {
         if (context.performed && photonView.IsMine)
@@ -173,6 +201,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (context.performed && photonView.IsMine)
         {
+
 
         }
     }
@@ -208,6 +237,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             {
                 photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, false);
                 GameManager.Instance.SelectOption(Index);
+                GameManager.Instance.SubmitValue(photonView.Owner.NickName, Index);
                 IsPileBase = true;
                 MouseOverEffect_Pile_Off();
             }
@@ -229,6 +259,26 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         {
             Pile_Handle.sprite = null;
         }
+    }
+
+    [PunRPC]
+    void BlockPlayer()
+    {
+        LoseControl = true;
+        if (BlockPlayer_Coroutine != null)
+        {
+            StopCoroutine(BlockPlayer_Coroutine);
+        }
+
+        BlockPlayer_Coroutine = StartCoroutine(BlockPlayer_Start());
+
+    }
+
+    [PunRPC]
+    public void ClearEffect()
+    {
+        BlockProgress.value = 5f;
+        LoseControl = false;
     }
 
     #region Turn Direction
@@ -275,6 +325,16 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         MouseOverEffect_Pile.SetActive(false);
     }
 
+    public void MouseOverEffect_Player_On(Vector3 Position)
+    {
+        MouseOverEffect_Player.transform.position = Position;
+        MouseOverEffect_Player.SetActive(true);
+    }
+
+    public void MouseOverEffect_Player_Off()
+    {
+        MouseOverEffect_Player.SetActive(false);
+    }
 
     #endregion
 
@@ -288,6 +348,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(UI_Transform.localScale);
 
             stream.SendNext(aIPath.canMove);
+
 
         }
         else
@@ -306,6 +367,29 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             positionAtLastPacket = transform.position;
             rotationAtLastPacket = transform.rotation;
         }
+    }
+
+    IEnumerator BlockPlayer_Start()
+    {
+        startValue = 5f;
+        targetValue = 0f;
+
+        startTime = Time.time;
+        BlockProgress.gameObject.SetActive(true);
+
+        while (Time.time - startTime < animationDuration)
+        {
+            float elapsed = Time.time - startTime;
+            float t = elapsed / animationDuration;
+
+            BlockProgress.value = Mathf.Lerp(startValue, targetValue, t);
+
+            yield return null;
+        }
+
+        BlockProgress.value = targetValue;
+        BlockProgress.gameObject.SetActive(false);
+        photonView.RPC(nameof(ClearEffect), RpcTarget.All);
     }
 
 }

@@ -5010,12 +5010,12 @@ GameObject:
   - component: {fileID: 1878173758304589054}
   - component: {fileID: 1878173758304588994}
   m_Layer: 0
-  m_Name: Freeze
+  m_Name: HoverPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1878173758304588992
 Transform:
   m_ObjectHideFlags: 0

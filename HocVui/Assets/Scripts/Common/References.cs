@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Database.Entity;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text;
@@ -19,9 +20,22 @@ public static class References
 
     public static List<Question_Entity> ListQuestionCreate = new List<Question_Entity>();
 
-    public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>();
+    public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>()
+    {
+        new Spell_Entity("50/50", "Loại bỏ 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty),
+        new Spell_Entity("X2 điểm", "Nhận gấp đôi số điểm cho câu hỏi này","Spell/Image_Skill_1", Spell.DoubleScore),
+        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Image_Skill_2", Spell.TimeFreeze),
+    };
 
     public static Collection_Entity SelectCollection = new Collection_Entity();
+
+    public static Dictionary<string, int> RankingList = new Dictionary<string, int>()
+    {
+        {"Son 0", 0 },
+        {"Son 1", 0 },
+        {"Son 2", 0 },
+        {"Son 3", 0 },
+    };
 
     public static string GenerateRandomString(int length)
     {
