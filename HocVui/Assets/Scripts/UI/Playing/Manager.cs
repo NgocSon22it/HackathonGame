@@ -9,19 +9,23 @@ public class Manager : MonoBehaviour
     [SerializeField] GameObject QuestionUI;
     [SerializeField] GameObject PopupUI;
 
+    public void ShowPanelBXH()
+    {
+        BXH_UI.GetComponent<PanelBXH>().StartAnimation();
+    }
+
+    public void HidePanelBXH()
+    {
+        BXH_UI.GetComponent<PanelBXH>().StopAnimation();
+    }
     public void StartMessageEvent()
     {
         MessageUI.GetComponent<PanelShowMassage>().StartAnimation();
     }
 
-    public void StartBXHEvent()
-    {
-        BXH_UI.GetComponent<PanelBXH>().StartAnimation();
-    }
-
     public void StartQuestionEvent()
     {
-        QuestionUI.GetComponent<QuestionPanel>().startAnimation();
+        QuestionUI.GetComponent<QuestionPanel>().ShowQuestion();
     }
 
     public void StartPopupResult()
