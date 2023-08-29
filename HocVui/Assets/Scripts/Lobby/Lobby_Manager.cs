@@ -349,36 +349,36 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
         Information_IsCorrectColor[References.ListQuestionCreate[Index].correctAnswerIndex].color = Color.yellow;
 
-        CurrentPaging.text = (CurrentIndex + 1) + " / " + (References.SelectCollection.ListQuestion.Count).ToString();
+        //CurrentPaging.text = (CurrentIndex + 1) + " / " + (References.SelectCollection.ListQuestion.Count).ToString();
     }
 
     public void Next()
     {
-        if (References.SelectCollection.ListQuestion.Count > 0)
-        {
-            CurrentIndex++;
-            if (CurrentIndex >= References.SelectCollection.ListQuestion.Count)
-            {
-                CurrentIndex = 0;
-            }
+        //if (References.SelectCollection.ListQuestion.Count > 0)
+        //{
+        //    CurrentIndex++;
+        //    if (CurrentIndex >= References.SelectCollection.ListQuestion.Count)
+        //    {
+        //        CurrentIndex = 0;
+        //    }
 
-            Information_LoadCurrentQuestion(CurrentIndex);
-        }
+        //    Information_LoadCurrentQuestion(CurrentIndex);
+        //}
     }
 
 
     public void Previous()
     {
-        if (References.SelectCollection.ListQuestion.Count > 0)
-        {
-            CurrentIndex--;
-            if (CurrentIndex < 0)
-            {
-                CurrentIndex = References.SelectCollection.ListQuestion.Count - 1;
-            }
+        //if (References.SelectCollection.ListQuestion.Count > 0)
+        //{
+        //    CurrentIndex--;
+        //    if (CurrentIndex < 0)
+        //    {
+        //        CurrentIndex = References.SelectCollection.ListQuestion.Count - 1;
+        //    }
 
-            Information_LoadCurrentQuestion(CurrentIndex);
-        }
+        //    Information_LoadCurrentQuestion(CurrentIndex);
+        //}
     }
 }
 
