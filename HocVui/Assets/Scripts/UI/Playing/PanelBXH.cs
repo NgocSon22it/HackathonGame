@@ -9,12 +9,19 @@ public class PanelBXH : MonoBehaviour
     [SerializeField] GameObject panelModal;
     [SerializeField] float timeShow;
     [SerializeField] float timeHide;
+    [SerializeField] GameObject ui;
     [SerializeField] LeanTweenType fadeInType;
     [SerializeField] LeanTweenType fadeOutType;
 
     public void StartAnimation()
     {
         ModalFadeIn();
+        Invoke(nameof(StartShowLeader), timeShow);
+    }
+
+    private void StartShowLeader()
+    {
+        ui.GetComponent<ShowLeader>().run();
     }
 
     public void  StopAnimation()

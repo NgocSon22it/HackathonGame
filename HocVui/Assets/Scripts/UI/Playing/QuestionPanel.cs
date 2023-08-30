@@ -1,9 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
+using Image = UnityEngine.UI.Image;
 
 public class QuestionPanel : MonoBehaviour
 {
@@ -22,74 +25,79 @@ public class QuestionPanel : MonoBehaviour
     [SerializeField] LeanTweenType typeFadeInImage;
     [SerializeField] LeanTweenType typeFadeOutImage;
 
-    [SerializeField] float time;
+    [SerializeField] float defaultTime;
     [SerializeField] TMP_Text TextCount;
     Coroutine Timer;
-    private float positionX = 800;
+    private float distance = -800;
 
-    public void startAnimation()
+    Coroutine ShowQuiz;
+    Coroutine HideQuiz;
+
+    private float time;
+
+    public void ShowQuestion()
     {
-        time = 10;
-        TitleMoveX(title.transform.position.x - positionX);
-        AnsMoveX(0.25f);
-        fadeInImage(1);
+        time = defaultTime;
+        ShowQuiz = StartCoroutine(showAnswers());
+        ShowImage(1);
         Timer = StartCoroutine(counter());
-        LeanTween.alpha(title, 1f, duration);
+    }
+
+    public void HideQuestion()
+    {
+        StopCoroutine(ShowQuiz);
+        HideQuiz = StartCoroutine(hideAnswers());
+        HideImage(0);
+    }
+    public void TitleMoveX(float derection)
+    {
+        LeanTween.moveLocalX(title, derection * distance, duration).setEase(type);
 
     }
 
-    public void stopAnimation()
+    IEnumerator showAnswers()
     {
-        TitleMoveX(title.transform.position.x + positionX);
-        positionX *= -1;
-        AnsMoveX(0.25f);
-        fadeOutImage(0);
-        LeanTween.alpha(title, 0f, duration);
-    }
-    public void TitleMoveX(float position)
-    {
-        LeanTween.moveX(title, position, duration).setEase(type);
+        float WaitingTime = 0.2f;
 
+        LeanTween.moveLocalX(title, distance, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans1, distance, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans2, distance, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans3, distance, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans4, distance, duration).setEase(type);
+    }
+
+    IEnumerator hideAnswers()
+    {
+        float WaitingTime = 0.2f;
+        LeanTween.alpha(image, 0, 1);
+        LeanTween.moveLocalX(title, 0, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans1, 0, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans2, 0, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans3, 0, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime);
+        LeanTween.moveLocalX(ans4, 0, duration).setEase(type);
     }
         
-
-    public void AnsMoveX(float deplay)
+    private void AnswersMove(int derection, GameObject ans)
     {
-        Invoke(nameof(Ans1Move), deplay);
-        Invoke(nameof(Ans2Move), 2 * deplay);
-        Invoke(nameof(Ans3Move), 3 * deplay);
-        Invoke(nameof(Ans4Move), 4 * deplay);
+        LeanTween.moveLocalX(ans, derection * distance, duration).setEase(type);
     }
-
-    public void Ans1Move()
-    {
-        LeanTween.moveX(ans1, ans1.transform.position.x - positionX, duration).setEase(type);
-    }
-
-    public void Ans2Move()
-    {
-        LeanTween.moveX(ans2, ans2.transform.position.x - positionX, duration).setEase(type);
-    }
-
-    public void Ans3Move( )
-    {
-        LeanTween.moveX(ans3, ans3.transform.position.x - positionX, duration).setEase(type);
-    }
-
-    public void Ans4Move( )
-    {
-        LeanTween.moveX(ans4, ans4.transform.position.x - positionX, duration).setEase(type);
-    }
-
-    public void fadeInImage(float scale)
+    public void ShowImage(float scale)
     {
       
         LeanTween.scale(image, new Vector3(scale, scale, 0), duration).setEase(typeFadeInImage);
     }
 
-    public void fadeOutImage(float scale)
+    public void HideImage(float scale)
     {
-        LeanTween.scale(image, new Vector3(scale, scale, 0), duration).setEase(typeFadeInImage);
+        LeanTween.scale(image, new Vector3(scale, scale, 0), duration).setEase(typeFadeOutImage);
     }
 
     private void timeFadeIn()
@@ -116,7 +124,7 @@ public class QuestionPanel : MonoBehaviour
 
         if (time <= 0)
         {
-            stopAnimation();
+            HideQuestion();
             TextCount.text = string.Format("Hết giờ", time);
         }
     }
