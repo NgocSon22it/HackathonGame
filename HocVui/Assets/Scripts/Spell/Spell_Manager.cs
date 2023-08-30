@@ -67,14 +67,12 @@ public class Spell_Manager : MonoBehaviour
         {
             image.sprite = DefaultContainer;
         }
-        FindNonLocalPlayers();
+
         ListContainer[Index].sprite = SelectContainer;
-        GameManager.Instance.PlayerManager.GetComponent<Player_Base>().SpellPoint_On(ListPlayer[0].transform);
-        //Debug.Log(ListPlayer[0].transform.position);
     }
 
     private void FindNonLocalPlayers()
-    {
+     {
         // Find all GameObjects with the specified tag
         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
 
