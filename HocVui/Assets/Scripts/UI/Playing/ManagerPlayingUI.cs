@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Manager : MonoBehaviour
+public class ManagerPlayingUI : MonoBehaviour
 {
     [SerializeField] GameObject MessageUI;
     [SerializeField] GameObject BXH_UI;
