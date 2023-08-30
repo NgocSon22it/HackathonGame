@@ -19,5 +19,8 @@ namespace Assets.Scripts.Common
 
         public static string NameExist = "Tên nhân vật đã tồn tại";
 
+        public static string PublicMessage = "{0}:{1}";
+
+
     }
 }

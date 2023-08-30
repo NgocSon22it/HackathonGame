@@ -37,6 +37,8 @@ public static class References
         {"Son 3", 0 },
     };
 
+    public static string Chat_ServerName;
+
     public static string GenerateRandomString(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
