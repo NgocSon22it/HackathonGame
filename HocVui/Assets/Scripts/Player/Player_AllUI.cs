@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,5 +26,11 @@ public class Player_AllUI : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         PickUp_AlreadyMessage.SetActive(false);
+    }
+
+    public void LeaveGame()
+    {
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("Lobby 1");
     }
 }
