@@ -20,7 +20,7 @@ public class QuestionPanel : MonoBehaviour
 
     [SerializeField] float duration;
     [SerializeField] LeanTweenType type;
-    [SerializeField] Vector3 defaultPostion;
+    [SerializeField] float distance;
 
     [SerializeField] LeanTweenType typeFadeInImage;
     [SerializeField] LeanTweenType typeFadeOutImage;
@@ -28,12 +28,12 @@ public class QuestionPanel : MonoBehaviour
     [SerializeField] float defaultTime;
     [SerializeField] TMP_Text TextCount;
     Coroutine Timer;
-    private float distance = -800;
 
     Coroutine ShowQuiz;
     Coroutine HideQuiz;
 
     private float time;
+
 
     public void ShowQuestion()
     {
