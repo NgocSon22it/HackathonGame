@@ -4,20 +4,16 @@ using UnityEngine;
 
 public class EnviromentUI : MonoBehaviour
 {
-    [SerializeField] GameObject StateFirst;
-    [SerializeField] GameObject StateSecond;
+    [SerializeField] GameObject BackgroundUp;
+    [SerializeField] GameObject BackgroundDown;
 
-    public void StartStateFirst()
+    public void WaterUp()
     {
-
+        BackgroundUp.SetActive(true);
     }
 
-    public void StartStateSecond() { 
-        
-    }  
-
-    private void SpawnDefaultSecond()
+    public void WaterDown()
     {
-
+        BackgroundUp.SetActive(false);
     }
 }
