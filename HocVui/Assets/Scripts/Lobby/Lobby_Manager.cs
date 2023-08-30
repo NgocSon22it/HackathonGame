@@ -31,11 +31,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
 
 
     [Header("Create Room")]
-    [SerializeField] TMP_InputField CreateRoom_NameInput;
+    [SerializeField] TMP_InputField CreateRoom_NameInput, CreateRoom_PasswordInput;
 
     [SerializeField] Slider CreateRoom_NumberPlayerSlider, CreateRoom_AnswerTimeSlider;
     [SerializeField] TMP_Text CreateRoom_NumberPlayerTxt, CreateRoom_AnswerTimeTxt;
-    [SerializeField] Toggle CreateRoom_UseSpellToggle;
+    [SerializeField] Toggle CreateRoom_UseSpellToggle, CreateRoom_UsePassword;
+    bool CreateRoomWithPassword;
 
     [Header("Question Information")]
     [SerializeField] TMP_Text Information_Question;
@@ -70,9 +71,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] TMP_Text CurrentPaging;
     int CurrentIndex;
 
-    [Header("Event")]
-    private const byte StartGameEventCode = 1;
-
     private void Awake()
     {
         Instance = this;
@@ -87,8 +85,25 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (SelectedRoom != null)
         {
-            PhotonNetwork.JoinRoom(SelectedRoom.Name);
+            if (SelectedRoom.CustomProperties.ContainsKey("Password"))
+            {
+                //OpenRoomPasswordPanel();
+                Debug.Log("Co Pass");
+            }
+            else
+            {
+                PhotonNetwork.JoinRoom(SelectedRoom.Name);
+            }
         }
+        else
+        {
+            Debug.Log("K ton tai room");
+        }
+    }
+
+    public void CreateRoom_OnPasswordToggleValueChange(bool value)
+    {
+        CreateRoom_PasswordInput.gameObject.SetActive(value);
     }
 
     public void CreateRoom()
@@ -99,6 +114,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         int AnswerTime = Convert.ToInt32(CreateRoom_AnswerTimeSlider.value);
         string map = "Sông Bạch Đằng";
         bool useSpell = CreateRoom_UseSpellToggle.isOn;
+        bool usePassword = CreateRoom_UsePassword.isOn;
 
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = (byte)NumberPlayer;
@@ -106,19 +122,41 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
 
         if (roomName.Length > 0)
         {
-            roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-            roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell" };
+            if (usePassword)
+            {
+                string roomPassword = CreateRoom_PasswordInput.text;
 
-            roomOptions.CustomRoomProperties.Add("RoomID", roomID);
-            roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
-            roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
-            roomOptions.CustomRoomProperties.Add("Map", map);
-            roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
-            PhotonNetwork.CreateRoom(roomName, roomOptions);
-        }
-        else
-        {
-            Debug.Log("Tên phòng không được để trống!");
+                if (roomPassword.Length > 0)
+                {
+                    roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
+                    roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell", "Password" };
+
+                    roomOptions.CustomRoomProperties.Add("RoomID", roomID);
+                    roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
+                    roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
+                    roomOptions.CustomRoomProperties.Add("Map", map);
+                    roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
+                    roomOptions.CustomRoomProperties.Add("Password", roomPassword);
+                    PhotonNetwork.CreateRoom(roomName, roomOptions);
+                }
+                else
+                {
+
+                }
+
+            }
+            else
+            {
+                roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
+                roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell" };
+
+                roomOptions.CustomRoomProperties.Add("RoomID", roomID);
+                roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
+                roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
+                roomOptions.CustomRoomProperties.Add("Map", map);
+                roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
+                PhotonNetwork.CreateRoom(roomName, roomOptions);
+            }
         }
     }
 
@@ -127,8 +165,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         SetRandomSpell();
         SetUp_Inroom(true);
 
-        Chat_Manager.Instance.ConnectToChat(PhotonNetwork.CurrentRoom.Name);
+        References.Chat_ServerName = PhotonNetwork.CurrentRoom.Name;
 
+        Chat_Manager.Instance.DisconnectFromChat();
+        Chat_Manager.Instance.ConnectToChat(References.Chat_ServerName);
+
+        Debug.Log(References.Chat_ServerName);
         foreach (Transform trans in PlayerContent)
         {
             Destroy(trans.gameObject);
@@ -184,6 +226,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     public override void OnLeftRoom()
     {
         Chat_Manager.Instance.DisconnectFromChat();
+        SelectedRoom = null;
         SetUp_Inroom(false);
         cachedRoomList.Clear();
         Debug.Log("LeftRoom");
@@ -195,7 +238,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             Inroom_RoomNameTxt.text = PhotonNetwork.CurrentRoom.Name;
             Inroom_CountPlayer();
-            
+
             if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("RoomID"))
             {
                 Inroom_RoomIDtxt.text = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
@@ -430,9 +473,17 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public void OnEvent(EventData photonEvent)
     {
-        if (photonEvent.Code == StartGameEventCode)
-        {         
+        if (photonEvent.Code == EventCode.StartGameEventCode)
+        {
             PhotonNetwork.LoadLevel("MainGame");
+        }
+
+        if (photonEvent.Code == EventCode.KickEventCode)
+        {
+            object[] eventData = (object[])photonEvent.CustomData;
+            string kickMessage = (string)eventData[0];
+            Debug.Log("Received Kick Message: " + kickMessage);
+
         }
     }
 
@@ -443,7 +494,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
         }
-        PhotonNetwork.RaiseEvent(StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+        PhotonNetwork.RaiseEvent(EventCode.StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
 }
 
