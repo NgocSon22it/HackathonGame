@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Assets.Scripts.Common;
 
 public class Chat_Manager : MonoBehaviour, IChatClientListener
 {
@@ -58,6 +59,7 @@ public class Chat_Manager : MonoBehaviour, IChatClientListener
         if (chatClient != null && chatClient.CanChat)
         {
             chatClient.Disconnect();
+            ClearChat();
         }
     }
 
@@ -72,14 +74,26 @@ public class Chat_Manager : MonoBehaviour, IChatClientListener
 
         for (int i = 0; i < senders.Length; i++)
         {
-            disPlayer = string.Format("[{2}] {0}: {1}", senders[i], messages[i], currentTimeString);
+            var message = messages[i].ToString().Split(new char[] { ':' });
 
-            ChatDisPlay.text += disPlayer + "\n";
+            var type = message[0];
+            var content = message[1];
 
-            Canvas.ForceUpdateCanvases();
-            scrollRect.verticalNormalizedPosition = 0;
+            if (type.Equals(References.Chat_ServerName))
+            {
+                disPlayer = string.Format("[{2}] {0}: {1}", senders[i], content, currentTimeString);
+
+                ChatDisPlay.text += disPlayer + "\n";
+
+                Canvas.ForceUpdateCanvases();
+                scrollRect.verticalNormalizedPosition = 0;
+            }
         }
+    }
 
+    public void ClearChat()
+    {
+        ChatDisPlay.text = "";
     }
 
     public void OnStatusUpdate(string user, int status, bool gotMessage, object message)
@@ -126,11 +140,13 @@ public class Chat_Manager : MonoBehaviour, IChatClientListener
     {
         if (!string.IsNullOrEmpty(CurrentChat))
         {
-            chatClient.PublishMessage(ServerName, CurrentChat);
+            chatClient.PublishMessage(ServerName, string.Format(Message.PublicMessage, ServerName, CurrentChat));
             ChatField.text = "";
             CurrentChat = "";
         }
     }
+
+
 
     public void ToggleTyping(bool value)
     {
@@ -164,7 +180,7 @@ public class Chat_Manager : MonoBehaviour, IChatClientListener
         if (!string.IsNullOrEmpty(CurrentChat) && Input.GetKeyDown(KeyCode.Return) && IsTypingChat == true)
         {
             SummitPublicChat();
-            FocusTyping();          
+            FocusTyping();
         }
     }
 
