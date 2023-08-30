@@ -27,8 +27,10 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     List<RoomInfo> checkList = new List<RoomInfo>();
 
     [SerializeField] TMP_InputField CreateCollection_NameInput;
-    [SerializeField] GameObject CreateCollection_MessagePanel;
 
+    [SerializeField] TMP_InputField JoinRoom_TypePassword;
+    [SerializeField] TMP_Text JoinRoom_TypePasswordMessage;
+    [SerializeField] GameObject JoinRoom_TypePasswordPanel;
 
     [Header("Create Room")]
     [SerializeField] TMP_InputField CreateRoom_NameInput, CreateRoom_PasswordInput;
@@ -36,7 +38,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] Slider CreateRoom_NumberPlayerSlider, CreateRoom_AnswerTimeSlider;
     [SerializeField] TMP_Text CreateRoom_NumberPlayerTxt, CreateRoom_AnswerTimeTxt;
     [SerializeField] Toggle CreateRoom_UseSpellToggle, CreateRoom_UsePassword;
-    bool CreateRoomWithPassword;
 
     [Header("Question Information")]
     [SerializeField] TMP_Text Information_Question;
@@ -71,6 +72,10 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] TMP_Text CurrentPaging;
     int CurrentIndex;
 
+    [Header("Message Panel")]
+    [SerializeField] GameObject Message_Panel;
+    [SerializeField] TMP_Text Message_Text;
+
     private void Awake()
     {
         Instance = this;
@@ -87,8 +92,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             if (SelectedRoom.CustomProperties.ContainsKey("Password"))
             {
-                //OpenRoomPasswordPanel();
-                Debug.Log("Co Pass");
+                JoinRoom_RoomPasswordPanel_On();             
             }
             else
             {
@@ -97,8 +101,39 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         else
         {
-            Debug.Log("K ton tai room");
+            MessagePanel_On("Hãy chọn phòng!");
         }
+    }
+
+    public void JoinRoom_OnSubmitRoomPassword()
+    {
+        if (SelectedRoom.CustomProperties.ContainsKey("Password"))
+        {
+            if (SelectedRoom.CustomProperties["Password"].ToString() == JoinRoom_TypePassword.text)
+            {
+                // Join the room
+                PhotonNetwork.JoinRoom(SelectedRoom.Name);
+                JoinRoom_RoomPasswordPanel_Off();
+            }
+            else
+            {
+                // Show an error message
+                JoinRoom_TypePasswordMessage.text = "Mật khẩu không đúng!";
+
+            }
+        }
+
+    }
+
+    public void JoinRoom_RoomPasswordPanel_On()
+    {
+        JoinRoom_TypePasswordPanel.SetActive(true);
+        JoinRoom_TypePasswordMessage.text = "";
+    }
+
+    public void JoinRoom_RoomPasswordPanel_Off()
+    {
+        JoinRoom_TypePasswordPanel.SetActive(false);
     }
 
     public void CreateRoom_OnPasswordToggleValueChange(bool value)
@@ -115,7 +150,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         string map = "Sông Bạch Đằng";
         bool useSpell = CreateRoom_UseSpellToggle.isOn;
         bool usePassword = CreateRoom_UsePassword.isOn;
-
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = (byte)NumberPlayer;
         roomOptions.BroadcastPropsChangeToAll = true;
@@ -141,7 +175,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
                 }
                 else
                 {
-
+                    MessagePanel_On("Hãy nhập mật khẩu!");
                 }
 
             }
@@ -157,6 +191,10 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
                 roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
                 PhotonNetwork.CreateRoom(roomName, roomOptions);
             }
+        }
+        else
+        {
+            MessagePanel_On("Hãy nhập tên phòng!");
         }
     }
 
@@ -222,6 +260,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         PhotonNetwork.LeaveRoom();
+        MessagePanel_On("Phòng đã giải tán!");
     }
     public override void OnLeftRoom()
     {
@@ -465,11 +504,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         return !string.IsNullOrEmpty(CreateCollection_NameInput.text);
     }
 
-    public void CreateCollection_Message(bool value)
-    {
-        CreateCollection_MessagePanel.SetActive(value);
-    }
-
 
     public void OnEvent(EventData photonEvent)
     {
@@ -482,8 +516,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             object[] eventData = (object[])photonEvent.CustomData;
             string kickMessage = (string)eventData[0];
-            Debug.Log("Received Kick Message: " + kickMessage);
-
+            MessagePanel_On("Bạn bị mời ra khỏi phòng!");
         }
     }
 
@@ -495,6 +528,17 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
             PhotonNetwork.CurrentRoom.IsVisible = false;
         }
         PhotonNetwork.RaiseEvent(EventCode.StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
+    public void MessagePanel_On(string message)
+    {
+        Message_Text.text = message;
+        Message_Panel.SetActive(true);
+    }
+
+    public void MessagePanel_Off()
+    {
+        Message_Panel.SetActive(false);
     }
 }
 
