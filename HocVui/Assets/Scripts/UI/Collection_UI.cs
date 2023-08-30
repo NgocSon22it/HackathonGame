@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,11 +22,11 @@ public class Collection_UI : MonoBehaviour
     {
         if (Lobby_Manager.Instance.IsCollectionNameValid())
         {
-            gameObject.LeanMoveLocalX(-1920, duration).setEase(typeFadeIn);
+            gameObject.LeanMoveLocalX(-960f, duration).setEase(typeFadeIn);
         }
         else
         {
-            Lobby_Manager.Instance.CreateCollection_Message(true);
+            Lobby_Manager.Instance.MessagePanel_On("Hãy nhập tên bộ câu hỏi!");
         }
     }
 
