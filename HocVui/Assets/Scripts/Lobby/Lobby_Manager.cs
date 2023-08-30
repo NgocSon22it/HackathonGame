@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using ExitGames.Client.Photon;
+using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Lobby_Manager : MonoBehaviourPunCallbacks
+public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     [Header("Instance")]
     public static Lobby_Manager Instance;
@@ -24,6 +25,10 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     public static Dictionary<string, RoomInfo> cachedRoomList = new Dictionary<string, RoomInfo>();
     List<RoomInfo> roomList = new List<RoomInfo>();
     List<RoomInfo> checkList = new List<RoomInfo>();
+
+    [SerializeField] TMP_InputField CreateCollection_NameInput;
+    [SerializeField] GameObject CreateCollection_MessagePanel;
+
 
     [Header("Create Room")]
     [SerializeField] TMP_InputField CreateRoom_NameInput;
@@ -47,8 +52,11 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text Inroom_PlayerQuantityTxt;
     [SerializeField] TMP_Text Inroom_RoomIDtxt;
     [SerializeField] List<Image> ListSpell;
+    [SerializeField] GameObject StartBtn;
+
 
     [Header("SpellInformation")]
+    [SerializeField] GameObject Spell_Panel;
     [SerializeField] GameObject SpellInformation_Panel;
     [SerializeField] TMP_Text SpellInformation_Name;
     [SerializeField] TMP_Text SpellInformation_Description;
@@ -61,6 +69,9 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [Header("Paging")]
     [SerializeField] TMP_Text CurrentPaging;
     int CurrentIndex;
+
+    [Header("Event")]
+    private const byte StartGameEventCode = 1;
 
     private void Awake()
     {
@@ -96,12 +107,13 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         if (roomName.Length > 0)
         {
             roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-            roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID" };
+            roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell" };
 
             roomOptions.CustomRoomProperties.Add("RoomID", roomID);
             roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
             roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
             roomOptions.CustomRoomProperties.Add("Map", map);
+            roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
             PhotonNetwork.CreateRoom(roomName, roomOptions);
         }
         else
@@ -183,7 +195,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         {
             Inroom_RoomNameTxt.text = PhotonNetwork.CurrentRoom.Name;
             Inroom_CountPlayer();
-
+            
             if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("RoomID"))
             {
                 Inroom_RoomIDtxt.text = PhotonNetwork.CurrentRoom.CustomProperties["RoomID"].ToString();
@@ -296,8 +308,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.NickName = References.GenerateRandomString(10);
         PhotonNetwork.ConnectUsingSettings();
-        PhotonNetwork.AutomaticallySyncScene = true;
-
+        PhotonNetwork.EnableCloseConnection = true;
         PhotonNetwork.JoinLobby();
         Debug.Log(PhotonNetwork.NickName + " JoinLobby");
         Debug.Log("Connect to Server");
@@ -305,12 +316,37 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     public void SetRandomSpell()
     {
-        References.SetRandomSpell();
+        bool UseSpell = false;
 
-        for(int i = 0; i < 3; i++)
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UseSpell"))
         {
-            ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
+            UseSpell = (bool)PhotonNetwork.CurrentRoom.CustomProperties["UseSpell"];
         }
+
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            StartBtn.SetActive(false);
+            if (UseSpell)
+            {
+                Spell_Panel.SetActive(true);
+
+                References.SetRandomSpell();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
+                }
+            }
+            else
+            {
+                Spell_Panel.SetActive(false);
+            }
+        }
+        else
+        {
+            StartBtn.SetActive(true);
+        }
+
     }
 
     public void SpellInformation_On(int Index)
@@ -379,6 +415,35 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
         //    Information_LoadCurrentQuestion(CurrentIndex);
         //}
+    }
+
+    public bool IsCollectionNameValid()
+    {
+        return !string.IsNullOrEmpty(CreateCollection_NameInput.text);
+    }
+
+    public void CreateCollection_Message(bool value)
+    {
+        CreateCollection_MessagePanel.SetActive(value);
+    }
+
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == StartGameEventCode)
+        {         
+            PhotonNetwork.LoadLevel("MainGame");
+        }
+    }
+
+    public void StartGame()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
+        PhotonNetwork.RaiseEvent(StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
 }
 
