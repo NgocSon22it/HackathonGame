@@ -15,12 +15,19 @@ public class Collection_UI : MonoBehaviour
 
     public void fadeDown()
     {
-        gameObject.LeanMoveLocalY(- 1080, duration).setEase(typeFadeOut);
+        gameObject.LeanMoveLocalY(-1080, duration).setEase(typeFadeOut);
     }
 
     public void fadeLeft()
     {
-        gameObject.LeanMoveLocalX(-1920, duration).setEase(typeFadeIn);
+        if (Lobby_Manager.Instance.IsCollectionNameValid())
+        {
+            gameObject.LeanMoveLocalX(-1920, duration).setEase(typeFadeIn);
+        }
+        else
+        {
+            Lobby_Manager.Instance.CreateCollection_Message(true);
+        }
     }
 
     public void fadeRight()

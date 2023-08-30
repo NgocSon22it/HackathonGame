@@ -57,14 +57,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     // Start is called before the first frame update
     private void Start()
     {
-        PhotonNetwork.NickName = "Son " + References.GenerateRandomString(1);
-        PhotonNetwork.ConnectUsingSettings();
-    }
-
-    public override void OnJoinedRoom()
-    {
-        PlayerManager = PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
-        UpdateRanking();
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            PlayerManager = PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
+        }
+        else
+        {
+            Debug.Log("K co");
+        }
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
@@ -72,22 +72,11 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
     }
 
-    public override void OnConnectedToMaster()
+    public void LeaveGame()
     {
-        if (PhotonNetwork.IsConnectedAndReady)
-        {
-            RoomOptions roomOptions = new RoomOptions();
-            roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-            roomOptions.CustomRoomPropertiesForLobby = new string[] { "List" };
-
-            roomOptions.CustomRoomProperties.Add("List", References.RankingList);
-            roomOptions.MaxPlayers = 0;
-            roomOptions.IsOpen = true;
-            roomOptions.BroadcastPropsChangeToAll = true;
-            PhotonNetwork.JoinOrCreateRoom("1", roomOptions, TypedLobby.Default);
-        }
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("Lobby 1");
     }
-
     // Update is called once per frame
     void Update()
     {
@@ -108,7 +97,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         if (Input.GetKeyDown(KeyCode.B) && PhotonNetwork.IsMasterClient)
         {
-            int a = Random.Range(0,4);
+            int a = Random.Range(0, 4);
             SubmitValue("Son " + a, ResultIndex);
         }
 

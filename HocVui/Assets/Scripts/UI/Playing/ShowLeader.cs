@@ -25,11 +25,17 @@ public class ShowLeader : MonoBehaviour
 
 
     public List<Sprite> TopRank;
+    Coroutine animation;
 
     public void run()
     {
         ResetUI();
-        StartCoroutine(startAnimation());
+        animation = StartCoroutine(startAnimation());
+    }
+
+    public void stop()
+    {
+        StopCoroutine(animation);
     }
     IEnumerator startAnimation()
     {
