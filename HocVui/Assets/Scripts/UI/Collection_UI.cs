@@ -8,6 +8,13 @@ public class Collection_UI : MonoBehaviour
     [SerializeField] LeanTweenType typeFadeOut;
     [SerializeField] LeanTweenType typeFadeIn;
     [SerializeField] LeanTweenType typeClose;
+
+    public static Collection_UI Instances;
+
+    private void Awake()
+    {
+        Instances = this;
+    }
     public void fadeTop()
     {
         gameObject.LeanMoveLocalY(0, duration).setEase(typeFadeIn);
@@ -32,7 +39,7 @@ public class Collection_UI : MonoBehaviour
 
     public void fadeRight()
     {
-        gameObject.LeanMoveLocalX(1920, duration).setEase(typeFadeOut);
+        gameObject.LeanMoveLocalX(960, duration).setEase(typeFadeOut);
     }
 
     public void close()
