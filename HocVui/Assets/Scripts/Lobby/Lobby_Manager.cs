@@ -1,4 +1,5 @@
-﻿using Photon.Pun;
+﻿using ExitGames.Client.Photon;
+using Photon.Pun;
 using Photon.Realtime;
 using System;
 using System.Collections.Generic;
@@ -6,10 +7,11 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Lobby_Manager : MonoBehaviourPunCallbacks
+public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
 {
     [Header("Instance")]
     public static Lobby_Manager Instance;
+    public Confirm_Type confirmType;
 
     [Header("Lobby")]
     [SerializeField] GameObject InRoom;
@@ -25,12 +27,18 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     List<RoomInfo> roomList = new List<RoomInfo>();
     List<RoomInfo> checkList = new List<RoomInfo>();
 
+    [SerializeField] TMP_InputField CreateCollection_NameInput;
+
+    [SerializeField] TMP_InputField JoinRoom_TypePassword;
+    [SerializeField] TMP_Text JoinRoom_TypePasswordMessage;
+    [SerializeField] GameObject JoinRoom_TypePasswordPanel;
+
     [Header("Create Room")]
-    [SerializeField] TMP_InputField CreateRoom_NameInput;
+    [SerializeField] TMP_InputField CreateRoom_NameInput, CreateRoom_PasswordInput;
 
     [SerializeField] Slider CreateRoom_NumberPlayerSlider, CreateRoom_AnswerTimeSlider;
     [SerializeField] TMP_Text CreateRoom_NumberPlayerTxt, CreateRoom_AnswerTimeTxt;
-    [SerializeField] Toggle CreateRoom_UseSpellToggle;
+    [SerializeField] Toggle CreateRoom_UseSpellToggle, CreateRoom_UsePassword;
 
     [Header("Question Information")]
     [SerializeField] TMP_Text Information_Question;
@@ -47,12 +55,13 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [SerializeField] TMP_Text Inroom_PlayerQuantityTxt;
     [SerializeField] TMP_Text Inroom_RoomIDtxt;
     [SerializeField] List<Image> ListSpell;
+    [SerializeField] GameObject StartBtn;
 
     [Header("SpellInformation")]
+    [SerializeField] GameObject Spell_Panel;
     [SerializeField] GameObject SpellInformation_Panel;
     [SerializeField] TMP_Text SpellInformation_Name;
     [SerializeField] TMP_Text SpellInformation_Description;
-
 
     [Header("List Player")]
     [SerializeField] GameObject PlayerItem;
@@ -61,6 +70,15 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     [Header("Paging")]
     [SerializeField] TMP_Text CurrentPaging;
     int CurrentIndex;
+
+    [Header("Message Panel")]
+    [SerializeField] GameObject Message_Panel;
+    [SerializeField] TMP_Text Message_Text;
+
+    [Header("Confirm Panel")]
+    [SerializeField] GameObject Confirm_Panel;
+    [SerializeField] TMP_Text Confirm_Text;
+    public Player SelectedPlayer;
 
     private void Awake()
     {
@@ -76,8 +94,53 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     {
         if (SelectedRoom != null)
         {
-            PhotonNetwork.JoinRoom(SelectedRoom.Name);
+            if (SelectedRoom.CustomProperties.ContainsKey("Password"))
+            {
+                JoinRoom_RoomPasswordPanel_On();
+            }
+            else
+            {
+                PhotonNetwork.JoinRoom(SelectedRoom.Name);
+            }
         }
+        else
+        {
+            MessagePanel_On("Hãy chọn phòng!");
+        }
+    }
+
+    public void JoinRoom_OnSubmitRoomPassword()
+    {
+        if (SelectedRoom.CustomProperties.ContainsKey("Password"))
+        {
+            if (SelectedRoom.CustomProperties["Password"].ToString() == JoinRoom_TypePassword.text)
+            {
+                PhotonNetwork.JoinRoom(SelectedRoom.Name);
+                JoinRoom_RoomPasswordPanel_Off();
+            }
+            else
+            {
+                JoinRoom_TypePasswordMessage.text = "Mật khẩu không đúng!";
+
+            }
+        }
+
+    }
+
+    public void JoinRoom_RoomPasswordPanel_On()
+    {
+        JoinRoom_TypePasswordPanel.SetActive(true);
+        ResetData_TypePassword();
+    }
+
+    public void JoinRoom_RoomPasswordPanel_Off()
+    {
+        JoinRoom_TypePasswordPanel.SetActive(false);
+    }
+
+    public void CreateRoom_OnPasswordToggleValueChange(bool value)
+    {
+        CreateRoom_PasswordInput.gameObject.SetActive(value);
     }
 
     public void CreateRoom()
@@ -88,25 +151,52 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         int AnswerTime = Convert.ToInt32(CreateRoom_AnswerTimeSlider.value);
         string map = "Sông Bạch Đằng";
         bool useSpell = CreateRoom_UseSpellToggle.isOn;
-
+        bool usePassword = CreateRoom_UsePassword.isOn;
         RoomOptions roomOptions = new RoomOptions();
         roomOptions.MaxPlayers = (byte)NumberPlayer;
         roomOptions.BroadcastPropsChangeToAll = true;
 
         if (roomName.Length > 0)
         {
-            roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-            roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID" };
+            if (usePassword)
+            {
+                string roomPassword = CreateRoom_PasswordInput.text;
 
-            roomOptions.CustomRoomProperties.Add("RoomID", roomID);
-            roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
-            roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
-            roomOptions.CustomRoomProperties.Add("Map", map);
-            PhotonNetwork.CreateRoom(roomName, roomOptions);
+                if (roomPassword.Length > 0)
+                {
+                    roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
+                    roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell", "Password" };
+
+                    roomOptions.CustomRoomProperties.Add("RoomID", roomID);
+                    roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
+                    roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
+                    roomOptions.CustomRoomProperties.Add("Map", map);
+                    roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
+                    roomOptions.CustomRoomProperties.Add("Password", roomPassword);
+                    PhotonNetwork.CreateRoom(roomName, roomOptions);
+                }
+                else
+                {
+                    MessagePanel_On("Hãy nhập mật khẩu!");
+                }
+
+            }
+            else
+            {
+                roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
+                roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell" };
+
+                roomOptions.CustomRoomProperties.Add("RoomID", roomID);
+                roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
+                roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
+                roomOptions.CustomRoomProperties.Add("Map", map);
+                roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
+                PhotonNetwork.CreateRoom(roomName, roomOptions);
+            }
         }
         else
         {
-            Debug.Log("Tên phòng không được để trống!");
+            MessagePanel_On("Hãy nhập tên phòng!");
         }
     }
 
@@ -115,8 +205,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         SetRandomSpell();
         SetUp_Inroom(true);
 
-        Chat_Manager.Instance.ConnectToChat(PhotonNetwork.CurrentRoom.Name);
+        References.Chat_ServerName = PhotonNetwork.CurrentRoom.Name;
 
+        Chat_Manager.Instance.DisconnectFromChat();
+        Chat_Manager.Instance.ConnectToChat(References.Chat_ServerName);
+
+        Debug.Log(References.Chat_ServerName);
         foreach (Transform trans in PlayerContent)
         {
             Destroy(trans.gameObject);
@@ -147,31 +241,37 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        Debug.Log($"Room join failed with error code {returnCode} and error message {message}");
+        MessagePanel_On("Phòng đã đầy!");
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        Debug.Log($"Room join failed with error code {returnCode} and error message {message}");
+        MessagePanel_On("Gặp vấn đề khi tạo phòng, hãy thử lại!");
     }
 
     public void LeaveRoom()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.CurrentRoom.IsOpen = false;
-            PhotonNetwork.CurrentRoom.IsVisible = false;
+            ConfirmPanel_On("Phòng sẽ giải tán nếu bạn thoát!");
+            confirmType = Confirm_Type.StopHost;
         }
-        PhotonNetwork.LeaveRoom();
+        else
+        {
+            ConfirmPanel_On("Bạn có xác nhận rời phòng!");
+            confirmType = Confirm_Type.Leave;
+        }
     }
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         PhotonNetwork.LeaveRoom();
+        MessagePanel_On("Phòng đã giải tán!");
     }
     public override void OnLeftRoom()
     {
         Chat_Manager.Instance.DisconnectFromChat();
+        SelectedRoom = null;
         SetUp_Inroom(false);
         cachedRoomList.Clear();
         Debug.Log("LeftRoom");
@@ -183,6 +283,8 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         {
             Inroom_RoomNameTxt.text = PhotonNetwork.CurrentRoom.Name;
             Inroom_CountPlayer();
+
+            ResetData_CreateRoom();
 
             if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("RoomID"))
             {
@@ -296,8 +398,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.NickName = References.GenerateRandomString(10);
         PhotonNetwork.ConnectUsingSettings();
-        PhotonNetwork.AutomaticallySyncScene = true;
-
+        PhotonNetwork.EnableCloseConnection = true;
         PhotonNetwork.JoinLobby();
         Debug.Log(PhotonNetwork.NickName + " JoinLobby");
         Debug.Log("Connect to Server");
@@ -305,12 +406,37 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
 
     public void SetRandomSpell()
     {
-        References.SetRandomSpell();
+        bool UseSpell = false;
 
-        for(int i = 0; i < 3; i++)
+        if (PhotonNetwork.CurrentRoom.CustomProperties.ContainsKey("UseSpell"))
         {
-            ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
+            UseSpell = (bool)PhotonNetwork.CurrentRoom.CustomProperties["UseSpell"];
         }
+
+        if (PhotonNetwork.IsMasterClient == false)
+        {
+            StartBtn.SetActive(false);
+            if (UseSpell)
+            {
+                Spell_Panel.SetActive(true);
+
+                References.SetRandomSpell();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
+                }
+            }
+            else
+            {
+                Spell_Panel.SetActive(false);
+            }
+        }
+        else
+        {
+            StartBtn.SetActive(true);
+        }
+
     }
 
     public void SpellInformation_On(int Index)
@@ -380,6 +506,151 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks
         //    Information_LoadCurrentQuestion(CurrentIndex);
         //}
     }
+
+    public bool IsCollectionNameValid()
+    {
+        return !string.IsNullOrEmpty(CreateCollection_NameInput.text);
+    }
+
+
+    public void OnEvent(EventData photonEvent)
+    {
+        if (photonEvent.Code == EventCode.StartGameEventCode)
+        {
+            PhotonNetwork.LoadLevel("MainGame");
+        }
+
+        if (photonEvent.Code == EventCode.KickEventCode)
+        {
+            object[] eventData = (object[])photonEvent.CustomData;
+            string kickMessage = (string)eventData[0];
+            MessagePanel_On(kickMessage);
+        }
+    }
+
+    public void StartGame()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
+        PhotonNetwork.RaiseEvent(EventCode.StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+    }
+
+    #region Confirm Panel
+    public void ConfirmPanel_On(string message)
+    {
+        Confirm_Text.text = message;
+        Confirm_Panel.SetActive(true);
+    }
+
+    public void ConfirmPanel_Off()
+    {
+        Confirm_Panel.SetActive(false);
+    }
+
+    public void ConfirmPanel_SelectPlayer(Player player)
+    {
+        SelectedPlayer = player;
+    }
+
+    public void ConfirmPanel_Yes()
+    {
+        ConfirmPanel_Off();
+
+        switch (confirmType)
+        {
+            case Confirm_Type.Leave:
+                Type_LeaveRoom();
+                break;
+
+            case Confirm_Type.StopHost:
+                Type_StopHost();
+                break;
+
+            case Confirm_Type.Kick:
+                Type_KickPlayer();
+                break;
+        }
+    }
+
+    void Type_LeaveRoom()
+    {
+        PhotonNetwork.LeaveRoom();
+    }
+
+    void Type_StopHost()
+    {
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.CurrentRoom.IsOpen = false;
+            PhotonNetwork.CurrentRoom.IsVisible = false;
+        }
+
+        PhotonNetwork.LeaveRoom();
+    }
+    void Type_KickPlayer()
+    {
+        if (SelectedPlayer != null)
+        {
+            if (PhotonNetwork.CurrentRoom.Players.ContainsKey(Convert.ToInt32(SelectedPlayer.ActorNumber.ToString())))
+            {
+                PhotonNetwork.CloseConnection(SelectedPlayer);
+                object[] content = new object[] { "Bạn bị mời ra khỏi phòng!" };
+                PhotonNetwork.RaiseEvent(EventCode.KickEventCode, content, new RaiseEventOptions { TargetActors = new int[] { SelectedPlayer.ActorNumber } }, SendOptions.SendReliable);
+            }
+            else
+            {
+                MessagePanel_On("Người chơi không tồn tại!");
+            }
+        }
+    }
+
+    #endregion
+
+    #region Message Panel
+    public void MessagePanel_On(string message)
+    {
+        Message_Text.text = message;
+        Message_Panel.SetActive(true);
+    }
+
+    public void MessagePanel_Off()
+    {
+        Message_Panel.SetActive(false);
+    }
+
+    #endregion
+
+    #region ResetData
+
+    public void ResetData_CreateRoom()
+    {
+        if (UI_CreateRoom.Instance != null) { UI_CreateRoom.Instance.closeTimeOut(0.5f); }
+        if (UI_Lobby.Instance != null) { UI_Lobby.Instance.FadeIn(0.5f); }
+
+        ResetData_CreateRoomValue();
+    }
+
+    public void ResetData_CreateRoomValue()
+    {
+        CreateRoom_NameInput.text = "";
+        CreateRoom_PasswordInput.text = "";
+
+        CreateRoom_UsePassword.isOn = false;
+        CreateRoom_UseSpellToggle.isOn = false;
+        CreateRoom_AnswerTimeSlider.value = 15;
+        CreateRoom_NumberPlayerSlider.value = 2;
+    }
+
+    public void ResetData_TypePassword()
+    {
+        JoinRoom_TypePassword.text = "";
+        JoinRoom_TypePasswordMessage.text = "";
+    }
+
+    #endregion
 }
 
 

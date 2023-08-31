@@ -315,7 +315,7 @@ public class Question_Manager : MonoBehaviour
     public void SelectVideoUpload()
     {
         // Use Unity's cross-platform file picker
-        var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "mp4");
+        /*var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "mp4");
 
         if (!string.IsNullOrEmpty(FilePath))
         {
@@ -325,7 +325,7 @@ public class Question_Manager : MonoBehaviour
             var FileName = nameFile[nameFile.Count() - 1];
             UploadVideo(FilePath, FileName);
 
-        }
+        }*/
     }
 
     public void DeleteVideo()
@@ -440,7 +440,7 @@ public class Question_Manager : MonoBehaviour
     public void SelectImageUpload()
     {
         // Use Unity's cross-platform file picker
-        var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
+        /*var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
 
         if (!string.IsNullOrEmpty(FilePath))
         {
@@ -454,7 +454,7 @@ public class Question_Manager : MonoBehaviour
 
             UploadImage(FilePath, FileName);
 
-        }
+        }*/
     }
     public void UploadImage(string FilePath, string FileName)
     {

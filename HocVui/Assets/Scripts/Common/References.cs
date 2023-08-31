@@ -43,6 +43,8 @@ public static class References
         {"Son 3", 0 },
     };
 
+    public static string Chat_ServerName;
+
     public static string GenerateRandomString(int length)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -92,6 +94,11 @@ public static class References
         return hashSb.ToString();
     }
 
+}
+
+public enum Confirm_Type
+{
+    Leave, StopHost, Kick
 }
 
 public enum Spell
