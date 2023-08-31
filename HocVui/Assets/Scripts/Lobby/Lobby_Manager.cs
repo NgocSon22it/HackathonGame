@@ -507,12 +507,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         //}
     }
 
-    public bool IsCollectionNameValid()
-    {
-        return !string.IsNullOrEmpty(CreateCollection_NameInput.text);
-    }
-
-
     public void OnEvent(EventData photonEvent)
     {
         if (photonEvent.Code == EventCode.StartGameEventCode)
