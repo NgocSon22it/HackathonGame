@@ -9,6 +9,12 @@ public class UI_Lobby : MonoBehaviour
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
 
+    public static UI_Lobby Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void FadeIn(float time)
     {
