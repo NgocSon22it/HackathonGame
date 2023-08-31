@@ -8,6 +8,13 @@ public class UI_CreateRoom : MonoBehaviour
     [SerializeField] LeanTweenType typeOpen;
     [SerializeField] LeanTweenType typeClose;
 
+    public static UI_CreateRoom Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     public void openTimeOut(float time)
     {
         show();

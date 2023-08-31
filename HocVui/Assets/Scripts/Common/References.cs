@@ -90,6 +90,11 @@ public static class References
 
 }
 
+public enum Confirm_Type
+{
+    Leave, StopHost, Kick
+}
+
 public enum Spell
 {
     FiftyFifty, DoubleScore, TimeFreeze, PlayerFreeze, RemovePile, Lock
