@@ -4,20 +4,16 @@ using UnityEngine;
 
 public class ButtonUI : MonoBehaviour
 {
-    [SerializeField] GameObject btn;
-    [SerializeField] float scaleValue;
-    [SerializeField] float duration;
-    [SerializeField] LeanTweenType type;
 
 
     public void startEvent()
     {
-        LeanTween.scale(btn, new Vector3(scaleValue, scaleValue, 0), duration).setEase(type);
+        LeanTween.scale(gameObject, new Vector3(1.2f, 1.2f, 0), 0.2f).setEase(LeanTweenType.pingPong);
     }
 
     public void endEvent()
     {
-        LeanTween.scale(btn, Vector3.one, duration).setEase(type);
+        LeanTween.scale(gameObject, Vector3.one, 0.2f).setEase(LeanTweenType.pingPong);
     }
 
 }
