@@ -1,3 +1,4 @@
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -48,8 +49,9 @@ public class Player_Item : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.CurrentRoom.Players.ContainsKey(Convert.ToInt32(player.ActorNumber.ToString())))
         {
-            // Kick the player
             PhotonNetwork.CloseConnection(player);
+            object[] content = new object[] { "You have been kicked from the game." };
+            PhotonNetwork.RaiseEvent(EventCode.KickEventCode, content, new RaiseEventOptions { TargetActors = new int[] { player.ActorNumber } }, SendOptions.SendReliable);
         }
         else
         {
