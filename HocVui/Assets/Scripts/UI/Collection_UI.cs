@@ -27,14 +27,9 @@ public class Collection_UI : MonoBehaviour
 
     public void fadeLeft()
     {
-        if (Lobby_Manager.Instance.IsCollectionNameValid())
-        {
+       
             gameObject.LeanMoveLocalX(-960f, duration).setEase(typeFadeIn);
-        }
-        else
-        {
-            Lobby_Manager.Instance.MessagePanel_On("Hãy nhập tên bộ câu hỏi!");
-        }
+     
     }
 
     public void fadeRight()

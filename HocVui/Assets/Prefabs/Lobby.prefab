@@ -1217,10 +1217,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 323150994642815778}
-  scaleValue: 1.1
-  duration: 0.2
-  type: 37
 --- !u!114 &323150994642815789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1650,10 +1646,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 323150994686957018}
-  scaleValue: 1.1
-  duration: 0.2
-  type: 37
 --- !u!114 &323150994686956997
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6333,16 +6325,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64f510431af76484a83c0a739593ecb2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  confirmType: 0
   InRoom: {fileID: 8371140120023416630}
   Outside: {fileID: 8371140120057480253}
   Room_Item: {fileID: 5337838368639439368, guid: 0dc380c2a9a9a094d8095495c0bb1ace, type: 3}
   Room_Content: {fileID: 323150995133608362}
+  CreateCollection_NameInput: {fileID: 0}
+  JoinRoom_TypePassword: {fileID: 0}
+  JoinRoom_TypePasswordMessage: {fileID: 0}
+  JoinRoom_TypePasswordPanel: {fileID: 0}
   CreateRoom_NameInput: {fileID: 8371140120504876159}
+  CreateRoom_PasswordInput: {fileID: 0}
   CreateRoom_NumberPlayerSlider: {fileID: 323150996386210282}
   CreateRoom_AnswerTimeSlider: {fileID: 8371140120464297063}
   CreateRoom_NumberPlayerTxt: {fileID: 323150996189093977}
   CreateRoom_AnswerTimeTxt: {fileID: 8371140120401649019}
   CreateRoom_UseSpellToggle: {fileID: 8371140121038958471}
+  CreateRoom_UsePassword: {fileID: 0}
   Information_Question: {fileID: 8371140120572339686}
   Information_Answer:
   - {fileID: 8371140119387457058}
@@ -6367,12 +6366,18 @@ MonoBehaviour:
   - {fileID: 8371140120172765463}
   - {fileID: 8371140120869301559}
   - {fileID: 8371140119359210424}
+  StartBtn: {fileID: 0}
+  Spell_Panel: {fileID: 0}
   SpellInformation_Panel: {fileID: 8371140119667797484}
   SpellInformation_Name: {fileID: 8371140120355531369}
   SpellInformation_Description: {fileID: 8371140120694096433}
   PlayerItem: {fileID: 2097797130412169581, guid: f9278e27e190ac749a16142557a2d3ec, type: 3}
   PlayerContent: {fileID: 3803142295934649965}
   CurrentPaging: {fileID: 8371140119915980124}
+  Message_Panel: {fileID: 0}
+  Message_Text: {fileID: 0}
+  Confirm_Panel: {fileID: 0}
+  Confirm_Text: {fileID: 0}
 --- !u!114 &323150995736927485
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6405,15 +6410,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Collection_Name: {fileID: 8371140119876082330}
-  MessageName: {fileID: 8371140119902453676}
   VideoUrl: 
   CollectionName: 
   CollectionID: 0
   VideoObj: {fileID: 8371140120623178235}
-  VideoImage: {fileID: 8371140120638143734}
+  UploadVideoIcon: {fileID: 0}
   VideoPlayBtn: {fileID: 8371140120305383503}
   NameImage: {fileID: 8371140120862971387}
   AddBtn: {fileID: 323150995984731111}
+  UploadImageIcon: {fileID: 0}
   Information_Question: {fileID: 8371140119197902546}
   Information_Answer:
   - {fileID: 8371140120356922408}
@@ -6447,8 +6452,6 @@ MonoBehaviour:
   - {fileID: 8371140118912551934}
   - {fileID: 8371140119485573026}
   - {fileID: 8371140120702223255}
-  Message_Panel: {fileID: 8371140120151778841}
-  Message_Text: {fileID: 8371140120657359589}
   CurrentPaging: {fileID: 8371140118906652117}
 --- !u!1 &323150995791511028
 GameObject:
@@ -7200,10 +7203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 323150995977016676}
-  scaleValue: 1.2
-  duration: 0.2
-  type: 37
 --- !u!1 &323150995983442785
 GameObject:
   m_ObjectHideFlags: 0
@@ -7711,10 +7710,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 323150995996685630}
-  scaleValue: 1.1
-  duration: 0.2
-  type: 37
 --- !u!1 &323150996032136447
 GameObject:
   m_ObjectHideFlags: 0
@@ -9714,10 +9709,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 323150996269930566}
-  scaleValue: 1.2
-  duration: 0.2
-  type: 37
 --- !u!1 &323150996276972571
 GameObject:
   m_ObjectHideFlags: 0
@@ -20232,10 +20223,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 8371140119365365702}
-  scaleValue: 1.1
-  duration: 0.2
-  type: 37
 --- !u!114 &8371140119365365709
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27743,10 +27730,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7755dfae931e2674d9f685a2b4750990, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  btn: {fileID: 8371140119986228893}
-  scaleValue: 1.1
-  duration: 0.2
-  type: 37
 --- !u!114 &8371140119986228895
 MonoBehaviour:
   m_ObjectHideFlags: 0
