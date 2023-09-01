@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Assets.Scripts.Game;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,13 +11,27 @@ public class PopupResult : MonoBehaviour
     [SerializeField] float timeShow;
     [SerializeField] LeanTweenType type;
 
-    [SerializeField] float score;
-    [SerializeField] float totalScore;
+    float score;
+    float totalScore;
+    [SerializeField] TMP_Text MessageText;
     [SerializeField] TMP_Text scoreText;
     [SerializeField] TMP_Text totalScoreText;
 
-    public void run()
+    public void run(bool isCorrect, int score)
     {
+        if(isCorrect)
+        {
+            MessageText.text = "Bạn trả lời đúng";
+            this.score = score;
+            ++References.Streak;
+        }
+        else
+        {
+            MessageText.text = "Bạn trả lời sai";
+            this.score = 0;
+            References.Streak = 0;
+        }
+
         ui.SetActive(true);
         ScoreText();
         scoreText.transform.localPosition = new Vector3(0, -40, 0);
@@ -46,7 +61,15 @@ public class PopupResult : MonoBehaviour
 
     private void handleTotal()
     {
+        this.totalScore = References.Score;
         totalScore += score;
+
+        if (References.Streak > 3)
+        {
+            totalScore += totalScore * 0.1f;
+        }
+
+        References.Score = (int)totalScore;
         ScoreText();
     }
 
@@ -65,5 +88,6 @@ public class PopupResult : MonoBehaviour
         LeanTween.scale(ui, Vector3.zero, duration).setEase(type);
         yield return new WaitForSeconds(duration);
         ui.SetActive(false);
+        Playing_Manager.Instance.ShowBXH();
     }
 }

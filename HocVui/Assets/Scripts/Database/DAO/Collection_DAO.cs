@@ -122,21 +122,22 @@ namespace Assets.Scripts.Database.DAO
 
         public static Collection_Entity GetbyID(int CollectionID)
         {
-            var list = new List<Collection_Entity>();
+            var obj = new Collection_Entity();
             using (SqlConnection connection = new SqlConnection(ConnectionStr))
             {
                 try
                 {
                     connection.Open();
                     SqlCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @UserID";
+                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where ID = @CollectionID";
+                    cmd.Parameters.AddWithValue("@CollectionID", CollectionID);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
 
                     foreach (DataRow dr in dataTable.Rows)
                     {
-                        var obj = new Collection_Entity
+                        obj = new Collection_Entity
                         {
                             ID = Convert.ToInt32(dr["ID"]),
                             AccountID = Convert.ToInt32(dr["AccountID"]),
@@ -144,7 +145,7 @@ namespace Assets.Scripts.Database.DAO
                             Name = dr["Name"].ToString(),
                             LinkVideo = dr["LinkVideo"].ToString()
                         };
-                        list.Add(obj);
+                        break;
                     }
                 }
                 catch (SqlException ex)
@@ -157,7 +158,7 @@ namespace Assets.Scripts.Database.DAO
                 }
             }
 
-            return null;
+            return obj;
         }
     }
 }

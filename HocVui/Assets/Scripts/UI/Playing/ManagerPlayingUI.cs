@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class ManagerPlayingUI : MonoBehaviour
 {
-    [SerializeField] GameObject MessageUI;
-    [SerializeField] GameObject BXH_UI;
-    [SerializeField] GameObject QuestionUI;
-    [SerializeField] GameObject PopupUI;
+    public GameObject MessageUI;
+    public GameObject BXH_UI;
+    public GameObject QuestionUI;
+    public GameObject PopupUI;
+
+    public static ManagerPlayingUI Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
 
     public void ShowPanelBXH()
     {
@@ -28,8 +36,8 @@ public class ManagerPlayingUI : MonoBehaviour
         QuestionUI.GetComponent<QuestionPanel>().ShowQuestion();
     }
 
-    public void StartPopupResult()
+    public void StartPopupResult(bool isCorrect, int score)
     {
-        PopupUI.GetComponent<PopupResult>().run();
+        PopupUI.GetComponent<PopupResult>().run(isCorrect, score);
     }
 }

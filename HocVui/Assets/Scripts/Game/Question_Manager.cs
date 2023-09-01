@@ -400,9 +400,10 @@ public class Question_Manager : MonoBehaviour
                 Debug.Log("Success to get video download URL." + videoUrl);
                 VideoObj.source = VideoSource.Url;
                 VideoObj.url = videoUrl;
+                VideoObj.gameObject.SetActive(true);
                 VideoObj.Prepare();
                 VideoObj.Pause();
-                VideoObj.gameObject.SetActive(true);
+                
                 VideoPlayBtn.gameObject.SetActive(true);
                 UploadVideoIcon.SetActive(false);
 
