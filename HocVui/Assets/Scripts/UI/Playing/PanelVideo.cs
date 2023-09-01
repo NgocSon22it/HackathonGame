@@ -6,22 +6,24 @@ public class PanelVideo : MonoBehaviour
 {
     [SerializeField] float timeshow;
     [SerializeField] GameObject menu;
-    public float time;
+    [SerializeField] float duration;
 
     public void show()
     {
         gameObject.SetActive(true);
-        menu.LeanScale(Vector3.one, 0.4f).setEase(LeanTweenType.pingPong);
+        menu.LeanScale(Vector3.one, duration).setEase(LeanTweenType.pingPong);
+        Invoke(nameof(fadeOut), timeshow);
+        
     }
 
-
-
-    IEnumerator hide()
+    private void fadeOut()
     {
-        while (true)
-        {
-
-            yield return new WaitForSeconds(1f);
-        }
+        menu.LeanScale(Vector3.zero, duration).setEase(LeanTweenType.pingPong);
+        Invoke(nameof(hide), duration);
     }
+    private void hide()
+    {
+        gameObject.SetActive(false);
+    }
+
 }
