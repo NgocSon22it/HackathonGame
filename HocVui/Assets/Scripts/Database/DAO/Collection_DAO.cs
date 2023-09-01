@@ -13,7 +13,7 @@ namespace Assets.Scripts.Database.DAO
     {
         static string ConnectionStr = HocVuiConnect.GetConnectHocVui();
 
-        public static List<Collection_Entity> GetAllbyUserID()
+        public static List<Collection_Entity> GetAllbyUserID(int AccountID)
         {
             var list = new List<Collection_Entity>();
             using (SqlConnection connection = new SqlConnection(ConnectionStr))
@@ -22,7 +22,7 @@ namespace Assets.Scripts.Database.DAO
                 {
                     connection.Open();
                     SqlCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where ID = @UserID";
+                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @UserID";
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
@@ -53,7 +53,7 @@ namespace Assets.Scripts.Database.DAO
             return list;
         }
 
-        public static void SaveCollection(string AccountID, string Name, int AmountQuestion, string LinkVideo)
+        public static void SaveCollection(int AccountID, string Name, int AmountQuestion, string LinkVideo)
         {
             using (SqlConnection connection = new SqlConnection(ConnectionStr))
             {
@@ -83,6 +83,81 @@ namespace Assets.Scripts.Database.DAO
                     connection.Close();
                 }
             }
+        }
+
+        public static int GetCollectionID(int AccountID, string Name)
+        {
+            var ID = -1;
+            using (SqlConnection connection = new SqlConnection(ConnectionStr))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand cmd = connection.CreateCommand();
+                    cmd.CommandText = "SELECT ID FROM [dbo].Collection where AccountID = @AccountID and [Name] = @Name";
+                    cmd.Parameters.AddWithValue("@AccountID", AccountID);
+                    cmd.Parameters.AddWithValue("@Name", Name);
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    foreach (DataRow dr in dataTable.Rows)
+                    {
+                        ID = Convert.ToInt32(dr["ID"]);
+                        break;
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("SQL Exception: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+
+            }
+            return ID;
+        }
+
+        public static Collection_Entity GetbyID(int CollectionID)
+        {
+            var list = new List<Collection_Entity>();
+            using (SqlConnection connection = new SqlConnection(ConnectionStr))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand cmd = connection.CreateCommand();
+                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @UserID";
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    foreach (DataRow dr in dataTable.Rows)
+                    {
+                        var obj = new Collection_Entity
+                        {
+                            ID = Convert.ToInt32(dr["ID"]),
+                            AccountID = Convert.ToInt32(dr["AccountID"]),
+                            AmountQuestion = Convert.ToInt32(dr["AmountQuestion"]),
+                            Name = dr["Name"].ToString(),
+                            LinkVideo = dr["LinkVideo"].ToString()
+                        };
+                        list.Add(obj);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("SQL Exception: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return null;
         }
     }
 }

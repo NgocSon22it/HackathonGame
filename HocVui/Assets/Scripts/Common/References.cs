@@ -8,6 +8,12 @@ using UnityEngine;
 public static class References
 {
     public static Account_Entity account;
+    //public static Account_Entity account = new Account_Entity
+    //{
+    //    Id = 4,
+    //    Username = "thienthien"
+    //};
+
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {
         new Spell_Entity("50/50", "Loại bỏ 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty),
@@ -88,6 +94,11 @@ public static class References
         return hashSb.ToString();
     }
 
+}
+
+public enum Confirm_Type
+{
+    Leave, StopHost, Kick
 }
 
 public enum Spell
