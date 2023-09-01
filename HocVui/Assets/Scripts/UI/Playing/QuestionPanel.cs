@@ -27,6 +27,7 @@ public class QuestionPanel : MonoBehaviour
 
     [SerializeField] float defaultTime;
     [SerializeField] TMP_Text TextCount;
+    [SerializeField] GameObject TimeShow;
     Coroutine Timer;
 
     Coroutine ShowQuiz;
@@ -37,6 +38,8 @@ public class QuestionPanel : MonoBehaviour
 
     public void ShowQuestion()
     {
+        gameObject.SetActive(true);
+        TimeShow.SetActive(true);
         time = defaultTime;
         ShowQuiz = StartCoroutine(showAnswers());
         ShowImage(1);
@@ -83,6 +86,8 @@ public class QuestionPanel : MonoBehaviour
         LeanTween.moveLocalX(ans3, 0, duration).setEase(type);
         yield return new WaitForSeconds(WaitingTime);
         LeanTween.moveLocalX(ans4, 0, duration).setEase(type);
+        yield return new WaitForSeconds(WaitingTime + 0.2f);
+        gameObject.SetActive(false);
     }
         
     private void AnswersMove(int derection, GameObject ans)
@@ -126,6 +131,8 @@ public class QuestionPanel : MonoBehaviour
         {
             HideQuestion();
             TextCount.text = string.Format("Hết giờ", time);
+            TimeShow.SetActive(false);
         }
     }
+
 }
