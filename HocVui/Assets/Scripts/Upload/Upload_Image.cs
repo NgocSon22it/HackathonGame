@@ -71,6 +71,7 @@ public class Upload_Image : MonoBehaviour
         });
     }
 
+    [Obsolete]
     IEnumerator LoadImage(string MediaUrl)
     {
         UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl); //Create a request

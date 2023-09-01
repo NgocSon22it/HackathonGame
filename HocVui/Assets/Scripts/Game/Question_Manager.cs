@@ -11,21 +11,30 @@ using Firebase.Extensions;
 using System.Linq;
 using UnityEngine.Video;
 using UnityEngine.Networking;
+using Assets.Scripts.Database.Entity;
+using Photon.Realtime;
+using Assets.Scripts.Database.DAO;
+using Assets.Scripts.Common;
+using UnityEngine.SceneManagement;
 
 public class Question_Manager : MonoBehaviour
 {
     [Header("Collection Info")]
     public TMP_InputField Collection_Name;
+    public TMP_Text MessageName;
     public string VideoUrl, CollectionName;
+    public int CollectionID;
 
     [Header("Upload Video")]
     public VideoPlayer VideoObj;
-    public GameObject VideoImage;
-    public TMP_Text VideoPlayBtn;
+    public GameObject UploadVideoIcon;
+    public Button VideoPlayBtn;
 
     [Header("Upload Image")]
     public TMP_Text NameImage;
     public Button AddBtn;
+    public GameObject UploadImageIcon;
+
 
     [Header("Question Information")]
     [SerializeField] TMP_Text Information_Question;
@@ -33,6 +42,8 @@ public class Question_Manager : MonoBehaviour
     [SerializeField] List<Image> Information_IsCorrect;
     [SerializeField] List<Image> Information_IsCorrectColor;
     public RawImage rawImage;
+    public Texture texture;
+    public string LinkImage;
 
     [Header("Create Question")]
     [SerializeField] GameObject CreateQuestion_Panel;
@@ -50,9 +61,9 @@ public class Question_Manager : MonoBehaviour
 
 
 
-    [Header("Error Message")]
-    [SerializeField] GameObject Message_Panel;
-    [SerializeField] TMP_Text Message_Text;
+    //[Header("Error Message")]
+    //[SerializeField] GameObject Message_Panel;
+    //[SerializeField] TMP_Text Message_Text;
 
     [Header("Paging")]
     [SerializeField] TMP_Text CurrentPaging;
@@ -78,8 +89,11 @@ public class Question_Manager : MonoBehaviour
             {
                 listAnswer.Add(a.text);
             }
+            rawImage.texture = texture;
 
-            currentQuestion = new Question_Entity(QuestionText_Input.text, listAnswer, CorrectAnswer);
+            UploadImageIcon.SetActive(false);
+
+            currentQuestion = new Question_Entity(QuestionText_Input.text, listAnswer, CorrectAnswer, rawImage.texture, LinkImage);
 
             References.ListQuestionCreate.Add(currentQuestion);
 
@@ -89,19 +103,17 @@ public class Question_Manager : MonoBehaviour
 
             CreateQuestion_Close();
 
-            DownloadImage(ImageName);
         }
-        else
-        {
-            Message_Panel.SetActive(true);
-        }
+       
     }
 
     public bool IsValidQuestion()
     {
         if (string.IsNullOrEmpty(QuestionText_Input.text))
         {
-            Message_Text.text = "Câu hỏi không được để trống!";
+            //Message_Text.text = "Câu hỏi không được để trống!";
+            Lobby_Manager.Instance.MessagePanel_On("Câu hỏi không được để trống!");
+
             return false;
         }
 
@@ -109,14 +121,17 @@ public class Question_Manager : MonoBehaviour
         {
             if (string.IsNullOrEmpty(item.text))
             {
-                Message_Text.text = "Đáp án không được để trống!";
+                //Message_Text.text = "Đáp án không được để trống!";
+                Lobby_Manager.Instance.MessagePanel_On("Đáp án không được để trống!");
+
                 return false;
             }
         }
 
         if (IsUploadImage && string.IsNullOrEmpty(ImageName))
         {
-            Message_Text.text = "Hãy chọn hình ảnh!";
+            //Message_Text.text = "Hãy chọn hình ảnh!";
+            Lobby_Manager.Instance.MessagePanel_On("Hãy chọn hình ảnh!");
             return false;
         }
 
@@ -142,6 +157,10 @@ public class Question_Manager : MonoBehaviour
             item.color = Color.white;
         }
 
+        rawImage.texture = References.ListQuestionCreate[Index].rawImage;
+
+        if(rawImage.texture != null) UploadImageIcon.SetActive(false);
+        else UploadImageIcon.SetActive(true);
 
         Information_IsCorrect[References.ListQuestionCreate[Index].correctAnswerIndex].gameObject.SetActive(true);
 
@@ -165,12 +184,6 @@ public class Question_Manager : MonoBehaviour
         CreateQuestion_Panel.SetActive(false);
     }
 
-
-    public void Message_Close()
-    {
-        Message_Panel.SetActive(false);
-    }
-
     public void ResetData_CreateQuestion()
     {
         CorrectAnswer = 0;
@@ -180,7 +193,11 @@ public class Question_Manager : MonoBehaviour
         CreateQuestion_ToggleUploadImage.isOn = false;
 
         QuestionText_Input.text = "";
-        rawImage.color = new Color32(155, 155, 155, 255);
+        rawImage.texture = null;
+        texture = null;
+        LinkImage = string.Empty;
+        NameImage.text = "Bạn chưa chọn hình";
+        UploadImageIcon.SetActive(true);
 
         foreach (var item in ListAnswer_Input)
         {
@@ -259,7 +276,45 @@ public class Question_Manager : MonoBehaviour
 
     public void CreateCollection()
     {
-        Debug.Log("Tạo Bộ câu hỏi thành công");
+        if (References.ListQuestionCreate.Count > 0)
+        {
+            Collection_DAO.SaveCollection(References.account.Id, CollectionName, References.ListQuestionCreate.Count, VideoUrl);
+            var ID = Collection_DAO.GetCollectionID(References.account.Id, CollectionName);
+
+            Question_DAO.SaveQuestion(ID, References.ListQuestionCreate);
+
+            Debug.Log("Tạo Bộ câu hỏi thành công");
+
+            SceneManager.LoadScene(Scenes.Lobby);
+        }
+        else
+        {
+            Debug.Log("Bạn cần tạo câu hỏi trước khi lưu");
+            //Message_Text.text = "Bạn cần tạo câu hỏi trước khi lưu";
+            Lobby_Manager.Instance.MessagePanel_On("Bạn cần tạo câu hỏi trước khi lưu");
+            //Message_Panel.SetActive(true);
+        }
+    }
+
+    public bool IsValidCollection()
+    {
+        var name = Collection_Name.text;
+        if (string.IsNullOrEmpty(name))
+        {
+            MessageName.text = "Hãy nhập tên bộ câu hỏi!";
+            //Lobby_Manager.Instance.MessagePanel_On("Hãy nhập tên bộ câu hỏi!");
+            return false;
+        }
+
+        var ID = Collection_DAO.GetCollectionID(References.account.Id, name);
+        if (ID != -1)
+        {
+            MessageName.text = "Tên này đã tồn tại!";
+            //Lobby_Manager.Instance.MessagePanel_On("Tên này đã tồn tại!");
+
+            return false;
+        }
+        return true;
     }
 
     #endregion
@@ -267,8 +322,8 @@ public class Question_Manager : MonoBehaviour
     #region Upload Video
     public void SelectVideoUpload()
     {
-        // Use Unity's cross-platform file picker
-        /*var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "mp4");
+        //Use Unity's cross-platform file picker
+        var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "mp4");
 
         if (!string.IsNullOrEmpty(FilePath))
         {
@@ -278,14 +333,15 @@ public class Question_Manager : MonoBehaviour
             var FileName = nameFile[nameFile.Count() - 1];
             UploadVideo(FilePath, FileName);
 
-        }*/
+        }
     }
 
     public void DeleteVideo()
     {
         VideoObj.url = string.Empty;
         VideoObj.gameObject.SetActive(true);
-        VideoImage.SetActive(false);
+        UploadVideoIcon.SetActive(false);
+        VideoPlayBtn.gameObject.SetActive(false);
     }
 
     void Start()
@@ -347,7 +403,9 @@ public class Question_Manager : MonoBehaviour
                 VideoObj.Prepare();
                 VideoObj.Pause();
                 VideoObj.gameObject.SetActive(true);
-                VideoImage.SetActive(false);
+                VideoPlayBtn.gameObject.SetActive(true);
+                UploadVideoIcon.SetActive(false);
+
             }
             else
             {
@@ -361,19 +419,26 @@ public class Question_Manager : MonoBehaviour
         if (VideoObj.isPlaying)
         {
             VideoObj.Pause();
-            VideoPlayBtn.text = "Phát";
+            VideoPlayBtn.GetComponentInChildren<TMP_Text>().text = "Phát";
         }
         else
         {
             VideoObj.Play();
-            VideoPlayBtn.text = "Dừng";
+            VideoPlayBtn.GetComponentInChildren<TMP_Text>().text = "Dừng";
         }
     }
 
     public void StoreVideoInfo()
     {
-        CollectionName = Collection_Name.text;
-        VideoUrl = VideoObj.url;
+        VideoObj.Pause();
+
+        if (IsValidCollection())
+        {
+            CollectionName = Collection_Name.text;
+            VideoUrl = VideoObj.url;
+            MessageName.text = "";
+            Collection_UI.Instances.fadeLeft();
+        }
     }
 
     #endregion
@@ -383,7 +448,7 @@ public class Question_Manager : MonoBehaviour
     public void SelectImageUpload()
     {
         // Use Unity's cross-platform file picker
-        /*var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
+       var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
 
         if (!string.IsNullOrEmpty(FilePath))
         {
@@ -397,7 +462,7 @@ public class Question_Manager : MonoBehaviour
 
             UploadImage(FilePath, FileName);
 
-        }*/
+        }
     }
     public void UploadImage(string FilePath, string FileName)
     {
@@ -421,8 +486,8 @@ public class Question_Manager : MonoBehaviour
             else if (task.IsCompleted)
             {
                 Debug.Log("Image upload successful.");
+                DownloadImage(FileName);
                 AddBtn.interactable = true;
-                
             }
         });
     }
@@ -439,9 +504,12 @@ public class Question_Manager : MonoBehaviour
         //Get the download link of file
         image.GetDownloadUrlAsync().ContinueWithOnMainThread(task =>
         {
-            if (!task.IsFaulted && !task.IsCanceled)
+            if (task.IsCompleted)
             {
-                StartCoroutine(LoadImage(Convert.ToString(task.Result))); //Fetch file from the link
+
+                Debug.Log("Image DownloadImage successful.");
+                LinkImage = Convert.ToString(task.Result);
+                StartCoroutine(LoadImage(LinkImage)); //Fetch file from the link
             }
             else
             {
@@ -460,8 +528,8 @@ public class Question_Manager : MonoBehaviour
         }
         else
         {
-            rawImage.color = Color.white;
-            rawImage.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            Debug.Log("down success ");
+            texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
             // setting the loaded image to our object
         }
     }
