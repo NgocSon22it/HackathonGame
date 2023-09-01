@@ -52,5 +52,54 @@ namespace Assets.Scripts.Database.DAO
                 }
             }
         }
+
+        public static List<Question_Entity> GetbyID(int CollectionID)
+        {
+            var list = new List<Question_Entity>();
+            using (SqlConnection connection = new SqlConnection(ConnectionStr))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand cmd = connection.CreateCommand();
+                    cmd.CommandText = "SELECT * FROM [dbo].[Question] where CollectionID = @CollectionID";
+                    cmd.Parameters.AddWithValue("@CollectionID", CollectionID);
+
+                    SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                    DataTable dataTable = new DataTable();
+                    adapter.Fill(dataTable);
+
+                    foreach (DataRow dr in dataTable.Rows)
+                    {
+                        var Question = new Question_Entity_DB
+                        {
+                            ID = Convert.ToInt32(dr["ID"]),
+                            CollectionID = Convert.ToInt32(dr["CollectionID"]),
+                            Content = dr["Content"].ToString(),
+                            Time = Convert.ToInt32(dr["Time"]),
+                            Score = Convert.ToInt32(dr["Score"]),
+                            Answer = Convert.ToInt32(dr["Answer"]),
+                            LinkImage = dr["LinkImage"].ToString()
+                        };
+
+                        Question_Entity obj = JsonUtility.FromJson<Question_Entity>(Question.Content);
+
+                        Debug.Log("obj.questionText: " + obj.questionText);
+
+                        list.Add(obj);
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("SQL Exception: " + ex.Message);
+                }
+                finally
+                {
+                    connection.Close();
+                }
+            }
+
+            return list;
+        }
     }
 }
