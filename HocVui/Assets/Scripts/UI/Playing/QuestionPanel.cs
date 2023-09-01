@@ -1,15 +1,26 @@
-﻿using System;
+﻿using Assets.Scripts.Game;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEditor.Progress;
 using Image = UnityEngine.UI.Image;
 
 public class QuestionPanel : MonoBehaviour
 {
+    [Header("Content")]
+    public TMP_Text Index;
+    public TMP_Text Question;
+    public List<TMP_Text> ListAns;
+    public RawImage RawImage;
+
+    [Header("Background")]
     [SerializeField] GameObject QuestionField;
     [SerializeField] GameObject title;
     [SerializeField] GameObject ans1;
@@ -32,17 +43,61 @@ public class QuestionPanel : MonoBehaviour
 
     Coroutine ShowQuiz;
     Coroutine HideQuiz;
-
+    string Link;
     private float time;
+
+    public static QuestionPanel Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    public void SetupQuestion(int index, Question_Entity item)
+    {
+        Index.text = "Câu hỏi số " + index.ToString();
+        Question.text = item.questionText;
+
+        for (var i = 0; i < item.answers.Count; i++)
+        {
+            ListAns[i].text = item.answers[i];
+        }
+
+        Link = item.LinkImage;
+    }
+
+    IEnumerator LoadImage(string MediaUrl)
+    {
+        UnityWebRequest request = UnityWebRequestTexture.GetTexture(MediaUrl); //Create a request
+        yield return request.SendWebRequest(); //Wait for the request to complete
+        if (request.isNetworkError || request.isHttpError)
+        {
+            Debug.Log(request.error);
+        }
+        else
+        {
+            Debug.Log("down success ");
+            RawImage.texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            //Playing_Manager.Instance.ShowQuestion();
+            // setting the loaded image to our object
+        }
+    }
 
 
     public void ShowQuestion()
     {
         gameObject.SetActive(true);
+
+        if (!string.IsNullOrEmpty(Link))
+        {
+            StartCoroutine(LoadImage(Link));
+            ShowImage(1);
+        }
+
         TimeShow.SetActive(true);
         time = defaultTime;
         ShowQuiz = StartCoroutine(showAnswers());
-        ShowImage(1);
+        
         Timer = StartCoroutine(counter());
     }
 
@@ -51,6 +106,8 @@ public class QuestionPanel : MonoBehaviour
         StopCoroutine(ShowQuiz);
         HideQuiz = StartCoroutine(hideAnswers());
         HideImage(0);
+
+        Playing_Manager.Instance.EndQuestion();
     }
     public void TitleMoveX(float derection)
     {
@@ -89,14 +146,13 @@ public class QuestionPanel : MonoBehaviour
         yield return new WaitForSeconds(WaitingTime + 0.2f);
         gameObject.SetActive(false);
     }
-        
+
     private void AnswersMove(int derection, GameObject ans)
     {
         LeanTween.moveLocalX(ans, derection * distance, duration).setEase(type);
     }
     public void ShowImage(float scale)
     {
-      
         LeanTween.scale(image, new Vector3(scale, scale, 0), duration).setEase(typeFadeInImage);
     }
 

@@ -14,6 +14,12 @@ public static class References
     //    Username = "thienthien"
     //};
 
+
+    public static int SelectedAnswer = 1;
+    public static int Streak = 0;
+    public static int Score = 0;
+    public static int TimeAnswer = 15;
+
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {
         new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty, Spell_Type.ClickToUse),

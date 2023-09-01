@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -61,6 +62,13 @@ public class ShowLeader : MonoBehaviour
     private void ShowListRank()
     {
         ListScore.SetActive(true);
+        StartCoroutine(Waiting5f());
+    }
+    IEnumerator Waiting5f()
+    {
+        yield return new WaitForSeconds(5f);
+        Playing_Manager.Instance.EndBXH();
+
     }
     IEnumerator AnimationShowPlayerTop(int rank, float score, string avatar, string name)
     {

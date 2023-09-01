@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,6 @@ public class PanelShowMassage : MonoBehaviour
         LeanTween.moveX(message, 2780f, durationOut).setEase(AnimationOut);
         yield return new WaitForSeconds(durationOut);
         gameObject.SetActive(false);
-
+        Playing_Manager.Instance.EndMessage();
     }
 }
