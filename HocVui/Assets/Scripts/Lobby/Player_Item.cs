@@ -1,4 +1,4 @@
-using ExitGames.Client.Photon;
+﻿using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -45,17 +45,10 @@ public class Player_Item : MonoBehaviourPunCallbacks
         Destroy(gameObject);
     }
 
-    public void KickPlayer()
+    public void KickPlayer_Confirm()
     {
-        if (PhotonNetwork.CurrentRoom.Players.ContainsKey(Convert.ToInt32(player.ActorNumber.ToString())))
-        {
-            PhotonNetwork.CloseConnection(player);
-            object[] content = new object[] { "You have been kicked from the game." };
-            PhotonNetwork.RaiseEvent(EventCode.KickEventCode, content, new RaiseEventOptions { TargetActors = new int[] { player.ActorNumber } }, SendOptions.SendReliable);
-        }
-        else
-        {
-            Debug.LogWarning(player.UserId + "Player is not in the room.");
-        }
+        Lobby_Manager.Instance.SelectedPlayer = player;
+        Lobby_Manager.Instance.confirmType = Confirm_Type.Kick;
+        Lobby_Manager.Instance.ConfirmPanel_On($"Bạn có muốn mời người chơi {Lobby_Manager.Instance.SelectedPlayer.NickName} ra khỏi phòng!");
     }
 }

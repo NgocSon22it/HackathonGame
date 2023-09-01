@@ -94,7 +94,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PlayerNameTxt: {fileID: 2097797130764143388}
   KickBtn: {fileID: 9013035925951456863}
-  a: {fileID: 0}
 --- !u!1 &2097797130636706091
 GameObject:
   m_ObjectHideFlags: 0
@@ -565,7 +564,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 6190604797320929846}
         m_TargetAssemblyTypeName: Player_Item, Assembly-CSharp
-        m_MethodName: KickPlayer
+        m_MethodName: KickPlayer_Confirm
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
