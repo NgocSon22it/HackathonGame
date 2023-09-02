@@ -1,5 +1,6 @@
 using Assets.Scripts.Common;
 using Photon.Pun;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -25,6 +26,8 @@ public class Spell_Manager : MonoBehaviour
     [Header("PlayerList")]
     List<GameObject> ListPlayer = new List<GameObject>();
     string PlayerTag = "Player";
+
+    int CurrentSelect = -1;
 
     private void Awake()
     {
@@ -65,13 +68,49 @@ public class Spell_Manager : MonoBehaviour
                 SetUp_Spell_ClickToUse(Index);
                 break;
             case Spell_Type.ConfirmToUse:
+                SetUp_Spell_ConfirmToUse(Index);
+                break;
+        }
+    }
+
+    public void SetUp_Spell_ConfirmToUse(int Index)
+    {
+        if (References.ListSpell_Own[Index].IsUse == false)
+        {
+            if (CurrentSelect != Index)
+            {
+                CurrentSelect = Index;
                 foreach (Image image in ListContainer)
                 {
                     image.sprite = DefaultContainer;
                 }
+
                 ListContainer[Index].sprite = SelectContainer;
-                break;
+
+                SetUp_PlayerSpell(References.ListSpell_Own[Index]);
+
+            }
+            else
+            {
+                CurrentSelect = -1;
+                ListContainer[Index].sprite = DefaultContainer;
+                SetUp_PlayerSpell(null);
+            }
         }
+        else
+        {
+            GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+            .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+            Message_On(string.Format(Message.Game_SpellUseAlready, References.ListSpell_Own[Index].Name));
+
+
+        }
+
+    }
+
+    public void SetUp_PlayerSpell(Spell_Entity spell_Entity)
+    {
+        GameManager.Instance.PlayerManager.GetComponent<Player_Base>().Spell_Entity = spell_Entity;
     }
 
     public void SetUp_Spell_ClickToUse(int Index)
@@ -119,7 +158,7 @@ public class Spell_Manager : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            randomIndex = Random.Range(0, listAnswer.Count);
+            randomIndex = UnityEngine.Random.Range(0, listAnswer.Count);
             listRemove.Add(listAnswer[randomIndex]);
             listAnswer.Remove(listAnswer[randomIndex]);
         }
@@ -157,6 +196,13 @@ public class Spell_Manager : MonoBehaviour
 
         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
             .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_TimeFreeze);
+    }
+
+    public void SetUp_SkillUse()
+    {
+        References.ListSpell_Own[CurrentSelect].IsUse = true;
+        ListSpellCooldown[CurrentSelect].fillAmount = 1f;
+        ListContainer[CurrentSelect].sprite = DefaultContainer;
     }
 
 

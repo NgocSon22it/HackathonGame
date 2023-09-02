@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 using Image = UnityEngine.UI.Image;
 
 public class QuestionPanel : MonoBehaviour
@@ -36,7 +35,7 @@ public class QuestionPanel : MonoBehaviour
     [SerializeField] LeanTweenType typeFadeInImage;
     [SerializeField] LeanTweenType typeFadeOutImage;
 
-    [SerializeField] float defaultTime;
+    [SerializeField] float defaultTime = 30;
     [SerializeField] TMP_Text TextCount;
     [SerializeField] GameObject TimeShow;
     Coroutine Timer;
