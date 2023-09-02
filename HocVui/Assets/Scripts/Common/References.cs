@@ -15,10 +15,10 @@ public static class References
     //};
 
 
-    public static int SelectedAnswer = 1;
+    public static int SelectedAnswer = 0;
     public static int Streak = 0;
     public static int Score = 0;
-    public static int TimeAnswer = 15;
+    public static int TimeAnswer = 30;
 
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {
@@ -33,9 +33,9 @@ public static class References
 
     public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>()
     {
-        new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty, Spell_Type.ConfirmToUse, Spell_Target.Player),
+        new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty, Spell_Type.ClickToUse, Spell_Target.None),
         new Spell_Entity("X2 điểm", "Nhận gấp đôi số điểm cho câu hỏi này","Spell/Image_Skill_1", Spell.DoubleScore, Spell_Type.ClickToUse, Spell_Target.None),
-        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Image_Skill_2", Spell.TimeFreeze, Spell_Type.ConfirmToUse, Spell_Target.None),
+        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Image_Skill_2", Spell.TimeFreeze, Spell_Type.ClickToUse, Spell_Target.None),
     };
 
     public static Collection_Entity SelectCollection = new Collection_Entity();
