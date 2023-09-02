@@ -116,6 +116,7 @@ namespace Assets.Scripts.Game
         public void ShowTimeAnswer()
         {
             Debug.Log("Waiting countdown time");
+            GameManager.Instance.ResetRound();
             Oclock.GetComponent<Oclock>().run(this.time);
 
         }
