@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 0a2e1b3d7dd3f384b893162d991642fe
+guid: 8766c5719c7295f44abd55c5540c8ee0
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -117,7 +117,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Boat_0
+      name: Boat_new_0
       rect:
         serializedVersion: 2
         x: 293
@@ -131,14 +131,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 63c35c649752ee94899ce7d37cf9498b
-      internalID: 1502345312
+      spriteID: 3bbe4eb61cd1ca748a24c1c4571757b6
+      internalID: -2138893301
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Boat_1
+      name: Boat_new_1
       rect:
         serializedVersion: 2
         x: 1061
@@ -152,8 +152,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5f50efc45b0db1941a4fede67e949031
-      internalID: -1955107146
+      spriteID: f06d91a2d6b6ddc47a3791588281d232
+      internalID: 181502869
       vertices: []
       indices: 
       edges: []
@@ -169,8 +169,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Boat_0: 1502345312
-      Boat_1: -1955107146
+      Boat_new_0: -2138893301
+      Boat_new_1: 181502869
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
