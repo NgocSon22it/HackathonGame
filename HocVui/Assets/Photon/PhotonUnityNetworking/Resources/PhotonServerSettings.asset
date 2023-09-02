@@ -43,6 +43,11 @@ MonoBehaviour:
   - SyncSpriteChange
   - BlockPlayer
   - ClearEffect
+  - SynclOCK
+  - SyncLock
+  - BlockBase
+  - ResetAfterRound
+  - Reset
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

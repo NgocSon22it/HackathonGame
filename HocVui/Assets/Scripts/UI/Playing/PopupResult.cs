@@ -88,6 +88,15 @@ public class PopupResult : MonoBehaviour
         LeanTween.scale(ui, Vector3.zero, duration).setEase(type);
         yield return new WaitForSeconds(duration);
         ui.SetActive(false);
-        Playing_Manager.Instance.ShowBXH();
+
+        if (Playing_Manager.Instance.isFinish)
+        {
+            Playing_Manager.Instance.ShowBXH();
+        }
+        else
+        {
+            Playing_Manager.Instance.ShowListResult();
+
+        }
     }
 }
