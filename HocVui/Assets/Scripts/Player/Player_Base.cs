@@ -1,4 +1,6 @@
+using Assets.Scripts.Common;
 using Assets.Scripts.Database.Entity;
+using Cinemachine;
 using Pathfinding;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
@@ -34,7 +36,9 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("Player Instance")]
     [SerializeField] GameObject PlayerAllUIPrefabs;
-    GameObject PlayerAllUIInstance;
+    public GameObject PlayerAllUIInstance;
+    [SerializeField] GameObject PlayerCameraPrefabs;
+    public GameObject PlayerCameraInstance;
 
     [Header("Player Movement")]
     [SerializeField] Transform MovingPoint;
@@ -45,17 +49,17 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     Vector3 TargetPoint;
     float LocalScaleX, LocalScaleY;
 
-
     [Header("Object Pool")]
     [SerializeField] GameObject ObjectPool;
+
+    [Header("Camera Box")]
+    public PolygonCollider2D CameraBox;
 
     [Header("Pile")]
     [SerializeField] SpriteRenderer Pile_Handle;
     [SerializeField] public bool IsPile, IsPileBase;
 
     [Header("Effect")]
-    [SerializeField] GameObject MouseOverEffect_Pile;
-    [SerializeField] GameObject MouseOverEffect_Player;
     bool LoseControl;
     Coroutine BlockPlayer_Coroutine;
     public float animationDuration = 5f;
@@ -97,6 +101,10 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         if (photonView.IsMine)
         {
             PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
+            PlayerCameraInstance = Instantiate(PlayerCameraPrefabs);
+
+            PlayerCameraInstance.GetComponent<CinemachineVirtualCamera>().m_Follow = gameObject.transform;
+            PlayerCameraInstance.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = CameraBox;
         }
         else
         {
@@ -118,7 +126,6 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     public void FixedUpdate()
     {
-
         if (photonView.IsMine)
         {
             if (LoseControl)
@@ -159,14 +166,12 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         if (!photonView.IsMine)
         {
             isMouseOver = true;
-            MouseOverEffect_Player_On(transform.position);
         }
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
-        MouseOverEffect_Player_Off();
 
     }
 
@@ -218,32 +223,38 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         {
             if (IsPile)
             {
-                PlayerAllUIInstance.GetComponent<Player_AllUI>().PickUp_Already_Show();
+                PlayerAllUIInstance.GetComponent<Player_AllUI>().Message_On(Message.Game_PickUpPile_Already);
             }
             else
             {
                 photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, true);
                 IsPile = true;
-                MouseOverEffect_Pile_Off();
             }
         }
     }
 
-    public void PuttingPile(int Index)
+    public void PuttingPile(int answer)
     {
         if (photonView.IsMine)
         {
-            if (IsPile && !IsPileBase)
+            if (!IsPile)
             {
-                photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, false);
-                GameManager.Instance.SelectOption(Index);
-                GameManager.Instance.SubmitValue(photonView.Owner.NickName, Index);
-                IsPileBase = true;
-                MouseOverEffect_Pile_Off();
+                PlayerAllUIInstance.GetComponent<Player_AllUI>().Message_On(Message.Game_PuttingPile_DoNotHavePile);
             }
             else
             {
-                Debug.Log("Cam r ai cho rut");
+                if (!IsPileBase)
+                {
+                    PlayerAllUIInstance.GetComponent<Player_AllUI>().SelectedAnswer_On(answer);
+                    photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, false);
+                    GameManager.Instance.SelectOption(answer);
+                    GameManager.Instance.SubmitValue(photonView.Owner.NickName, answer);
+                    IsPileBase = true;
+                }
+                else
+                {
+                    PlayerAllUIInstance.GetComponent<Player_AllUI>().Message_On(Message.Game_PuttingPile_Already);
+                }
             }
         }
     }
@@ -253,7 +264,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (value)
         {
-            Pile_Handle.sprite = Resources.Load<Sprite>("Player/Pile");
+            Pile_Handle.sprite = Resources.Load<Sprite>("Player/Coc 1");
         }
         else
         {
@@ -307,33 +318,15 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         transform.localScale = new Vector3(x, y, z);
         if (UI_Transform.gameObject != null)
         {
-            UI_Transform.localScale = new Vector3(x, y, z);
+            if (x > 0)
+            {
+                UI_Transform.localScale = new Vector3(1, 1, 1);
+            }
+            else
+            {
+                UI_Transform.localScale = new Vector3(-1, 1, 1);
+            }
         }
-    }
-
-    #endregion
-
-    #region Effect
-    public void MouseOverEffect_Pile_On(Vector3 Position)
-    {
-        MouseOverEffect_Pile.transform.position = Position;
-        MouseOverEffect_Pile.SetActive(true);
-    }
-
-    public void MouseOverEffect_Pile_Off()
-    {
-        MouseOverEffect_Pile.SetActive(false);
-    }
-
-    public void MouseOverEffect_Player_On(Vector3 Position)
-    {
-        MouseOverEffect_Player.transform.position = Position;
-        MouseOverEffect_Player.SetActive(true);
-    }
-
-    public void MouseOverEffect_Player_Off()
-    {
-        MouseOverEffect_Player.SetActive(false);
     }
 
     #endregion
