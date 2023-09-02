@@ -125,7 +125,6 @@ public class ShowLeader : MonoBehaviour
 
     IEnumerator Top2Effect()
     {
-        Vector3 position = new Vector3(Leader.transform.position.x - 175, Leader.transform.position.y, 0);
         Top2Player.SetActive(true);
 
         Top2Player.gameObject.transform.position = this.gameObject.transform.position;
@@ -133,12 +132,12 @@ public class ShowLeader : MonoBehaviour
 
         LeanTween.scale(Top2Player, Vector3.one, duration).setEase(LeanTweenType.easeOutElastic);
         yield return new WaitForSeconds(duration);
-        LeanTween.move(Top2Player, position, 1f).setEase(LeanTweenType.easeInBack);
+        LeanTween.move(Top2Player, Leader.transform.position + new Vector3(-1.75f, 0, 0), 1f).setEase(LeanTweenType.easeInBack);
     }
 
     IEnumerator Top3Effect()
     {
-        Vector3 position = new Vector3(Leader.transform.position.x + 175, Leader.transform.position.y, 0);
+        float y = Leader.transform.position.y;
         Top3Player.SetActive(true);
 
         Top3Player.gameObject.transform.position = this.gameObject.transform.position;
@@ -146,6 +145,6 @@ public class ShowLeader : MonoBehaviour
 
         LeanTween.scale(Top3Player, Vector3.one, duration).setEase(LeanTweenType.easeOutElastic);
         yield return new WaitForSeconds(duration);
-        LeanTween.move(Top3Player, position, 1f).setEase(LeanTweenType.easeInBack);
+        LeanTween.move(Top3Player, Leader.transform.position + new Vector3(1.75f, 0, 0), 1f).setEase(LeanTweenType.easeInBack);
     }
 }
