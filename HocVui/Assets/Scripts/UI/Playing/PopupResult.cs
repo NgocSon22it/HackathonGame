@@ -70,6 +70,7 @@ public class PopupResult : MonoBehaviour
         }
 
         References.Score = (int)totalScore;
+        GameManager.Instance.ReloadScore();
         ScoreText();
     }
 

@@ -27,12 +27,7 @@ public class Pile : Pile_Common
         if (IsPlayerCloseEnough())
         {
             CollectWood();
-            Debug.Log("dc");
-
-        }
-        else
-        {
-            Debug.Log(" K dc");
+            spriteRenderer.color = Color.white;
         }
     }
 
