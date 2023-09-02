@@ -9,7 +9,6 @@ using UnityEngine.Networking;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 using Image = UnityEngine.UI.Image;
 
 public class QuestionPanel : MonoBehaviour
