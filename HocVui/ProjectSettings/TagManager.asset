@@ -53,3 +53,6 @@ TagManager:
   - name: Bar
     uniqueID: 1197565583
     locked: 0
+  - name: Video
+    uniqueID: 3284618521
+    locked: 0
