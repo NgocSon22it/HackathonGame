@@ -38,15 +38,10 @@ public static class References
         new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Image_Skill_2", Spell.TimeFreeze, Spell_Type.ClickToUse, Spell_Target.None),
     };
 
+
     public static Collection_Entity SelectCollection = new Collection_Entity();
 
-    public static Dictionary<string, int> RankingList = new Dictionary<string, int>()
-    {
-        {"Son", 50 },
-        {"Son 1", 200 },
-        {"Son 2", 100 },
-        {"Son 3", 0 },
-    };
+    public static Dictionary<string, int> RankingList = new Dictionary<string, int>();
 
     public static string Chat_ServerName;
 
