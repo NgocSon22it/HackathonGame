@@ -42,7 +42,7 @@ namespace Assets.Scripts.Game
         {
             collection = Collection_DAO.GetbyID(CollectionID);
 
-            listQuestion = Question_DAO.GetbyID(CollectionID);
+            listQuestion = Question_DAO.GetAllbyCollectionID(CollectionID);
 
         }
 
