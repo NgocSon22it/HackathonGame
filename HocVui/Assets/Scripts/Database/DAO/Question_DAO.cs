@@ -92,7 +92,7 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.LogError("SQL Exception: " + ex.Message);
                 }
                 finally
                 {

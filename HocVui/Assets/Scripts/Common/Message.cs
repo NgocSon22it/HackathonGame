@@ -10,7 +10,7 @@ namespace Assets.Scripts.Common
     {
         public static string UsernameNull = "Tên đăng nhập không được để trống";
         public static string UsernameExist = "Tên đăng nhập đã tồn tại";
-        public static string UsernameLength = "Tên đăng nhập có ít nhất 8 kí tự, không chứa khoảng trắng";
+        public static string UsernameLength = "Tên đăng nhập có ít nhất 4 kí tự, không chứa khoảng trắng";
         public static string PassLength = "Tên đăng nhập có ít nhất 8 kí tự, không chứa khoảng trắng";
         public static string PassNull = "Mật khẩu không được để trống";
         public static string Confirm = "Mật khẩu không khớp";
