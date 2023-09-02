@@ -91,7 +91,7 @@ namespace Assets.Scripts.Game
             {
                 ManagerPlayingUI.Instance.QuestionUI.GetComponent<QuestionPanel>()
                     .SetupQuestion(indexQuestion, listQuestion[indexQuestion - 1]);
-                this.time = listQuestion[indexQuestion - 1].Time;
+                this.time = listQuestion[indexQuestion - 1].Time + 20;
                 this.KeyAnswer = listQuestion[indexQuestion - 1].correctAnswerIndex;
                 Debug.Log("correctAnswerIndex " + listQuestion[indexQuestion - 1].correctAnswerIndex);
                 Debug.Log("Time " + listQuestion[indexQuestion - 1].Time);

@@ -19,8 +19,7 @@ public class Boat : MonoBehaviour
     private void Start()
     {
         InvokeRepeating(nameof(idle), 0, duration);
-        MoveAnswers(1);
-       
+        MoveAnswers(1);       
     }
 
     private void MoveAnswers(int Ans)

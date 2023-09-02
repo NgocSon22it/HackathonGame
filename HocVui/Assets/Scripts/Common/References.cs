@@ -42,9 +42,9 @@ public static class References
 
     public static Dictionary<string, int> RankingList = new Dictionary<string, int>()
     {
-        {"Son 0", 0 },
-        {"Son 1", 0 },
-        {"Son 2", 0 },
+        {"Son", 50 },
+        {"Son 1", 200 },
+        {"Son 2", 100 },
         {"Son 3", 0 },
     };
 

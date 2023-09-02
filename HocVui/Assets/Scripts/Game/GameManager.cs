@@ -12,6 +12,8 @@ using UnityEngine.PlayerLoop;
 using System.Linq;
 using System.Security.Cryptography;
 using Assets.Scripts.Database.Entity;
+using UnityEngine.InputSystem;
+using System.Xml;
 
 public class GameManager : MonoBehaviourPunCallbacks
 {
@@ -51,6 +53,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     [Header("Ranking")]
     public TMP_Text rankingText;
+    [SerializeField] GameObject Player_RankItem;
+    [SerializeField] Transform RankItem_Content;
+
+    private List<Transform> sortObjects = new List<Transform>();
+
+    public bool IsBusy;
 
     ExitGames.Client.Photon.Hashtable PlayerProperties = new ExitGames.Client.Photon.Hashtable();
 
@@ -63,7 +71,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     private void Start()
     {
         ConnectServer();
-    } 
+    }
 
     public void ConnectServer()
     {
@@ -87,6 +95,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         SetUp_Player();
+        InitRank();
     }
 
     public override void OnConnectedToMaster()
@@ -118,18 +127,19 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (Input.GetKeyDown(KeyCode.J) && PhotonNetwork.IsMasterClient)
         {
-            //Start_ShowResultPanel();
+            SubmitValue("Son", ResultIndex);
         }
 
         if (Input.GetKeyDown(KeyCode.K) && PhotonNetwork.IsMasterClient)
         {
-            ResultIndex = Random.Range(1, 5);
-            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable { { "Result", ResultIndex } });
+            Ranking_Sort();
         }
         if (Input.GetKeyDown(KeyCode.B) && PhotonNetwork.IsMasterClient)
         {
-            int a = Random.Range(0, 4);
-            SubmitValue("Son " + a, ResultIndex);
+            foreach (KeyValuePair<string, int> entry in References.RankingList)
+            {
+                Debug.Log($"{entry.Key} {entry.Value}");
+            }
         }
 
     }
@@ -153,6 +163,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void SetRandomPile()
     {
+
+        for (int i = 0; i < ListPile.Count; i++)
+        {
+            ListPile[i].gameObject.SetActive(false);
+        }
+
         for (int i = 0; i < ListPile.Count; i++)
         {
             ListPile[i].transform.position = GetRandomPosition();
@@ -216,6 +232,41 @@ public class GameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProperties);
     }
 
+    public void InitRank()
+    {
+        int rank = 1;
+        foreach (KeyValuePair<string, int> entry in References.RankingList)
+        {
+            Instantiate(Player_RankItem, RankItem_Content).GetComponent<Player_RankItem>().SetUp(rank ,entry.Key, entry.Value);
+            rank++;
+        }
+
+        // Populate the scoreObjects list with the children of the content.
+        foreach (Transform child in RankItem_Content)
+        {
+            sortObjects.Add(child);
+        }
+
+        Ranking_Sort();
+    }
+
+    public void Ranking_Sort()
+    {
+        var sortedDict = References.RankingList.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+        for (int i = 0; i < sortObjects.Count; i++)
+        {
+            sortObjects[i].gameObject.GetComponent<Player_RankItem>().SetUp(i + 1, sortedDict.ElementAt(i).Key, sortedDict.ElementAt(i).Value);
+        }
+    }
+
+    public void ReloadScore()
+    {
+        PlayerProperties["Score"] = References.Score;
+
+        PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProperties);
+    }
+
     public void SetResult()
     {
         if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Result", out object randomValueObj))
@@ -223,83 +274,62 @@ public class GameManager : MonoBehaviourPunCallbacks
             int randomValue = (int)randomValueObj;
             ResultTxt.text = randomValue.ToString();
         }
-        UpdateRanking();
     }
 
     public void SubmitValue(string playerName, int playerSelection)
     {
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Result", out object randomValueObj))
+        /*if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Result", out object randomValueObj))
+        {*/
+        //int randomValue = (int)randomValueObj;
+
+        if (playerSelection == ResultIndex)
         {
-            int randomValue = (int)randomValueObj;
-
-            if (playerSelection == randomValue)
-            {
-                AddScore(playerName, 100);
-            }
-            else
-            {
-                AddScore(playerName, 0);
-
-            }
+            AddScore(playerName, 100);
         }
+        else
+        {
+            AddScore(playerName, 0);
+
+
+        }
+        //}
     }
     public void AddScore(string PlayerName, int Score)
     {
         if (References.RankingList.ContainsKey(PlayerName))
         {
             References.RankingList[PlayerName] += Score;
+
         }
         else
         {
             References.RankingList.Add(PlayerName, Score);
+
         }
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "List", References.RankingList } });
     }
 
-    private void UpdateRanking()
-    {
-        // Sort the players by score in descending order.
-        Dictionary<string, int> a = (Dictionary<string, int>)PhotonNetwork.CurrentRoom.CustomProperties["List"];
-
-        var sortedRanking = a.OrderByDescending(pair => pair.Value);
-
-        // Create a ranking string.
-        string ranking = "Ranking:\n";
-        int rank = 1;
-
-        foreach (var entry in sortedRanking)
-        {
-            ranking += $"{rank}. {entry.Key} - {entry.Value} points\n";
-            rank++;
-        }
-
-        // Display the ranking in a Text UI element.
-        if (rankingText != null)
-        {
-            rankingText.text = ranking;
-        }
-    }
-
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        base.OnPlayerEnteredRoom(newPlayer);
-        UpdateRanking();
-    }
-
     public void ResetRound()
     {
-        FindAllPlayer();
 
-        // Call the remote method on all player objects
-        foreach (var playerObject in ListPlayer)
+        if (PhotonNetwork.IsMasterClient)
         {
-            playerObject.GetComponent<Player_Base>().CallReset();
-        }
+            FindAllPlayer();
 
-        foreach (var playerObject in ListPileBase)
-        {
-            playerObject.GetComponent<Pile_Base>().ResetData();
+            // Call the remote method on all player objects
+            foreach (var playerObject in ListPlayer)
+            {
+                playerObject.GetComponent<Player_Base>().CallReset();
+                playerObject.GetComponent<Player_Base>().PlayerAllUIInstance.GetComponent<Player_AllUI>().SelectedAnswer_Off();
+            }
+
+            foreach (var playerObject in ListPileBase)
+            {
+                playerObject.GetComponent<Pile_Base>().ResetData();
+            }
+
+            SetRandomPile();
         }
 
     }
