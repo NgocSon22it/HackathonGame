@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,6 +12,11 @@ public class PanelShowMassage : MonoBehaviour
     [SerializeField] LeanTweenType AnimationOut;
 
     Coroutine coroutine;
+
+    private void Start()
+    {
+        resetPositon();
+    }
     public void StartAnimation()
     {
         message.SetActive(true);
@@ -19,12 +25,25 @@ public class PanelShowMassage : MonoBehaviour
 
     IEnumerator animationShow()
     {
-        message.transform.position = new Vector3(-960f, 540f, 0);
-        LeanTween.moveX(message, 960f, durationIn).setEase(AnimationIn);
+        resetPositon();
+        LeanTween.moveLocal(message, new Vector3(150, 0, 0), durationIn).setEase(AnimationIn);
         yield return new WaitForSeconds(durationIn);
-        LeanTween.moveX(message, 2780f, durationOut).setEase(AnimationOut);
+        LeanTween.moveLocal(message, new Vector3(1920, 0, 0), durationOut).setEase(AnimationOut);
         yield return new WaitForSeconds(durationOut);
-        gameObject.SetActive(false);
+        StopAnimation();
 
+    }
+
+    private void StopAnimation()
+    {
+        gameObject.SetActive(false);
+        StopCoroutine(coroutine);
+
+        Playing_Manager.Instance.EndMessage();
+    }
+
+    private void resetPositon()
+    {
+        gameObject.transform.position = new Vector3(-1920f, 0, 0);
     }
 }

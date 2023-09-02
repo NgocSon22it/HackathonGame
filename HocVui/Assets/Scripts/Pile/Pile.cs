@@ -5,28 +5,34 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class Pile : MonoBehaviourPunCallbacks
+public class Pile : Pile_Common
 {
-    public float collectionRadius = 2.0f;
+    private float collectionRadius = 10.0f;
     private bool isActive = true;
+
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     private void OnMouseEnter()
     {
-        GameManager.Instance.PlayerManager.GetComponent<Player_Base>().MouseOverEffect_Pile_On(transform.position);
-
+        spriteRenderer.color = Color.red;
     }
 
     private void OnMouseExit()
     {
-        GameManager.Instance.PlayerManager.GetComponent<Player_Base>().MouseOverEffect_Pile_Off();
-
-
+        spriteRenderer.color = Color.white;
     }
+
     private void OnMouseDown()
     {
         if (IsPlayerCloseEnough())
         {
             CollectWood();
+            Debug.Log("dc");
+
+        }
+        else
+        {
+            Debug.Log(" K dc");
         }
     }
 
@@ -48,13 +54,6 @@ public class Pile : MonoBehaviourPunCallbacks
             isActive = (bool)stream.ReceiveNext();
             gameObject.SetActive(isActive);
         }
-    }
-
-    private bool IsPlayerCloseEnough()
-    {
-        float distance = Vector3.Distance(transform.position, GameManager.Instance.PlayerManager.transform.position);
-
-        return distance <= collectionRadius;
     }
 
     private void CollectWood()

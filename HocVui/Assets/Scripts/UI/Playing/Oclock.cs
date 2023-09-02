@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,8 +23,14 @@ public class Oclock : MonoBehaviour
     private float DefaultGoc;
     private float goc;
 
+    public static Oclock Instance;
 
-    private void Start()
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void Init()
     {
 
         RectTransform rt = bar.GetComponent<RectTransform>();
@@ -34,8 +41,11 @@ public class Oclock : MonoBehaviour
         DefaultGoc = 360f / (float)time;
         goc = 270f;
     }
-    public void run()
+
+    public void run(int time)
     {
+        this.time = time;
+        Init();
         gameObject.SetActive(true);
         Timer.SetActive(true);
         timer = StartCoroutine(Counter(time));
@@ -63,7 +73,7 @@ public class Oclock : MonoBehaviour
     {
         TimeOut.SetActive(true);
         text = StartCoroutine(InfinityFade(0.45f));
-        
+        close();
     }
 
     IEnumerator InfinityFade(float duration)
@@ -82,6 +92,7 @@ public class Oclock : MonoBehaviour
     {
         TimeOut.SetActive(false);
         StopCoroutine(text);
+        Playing_Manager.Instance.EndTimeAnswer();
     }
     IEnumerator Counter(float counter)
     {

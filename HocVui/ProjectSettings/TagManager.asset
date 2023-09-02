@@ -44,9 +44,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Ground
+    uniqueID: 2459118841
+    locked: 0
   - name: MainLayer
     uniqueID: 2676788273
     locked: 0
   - name: Bar
     uniqueID: 1197565583
+    locked: 0
+  - name: Video
+    uniqueID: 3284618521
     locked: 0

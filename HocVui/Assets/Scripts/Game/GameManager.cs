@@ -11,13 +11,18 @@ using ExitGames.Client.Photon;
 using UnityEngine.PlayerLoop;
 using System.Linq;
 using System.Security.Cryptography;
+using Assets.Scripts.Database.Entity;
 
-public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
+public class GameManager : MonoBehaviourPunCallbacks
 {
-    [SerializeField] GameObject player;
+    [SerializeField] GameObject PlayerPrefabs;
 
     [Header("Player")]
     public GameObject PlayerManager;
+
+    [SerializeField] Transform SpawnPosition;
+
+    [SerializeField] PolygonCollider2D CameraBox;
 
     [Header("Instance")]
     public static GameManager Instance;
@@ -31,24 +36,24 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     [SerializeField] Collider2D randomBounds;
     Vector2 minPosition, maxPosition;
     float randomX, randomY;
-    Vector2 randomPosition;
+    Vector3 randomPosition;
+
+    [Header("List PileBase")]
+    [SerializeField] public List<GameObject> ListPileBase;
 
     [Header("PlayerList")]
     GameObject[] ListPlayer;
     string PlayerTag = "Player";
 
-    [Header("Event")]
-    private const byte Start_CountDownEventCode = 1;
-    private const byte Start_ShowResultCode = 2;
-
     [Header("Result")]
     [SerializeField] TMP_Text ResultTxt;
-    int ResultIndex;
+    public int ResultIndex;
 
     [Header("Ranking")]
     public TMP_Text rankingText;
 
     ExitGames.Client.Photon.Hashtable PlayerProperties = new ExitGames.Client.Photon.Hashtable();
+
     private void Awake()
     {
         Instance = this;
@@ -57,14 +62,40 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     // Start is called before the first frame update
     private void Start()
     {
-        if (PhotonNetwork.IsMasterClient == false)
-        {
-            PlayerManager = PhotonNetwork.Instantiate("Player/" + player.name, new(0, 0, 0), Quaternion.identity);
-        }
-        else
-        {
-            Debug.Log("K co");
-        }
+        ConnectServer();
+    } 
+
+    public void ConnectServer()
+    {
+        PhotonNetwork.NickName = References.GenerateRandomString(10);
+        PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.EnableCloseConnection = true;
+        PhotonNetwork.JoinLobby();
+        Debug.Log(PhotonNetwork.NickName + " JoinLobby");
+        Debug.Log("Connect to Server");
+    }
+
+    public void SetUp_Player()
+    {
+        /*if (PhotonNetwork.IsMasterClient == false)
+        {*/
+        PlayerManager = PhotonNetwork.Instantiate("Player/" + PlayerPrefabs.name, SpawnPosition.position, Quaternion.identity);
+        PlayerManager.GetComponent<Player_Base>().CameraBox = CameraBox;
+
+
+    }
+    public override void OnJoinedRoom()
+    {
+        SetUp_Player();
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        RoomOptions roomOptions = new RoomOptions();
+        roomOptions.MaxPlayers = 0;
+        roomOptions.IsOpen = true;
+        roomOptions.BroadcastPropsChangeToAll = true;
+        PhotonNetwork.JoinOrCreateRoom("1", roomOptions, TypedLobby.Default);
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
@@ -82,12 +113,12 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (Input.GetKeyDown(KeyCode.H) && PhotonNetwork.IsMasterClient)
         {
-            Start_CountDownPanel();
+            SetRandomPile();
         }
 
         if (Input.GetKeyDown(KeyCode.J) && PhotonNetwork.IsMasterClient)
         {
-            Start_ShowResultPanel();
+            //Start_ShowResultPanel();
         }
 
         if (Input.GetKeyDown(KeyCode.K) && PhotonNetwork.IsMasterClient)
@@ -104,7 +135,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
     }
 
     #region Set Up Pile
-    public Vector2 GetRandomPosition()
+    public Vector3 GetRandomPosition()
     {
         // Get the bounds of the collider
         minPosition = randomBounds.bounds.min;
@@ -115,7 +146,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         randomY = Random.Range(minPosition.y, maxPosition.y);
 
         // Create a new position using the random coordinates
-        randomPosition = new Vector2(randomX, randomY);
+        randomPosition = new Vector3(randomX, randomY, -5);
 
         return randomPosition;
     }
@@ -125,6 +156,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         for (int i = 0; i < ListPile.Count; i++)
         {
             ListPile[i].transform.position = GetRandomPosition();
+            ListPile[i].transform.rotation = Quaternion.Euler(0f, 0f, Random.Range(0f, -240f));
+
             ListPile[i].gameObject.SetActive(true);
         }
     }
@@ -154,7 +187,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
         SetRandomPile();
     }
 
-    public void Start_CountDownPanel()
+    /*public void Start_CountDownPanel()
     {
         PhotonNetwork.RaiseEvent(Start_CountDownEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
@@ -175,7 +208,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IOnEventCallback
             SetResult();
 
         }
-    }
+    }*/
     public void SelectOption(int Index)
     {
         PlayerProperties["SelectOption"] = Index;

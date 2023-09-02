@@ -1,4 +1,5 @@
-﻿using ExitGames.Client.Photon;
+﻿using Assets.Scripts.Common;
+using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
 using System;
@@ -105,7 +106,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         else
         {
-            MessagePanel_On("Hãy chọn phòng!");
+            MessagePanel_On(Message.Lobby_ChooseRoom);
         }
     }
 
@@ -120,7 +121,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
             else
             {
-                JoinRoom_TypePasswordMessage.text = "Mật khẩu không đúng!";
+                JoinRoom_TypePasswordMessage.text = Message.Lobby_WrongPassword;
 
             }
         }
@@ -177,7 +178,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
                 }
                 else
                 {
-                    MessagePanel_On("Hãy nhập mật khẩu!");
+                    MessagePanel_On(Message.Lobby_RoomPassword);
                 }
 
             }
@@ -196,7 +197,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         }
         else
         {
-            MessagePanel_On("Hãy nhập tên phòng!");
+            MessagePanel_On(Message.Lobby_RoomName);
         }
     }
 
@@ -241,24 +242,24 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
 
     public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        MessagePanel_On("Phòng đã đầy!");
+        MessagePanel_On(Message.Lobby_RoomFull);
     }
 
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
-        MessagePanel_On("Gặp vấn đề khi tạo phòng, hãy thử lại!");
+        MessagePanel_On(Message.Lobby_RoomError);
     }
 
     public void LeaveRoom()
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            ConfirmPanel_On("Phòng sẽ giải tán nếu bạn thoát!");
+            ConfirmPanel_On(Message.Lobby_HostLeave);
             confirmType = Confirm_Type.StopHost;
         }
         else
         {
-            ConfirmPanel_On("Bạn có xác nhận rời phòng!");
+            ConfirmPanel_On(Message.Lobby_Leave);
             confirmType = Confirm_Type.Leave;
         }
     }
@@ -266,7 +267,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
         PhotonNetwork.LeaveRoom();
-        MessagePanel_On("Phòng đã giải tán!");
+        MessagePanel_On(Message.Lobby_RoomStop);
     }
     public override void OnLeftRoom()
     {
@@ -511,7 +512,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         if (photonEvent.Code == EventCode.StartGameEventCode)
         {
-            PhotonNetwork.LoadLevel("MainGame");
+            PhotonNetwork.LoadLevel("Play");
         }
 
         if (photonEvent.Code == EventCode.KickEventCode)

@@ -1,36 +1,89 @@
+using Assets.Scripts.Common;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Player_AllUI : MonoBehaviour
 {
     [Header("Pick up Pile")]
-    [SerializeField] GameObject PickUp_AlreadyMessage;
-    Coroutine PickUp_AlreadyCoroutine;
+    [SerializeField] GameObject Message_Panel;
+    [SerializeField] TMP_Text MainMessage;
 
-    public void PickUp_Already_Show()
+    [Header("Answer")]
+    [SerializeField] GameObject Answer_Panel;
+    [SerializeField] TMP_Text Answer_Message;
+
+    [Header("BuffInfo")]
+    [SerializeField] GameObject BuffInfo_Panel;
+    [SerializeField] TMP_Text BuffInfo_Message;
+
+    Coroutine MessageCoroutine;
+
+    public void Message_On(string message)
     {
-        if(PickUp_AlreadyCoroutine != null)
+        if (MessageCoroutine != null)
         {
-            StopCoroutine(PickUp_AlreadyCoroutine);
+            StopCoroutine(MessageCoroutine);
         }
 
-        PickUp_AlreadyCoroutine = StartCoroutine(PickUp_Already());
+        MessageCoroutine = StartCoroutine(Popup_Message(message));
     }
 
-    IEnumerator PickUp_Already()
+    IEnumerator Popup_Message(string message)
     {
-        PickUp_AlreadyMessage.SetActive(true);
+        MainMessage.text = message;
+        Message_Panel.SetActive(true);
 
         yield return new WaitForSeconds(3f);
 
-        PickUp_AlreadyMessage.SetActive(false);
+        Message_Panel.SetActive(false);
+    }
+
+    public void SelectedAnswer_On(int answer)
+    {
+        Answer_Message.text = Message.Game_SelectedAnswer + ShowAnswer(answer);
+        Answer_Panel.SetActive(true);
+    }
+
+    public void SelectedAnswer_Off()
+    {
+        Answer_Panel.SetActive(false);
+    }
+
+    public void BuffInfo_On(string info)
+    {
+        BuffInfo_Message.text += info + "\n";
+        BuffInfo_Panel.SetActive(true);
+    }
+
+    public void BuffInfo_Off()
+    {
+        Answer_Panel.SetActive(false);
+    }
+
+    public string ShowAnswer(int answer)
+    {
+        switch(answer)
+        {
+            case 1:
+                return "A";
+            case 2:
+                return "B";
+            case 3:
+                return "C";
+            case 4:
+                return "D";
+        }
+        return "0";
     }
 
     public void LeaveGame()
     {
         PhotonNetwork.LeaveRoom();
-        PhotonNetwork.LoadLevel("Lobby 1");
+        PhotonNetwork.LoadLevel("Lobby");
     }
+
+    
 }
