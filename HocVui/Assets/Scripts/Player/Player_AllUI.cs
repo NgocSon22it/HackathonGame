@@ -7,6 +7,9 @@ using UnityEngine;
 
 public class Player_AllUI : MonoBehaviour
 {
+    [Header("Setup")]
+    public Canvas canvas;
+
     [Header("Pick up Pile")]
     [SerializeField] GameObject Message_Panel;
     [SerializeField] TMP_Text MainMessage;
@@ -19,7 +22,23 @@ public class Player_AllUI : MonoBehaviour
     [SerializeField] GameObject BuffInfo_Panel;
     [SerializeField] TMP_Text BuffInfo_Message;
 
+    [Header("Setup")]
+    public GameObject PopupUI;
+
     Coroutine MessageCoroutine;
+
+    public static Player_AllUI Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+        // Set the render mode to "Screen Space - Overlay"
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        Camera mainCamera = Camera.main;
+        canvas.worldCamera = mainCamera;
+        // Set the sorting layer to "MainPlayer"
+        canvas.sortingLayerName = "MainPlayer";
+    }
 
     public void Message_On(string message)
     {
@@ -85,5 +104,9 @@ public class Player_AllUI : MonoBehaviour
         PhotonNetwork.LoadLevel("Lobby");
     }
 
-    
+    public void StartPopupResult(bool isCorrect, int score)
+    {
+        PopupUI.GetComponent<PopupResult>().run(isCorrect, score);
+    }
+
 }
