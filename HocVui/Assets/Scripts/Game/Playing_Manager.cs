@@ -20,6 +20,9 @@ namespace Assets.Scripts.Game
         [Header("Oclock")]
         public GameObject Oclock;
 
+        [Header("BXH")]
+        public GameObject BXH;
+
         public static Playing_Manager Instance;
 
         Collection_Entity collection;
@@ -137,12 +140,12 @@ namespace Assets.Scripts.Game
 
         public void ShowBXH()
         {
-            ManagerPlayingUI.Instance.ShowPanelBXH();
+            BXH.GetComponent<Panel_setting>().fadeIn();
         }
 
         public void EndBXH()
         {
-            ManagerPlayingUI.Instance.HidePanelBXH();
+            BXH.GetComponent<Panel_setting>().fadeOut();
             NextQuestion();
         }
 
