@@ -75,7 +75,6 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     [Header("Current Anwer")]
     public int CurrentAnswer;
-    public int Score;
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
         if (targetPlayer != null && targetPlayer.Equals(photonView.Owner))
@@ -83,11 +82,6 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             if (changedProps.ContainsKey("SelectOption"))
             {
                 CurrentAnswer = (int)changedProps["SelectOption"];
-            }
-
-            if (changedProps.ContainsKey("Score"))
-            {
-                Score = (int)changedProps["Score"];
             }
         }
     }

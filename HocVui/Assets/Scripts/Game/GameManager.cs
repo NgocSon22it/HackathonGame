@@ -23,6 +23,7 @@ public class GameManager : MonoBehaviourPunCallbacks
     public GameObject PlayerManager;
 
     [SerializeField] Transform SpawnPosition;
+    [SerializeField] List<int> list;
 
     [SerializeField] PolygonCollider2D CameraBox;
 
@@ -127,7 +128,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
         if (Input.GetKeyDown(KeyCode.J) && PhotonNetwork.IsMasterClient)
         {
-            SubmitValue("Son", ResultIndex);
+            SubmitValue(PhotonNetwork.NickName, ResultIndex);
         }
 
         if (Input.GetKeyDown(KeyCode.K) && PhotonNetwork.IsMasterClient)
@@ -234,10 +235,12 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void InitRank()
     {
+        References.RankingList.Add(PhotonNetwork.NickName, 0);
+
         int rank = 1;
         foreach (KeyValuePair<string, int> entry in References.RankingList)
         {
-            Instantiate(Player_RankItem, RankItem_Content).GetComponent<Player_RankItem>().SetUp(rank ,entry.Key, entry.Value);
+            Instantiate(Player_RankItem, RankItem_Content).GetComponent<Player_RankItem>().SetUp(rank, entry.Key, entry.Value);
             rank++;
         }
 
@@ -254,17 +257,12 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         var sortedDict = References.RankingList.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
 
+        list.Add(sortedDict.ElementAt(0).Value);
+
         for (int i = 0; i < sortObjects.Count; i++)
         {
             sortObjects[i].gameObject.GetComponent<Player_RankItem>().SetUp(i + 1, sortedDict.ElementAt(i).Key, sortedDict.ElementAt(i).Value);
         }
-    }
-
-    public void ReloadScore()
-    {
-        PlayerProperties["Score"] = References.Score;
-
-        PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProperties);
     }
 
     public void SetResult()
@@ -280,19 +278,19 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         /*if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Result", out object randomValueObj))
         {*/
-        //int randomValue = (int)randomValueObj;
+            int randomValue = (int)ResultIndex;
 
-        if (playerSelection == ResultIndex)
-        {
-            AddScore(playerName, 100);
-        }
-        else
-        {
-            AddScore(playerName, 0);
+            if (playerSelection == ResultIndex)
+            {
+                AddScore(playerName, 100);
+            }
+            else
+            {
+                AddScore(playerName, 0);
 
 
-        }
-        //}
+            }
+       // }
     }
     public void AddScore(string PlayerName, int Score)
     {
@@ -306,8 +304,12 @@ public class GameManager : MonoBehaviourPunCallbacks
             References.RankingList.Add(PlayerName, Score);
 
         }
+        foreach (KeyValuePair<string, int> entry in References.RankingList)
+        {
+            Debug.Log($"{entry.Key} {entry.Value}");
+        }
 
-        PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "List", References.RankingList } });
+        //PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "List", References.RankingList } });
     }
 
     public void ResetRound()
