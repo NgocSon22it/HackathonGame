@@ -121,7 +121,7 @@ namespace Assets.Scripts.Creator
 
         public void LoadHair(string ID, string path)
         {
-            HairSpr.sprite = Resources.Load<Sprite>(path + "_hair");
+            HairSpr.sprite = Resources.Load<Sprite>(path);
             HairID = ID;
         }
 

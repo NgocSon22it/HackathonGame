@@ -24,7 +24,7 @@ namespace Assets.Scripts.Creator.Item
             this.ID = ID;
             Name.text = name;
 
-            Image.sprite = Resources.Load<Sprite>(path);
+            Image.sprite = Resources.Load<Sprite>(path + "-item");
 
             Obj.onClick.AddListener(onClick);
         }
