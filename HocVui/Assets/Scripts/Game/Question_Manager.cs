@@ -29,12 +29,14 @@ public class Question_Manager : MonoBehaviour
     public VideoPlayer VideoObj;
     public GameObject UploadVideoIcon;
     public Button VideoPlayBtn;
+    public GameObject LoadingVideo;
+
 
     [Header("Upload Image")]
     public TMP_Text NameImage;
     public Button AddBtn;
     public GameObject UploadImageIcon;
-
+    public GameObject LoadingImage;
 
     [Header("Question Information")]
     [SerializeField] TMP_Text Information_Question;
@@ -60,11 +62,6 @@ public class Question_Manager : MonoBehaviour
     string ImageName;
 
 
-
-    //[Header("Error Message")]
-    //[SerializeField] GameObject Message_Panel;
-    //[SerializeField] TMP_Text Message_Text;
-
     [Header("Paging")]
     [SerializeField] TMP_Text CurrentPaging;
     int CurrentIndex;
@@ -80,6 +77,7 @@ public class Question_Manager : MonoBehaviour
     #region Setup question
     public void CreateQuestion()
     {
+        UploadImageIcon.SetActive(true);
         if (IsValidQuestion())
         {
 
@@ -322,7 +320,7 @@ public class Question_Manager : MonoBehaviour
     #region Upload Video
     public void SelectVideoUpload()
     {
-        /*//Use Unity's cross-platform file picker
+        //Use Unity's cross-platform file picker
         var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "mp4");
 
         if (!string.IsNullOrEmpty(FilePath))
@@ -332,8 +330,8 @@ public class Question_Manager : MonoBehaviour
             var nameFile = FilePath.Split("/");
             var FileName = nameFile[nameFile.Count() - 1];
             UploadVideo(FilePath, FileName);
-
-        }*/
+            LoadingVideo.GetComponent<PanelLoader>().StartLoader();
+        }
     }
 
     public void DeleteVideo()
@@ -396,6 +394,7 @@ public class Question_Manager : MonoBehaviour
         {
             if (!task.IsFaulted && !task.IsCanceled)
             {
+
                 string videoUrl = task.Result.ToString();
                 Debug.Log("Success to get video download URL." + videoUrl);
                 VideoObj.source = VideoSource.Url;
@@ -406,7 +405,7 @@ public class Question_Manager : MonoBehaviour
                 
                 VideoPlayBtn.gameObject.SetActive(true);
                 UploadVideoIcon.SetActive(false);
-
+                LoadingVideo.GetComponent<PanelLoader>().StopLoader();
             }
             else
             {
@@ -448,7 +447,7 @@ public class Question_Manager : MonoBehaviour
 
     public void SelectImageUpload()
     {
-       /* // Use Unity's cross-platform file picker
+        // Use Unity's cross-platform file picker
        var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
 
         if (!string.IsNullOrEmpty(FilePath))
@@ -462,8 +461,8 @@ public class Question_Manager : MonoBehaviour
             Debug.Log(ImageName);
 
             UploadImage(FilePath, FileName);
-
-        }*/
+            LoadingImage.GetComponent<PanelLoader>().StartLoader();
+        }
     }
     public void UploadImage(string FilePath, string FileName)
     {
@@ -531,6 +530,7 @@ public class Question_Manager : MonoBehaviour
         {
             Debug.Log("down success ");
             texture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+            LoadingImage.GetComponent<PanelLoader>().StopLoader();
             // setting the loaded image to our object
         }
     }

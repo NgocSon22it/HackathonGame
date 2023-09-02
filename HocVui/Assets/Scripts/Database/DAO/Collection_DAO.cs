@@ -22,7 +22,8 @@ namespace Assets.Scripts.Database.DAO
                 {
                     connection.Open();
                     SqlCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @UserID";
+                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @AccountID";
+                    cmd.Parameters.AddWithValue("@AccountID", AccountID);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);

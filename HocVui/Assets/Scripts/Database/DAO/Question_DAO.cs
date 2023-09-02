@@ -19,7 +19,7 @@ namespace Assets.Scripts.Database.DAO
                 try
                 {
                     SqlCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "INSERT INTO [dbo].[Question] ([CollectionID] ,[Content] ,[Time] ,[Scores] ,[Answer] ,[LinkImage])" +
+                    cmd.CommandText = "INSERT INTO [dbo].[Question] ([CollectionID] ,[Content] ,[Time] ,[Score] ,[Answer] ,[LinkImage])" +
                                          "VALUES (@CollectionID ,@Content ,0 ,0 ,@Answer ,@LinkImage)";
                     cmd.Parameters.Add("@CollectionID", SqlDbType.Int).Value = CollectionID;
                     cmd.Parameters.Add("@Content", SqlDbType.NVarChar);
@@ -29,6 +29,7 @@ namespace Assets.Scripts.Database.DAO
 
                     foreach (var i in List)
                     {
+                        i.rawImage = null;
                         var json = JsonUtility.ToJson(i);
                         Debug.Log("Serialized JSON: " + json);
 
@@ -40,11 +41,11 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.Log("SQL Exception: " + ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception: " + ex.Message);
+                    Debug.Log("Exception: " + ex.Message);
                 }
                 finally
                 {
@@ -53,7 +54,7 @@ namespace Assets.Scripts.Database.DAO
             }
         }
 
-        public static List<Question_Entity> GetbyID(int CollectionID)
+        public static List<Question_Entity> GetAllbyCollectionID(int CollectionID)
         {
             var list = new List<Question_Entity>();
             using (SqlConnection connection = new SqlConnection(ConnectionStr))
