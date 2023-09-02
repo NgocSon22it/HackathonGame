@@ -1,3 +1,4 @@
+using Assets.Scripts.Common;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ public class Spell_Manager : MonoBehaviour
     [SerializeField] Sprite DefaultContainer, SelectContainer;
     [SerializeField] List<Image> ListContainer;
     [SerializeField] List<Image> ListSpell;
+    [SerializeField] List<Image> ListSpellCooldown;
 
     [Header("SpellInformation")]
     [SerializeField] GameObject SpellInformation_Panel;
@@ -33,12 +35,6 @@ public class Spell_Manager : MonoBehaviour
     void Start()
     {
         SetUp_Spell();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public void SetUp_Spell()
@@ -63,29 +59,122 @@ public class Spell_Manager : MonoBehaviour
 
     public void SelectedSpell(int Index)
     {
-        foreach (Image image in ListContainer)
+        switch (References.ListSpell_Own[Index].Spell_Type)
         {
-            image.sprite = DefaultContainer;
+            case Spell_Type.ClickToUse:
+                SetUp_Spell_ClickToUse(Index);
+                break;
+            case Spell_Type.ConfirmToUse:
+                foreach (Image image in ListContainer)
+                {
+                    image.sprite = DefaultContainer;
+                }
+                ListContainer[Index].sprite = SelectContainer;
+                break;
         }
-
-        ListContainer[Index].sprite = SelectContainer;
     }
 
-    private void FindNonLocalPlayers()
-     {
-        // Find all GameObjects with the specified tag
-        GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-        // Iterate through each GameObject and check if PhotonView.isMine is false
-        foreach (GameObject player in players)
+    public void SetUp_Spell_ClickToUse(int Index)
+    {
+        if (References.ListSpell_Own[Index].IsUse == false)
         {
-            PhotonView photonView = player.GetComponent<PhotonView>();
-            if (photonView != null && !photonView.IsMine)
+            switch (References.ListSpell_Own[Index].Spell)
             {
-                // Add the GameObject to the list
-                ListPlayer.Add(player);
+                case Spell.FiftyFifty:
+                    FiftyFifty(Index);
+                    break;
+                case Spell.DoubleScore:
+                    DoubleScore(Index);
+                    break;
+                case Spell.TimeFreeze:
+                    TimeFreeze(Index);
+                    break;
+            }
+        }
+        else
+        {
+            GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+            .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+            Message_On(string.Format(Message.Game_SpellUseAlready, References.ListSpell_Own[Index].Name));
+
+        }
+
+    }
+
+    public void FiftyFifty(int Index)
+    {
+        References.ListSpell_Own[Index].IsUse = true;
+        ListSpellCooldown[Index].fillAmount = 1f;
+
+        List<int> listAnswer = new List<int>();
+        List<int> listRemove = new List<int>();
+        int randomIndex;
+
+        foreach (var value in GameManager.Instance.ListPileBase)
+        {
+            listAnswer.Add(value.GetComponent<Pile_Base>().answer);
+        }
+
+        listAnswer.Remove(GameManager.Instance.ResultIndex);
+
+        for (int i = 0; i < 2; i++)
+        {
+            randomIndex = Random.Range(0, listAnswer.Count);
+            listRemove.Add(listAnswer[randomIndex]);
+            listAnswer.Remove(listAnswer[randomIndex]);
+        }
+
+        foreach (var value in GameManager.Instance.ListPileBase)
+        {
+            value.GetComponent<Pile_Base>().SetUp_WrongAnswer(false);
+        }
+
+        foreach (var obj in GameManager.Instance.ListPileBase)
+        {
+            var script = obj.GetComponent<Pile_Base>();
+
+            // Check if the script value is in the valuesToCheck list
+            if (script != null && listRemove.Contains(script.answer))
+            {
+                script.SetUp_WrongAnswer(true);
             }
         }
     }
+
+    public void DoubleScore(int Index)
+    {
+        References.ListSpell_Own[Index].IsUse = true;
+        ListSpellCooldown[Index].fillAmount = 1f;
+
+        GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+            .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_X2Score);
+    }
+
+    public void TimeFreeze(int Index)
+    {
+        References.ListSpell_Own[Index].IsUse = true;
+        ListSpellCooldown[Index].fillAmount = 1f;
+
+        GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+            .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_TimeFreeze);
+    }
+
+
+    /* private void FindNonLocalPlayers()
+      {
+         // Find all GameObjects with the specified tag
+         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
+
+         // Iterate through each GameObject and check if PhotonView.isMine is false
+         foreach (GameObject player in players)
+         {
+             PhotonView photonView = player.GetComponent<PhotonView>();
+             if (photonView != null && !photonView.IsMine)
+             {
+                 // Add the GameObject to the list
+                 ListPlayer.Add(player);
+             }
+         }
+     }*/
 
 }

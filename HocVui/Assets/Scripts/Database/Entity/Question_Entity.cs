@@ -12,6 +12,7 @@ public class Question_Entity
     public int correctAnswerIndex;
     public Texture rawImage;
     public string LinkImage;
+    public int Time;
 
     public Question_Entity(string question, List<string> answerChoices, int correctIndex, Texture rawImage, string linkImage)
     {

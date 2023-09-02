@@ -3,25 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pile_Base : MonoBehaviourPunCallbacks
+public class Pile_Base : Pile_Common
 {
-    public float collectionRadius = 2.0f;
     private bool isActive;
     [SerializeField] GameObject IsPile;
-    [SerializeField] int Index;
+
+    [SerializeField] public int answer;
+
+    [SerializeField] GameObject Outline;
+
+    [SerializeField] GameObject WrongAnswer;
 
     private void OnMouseEnter()
     {
-        GameManager.Instance.PlayerManager.GetComponent<Player_Base>().MouseOverEffect_Pile_On(transform.position);
-
+        Outline.SetActive(true);
     }
 
     private void OnMouseExit()
     {
-        GameManager.Instance.PlayerManager.GetComponent<Player_Base>().MouseOverEffect_Pile_Off();
-
-
+        Outline.SetActive(false);
     }
+
     private void OnMouseDown()
     {
         if (IsPlayerCloseEnough())
@@ -50,13 +52,6 @@ public class Pile_Base : MonoBehaviourPunCallbacks
         }
     }
 
-    private bool IsPlayerCloseEnough()
-    {
-        float distance = Vector3.Distance(transform.position, GameManager.Instance.PlayerManager.transform.position);
-
-        return distance <= collectionRadius;
-    }
-
     private void PuttingPile()
     {
         Player_Base refer = GameManager.Instance.PlayerManager.GetComponent<Player_Base>();
@@ -71,6 +66,12 @@ public class Pile_Base : MonoBehaviourPunCallbacks
 
         }
 
-        refer.PuttingPile(Index);
+        refer.PuttingPile(answer);
     }
+
+    public void SetUp_WrongAnswer(bool value)
+    {
+        WrongAnswer.SetActive(value);
+    }
+    
 }
