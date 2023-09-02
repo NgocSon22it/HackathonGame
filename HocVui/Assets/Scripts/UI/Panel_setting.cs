@@ -30,7 +30,7 @@ public class Panel_setting : MonoBehaviour
     IEnumerator Waiting5f()
     {
         yield return new WaitForSeconds(5f);
-        Playing_Manager.Instance.EndBXH();
+        Playing_Manager.Instance.EndListResult();
 
     }
 

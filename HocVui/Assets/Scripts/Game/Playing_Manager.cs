@@ -32,6 +32,7 @@ namespace Assets.Scripts.Game
         private int indexQuestion = 1;
         private int time;
         private int KeyAnswer;
+        public bool isFinish = false;
 
         private void Awake()
         {
@@ -86,6 +87,7 @@ namespace Assets.Scripts.Game
 
         public void ControlQuestion()
         {
+            isFinish = (indexQuestion >= listQuestion.Count);
             if (indexQuestion <= listQuestion.Count)
             {
                 ManagerPlayingUI.Instance.QuestionUI.GetComponent<QuestionPanel>()
@@ -96,10 +98,9 @@ namespace Assets.Scripts.Game
                 Debug.Log("Time " + listQuestion[indexQuestion - 1].Time);
                 ShowQuestion();
             }
-
             else
             {
-                Debug.Log("End collection");
+                Debug.Log("End ControlQuestion");
             }
         }
 
@@ -130,29 +131,42 @@ namespace Assets.Scripts.Game
 
             if (References.SelectedAnswer == KeyAnswer)
             {
-                ManagerPlayingUI.Instance.StartPopupResult(true, References.TimeAnswer * 10);
+                Player_AllUI.Instance.StartPopupResult(true, References.TimeAnswer * 10);
             }
             else
             {
-                ManagerPlayingUI.Instance.StartPopupResult(false, References.TimeAnswer * 0);
+                Player_AllUI.Instance.StartPopupResult(false, References.TimeAnswer * 0);
             }
         }
 
-        public void ShowBXH()
+        public void ShowListResult()
         {
             BXH.GetComponent<Panel_setting>().fadeIn();
         }
 
-        public void EndBXH()
+        public void EndListResult()
         {
-            BXH.GetComponent<Panel_setting>().fadeOut();
-            NextQuestion();
+            if (indexQuestion < listQuestion.Count)
+            {
+                BXH.GetComponent<Panel_setting>().fadeOut();
+                NextQuestion();
+            }
         }
 
         public void NextQuestion()
         {
             ++indexQuestion;
             ControlQuestion();
+        }
+
+        public void ShowBXH()
+        {
+            ManagerPlayingUI.Instance.ShowPanelBXH();
+        }
+
+        public void EndBXH()
+        {
+            Debug.Log("End Collection");
         }
 
         #endregion
