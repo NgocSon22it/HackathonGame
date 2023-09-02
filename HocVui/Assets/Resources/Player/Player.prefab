@@ -1540,7 +1540,9 @@ MonoBehaviour:
   animator: {fileID: 6996134925189043938}
   player_Pool: {fileID: 6996134925189043956}
   PlayerAllUIPrefabs: {fileID: 5361401713192937681, guid: bcc2cb1cdaf7df643b0e6237fa2547ef, type: 3}
+  PlayerAllUIInstance: {fileID: 0}
   PlayerCameraPrefabs: {fileID: 6270172224663872036, guid: 1b799da7cc6ae654b8631fad5c698080, type: 3}
+  PlayerCameraInstance: {fileID: 0}
   MovingPoint: {fileID: 1916534659}
   aIPath: {fileID: 6996134925189043962}
   destinationSetter: {fileID: 6996134925189043961}
