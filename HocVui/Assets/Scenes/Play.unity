@@ -1385,6 +1385,7 @@ MonoBehaviour:
   answer: 2
   Outline: {fileID: 1498826808}
   WrongAnswer: {fileID: 2044084156}
+  Lock: {fileID: 0}
 --- !u!61 &126878408
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6839,8 +6840,8 @@ Transform:
   - {fileID: 521396778}
   - {fileID: 1011974686}
   - {fileID: 1583302769}
-  m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_Father: {fileID: 1758848487}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &753459406
 GameObject:
@@ -7258,7 +7259,7 @@ Transform:
   - {fileID: 1786865277}
   - {fileID: 1393918864}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &798486443
 GameObject:
@@ -9216,7 +9217,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 988392249}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.91, y: -0.057419777, z: -28.178625}
+  m_LocalPosition: {x: -15.45, y: -7.06, z: -28.178625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14165,6 +14166,7 @@ MonoBehaviour:
   answer: 4
   Outline: {fileID: 451272744}
   WrongAnswer: {fileID: 1980358207}
+  Lock: {fileID: 0}
 --- !u!61 &1393918866
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14453,7 +14455,7 @@ SpriteRenderer:
   m_Size: {x: 6.18, y: 4.81}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!4 &1420556827
@@ -18640,7 +18642,7 @@ RectTransform:
   m_GameObject: {fileID: 1751537113}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0}
-  m_LocalScale: {x: 900, y: 730, z: 1}
+  m_LocalScale: {x: 1080, y: 640, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2128463853}
@@ -18869,7 +18871,7 @@ Transform:
   m_Children:
   - {fileID: 719028539}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1769564780
 GameObject:
@@ -19007,6 +19009,7 @@ MonoBehaviour:
   answer: 3
   Outline: {fileID: 1599093022}
   WrongAnswer: {fileID: 2001894044}
+  Lock: {fileID: 0}
 --- !u!61 &1786865279
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -19346,6 +19349,7 @@ MonoBehaviour:
   answer: 1
   Outline: {fileID: 1600871267}
   WrongAnswer: {fileID: 878974308}
+  Lock: {fileID: 0}
 --- !u!61 &1806612958
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -21914,6 +21918,7 @@ MonoBehaviour:
   PanelVideo: {fileID: 178335628}
   Oclock: {fileID: 1103155754}
   BXH: {fileID: 30509271}
+  isFinish: 0
 --- !u!1 &2081821015
 GameObject:
   m_ObjectHideFlags: 0
@@ -22464,7 +22469,7 @@ RectTransform:
   m_GameObject: {fileID: 2128463852}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1751537114}
@@ -22473,8 +22478,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1000, y: 800}
+  m_AnchoredPosition: {x: -0.0000076293945, y: 0.000011444092}
+  m_SizeDelta: {x: 1215.13, y: 743.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2128463854
 MonoBehaviour:
