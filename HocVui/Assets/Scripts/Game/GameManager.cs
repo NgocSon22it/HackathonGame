@@ -287,4 +287,21 @@ public class GameManager : MonoBehaviourPunCallbacks
         UpdateRanking();
     }
 
+    public void ResetRound()
+    {
+        FindAllPlayer();
+
+        // Call the remote method on all player objects
+        foreach (var playerObject in ListPlayer)
+        {
+            playerObject.GetComponent<Player_Base>().CallReset();
+        }
+
+        foreach (var playerObject in ListPileBase)
+        {
+            playerObject.GetComponent<Pile_Base>().ResetData();
+        }
+
+    }
+
 }

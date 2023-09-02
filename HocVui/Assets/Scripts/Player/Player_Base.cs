@@ -73,14 +73,14 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     [Header("Current Spell")]
     public Spell_Entity Spell_Entity;
 
-    [Header("Select Question")]
-    public int SelectionIndex;
-
+    [Header("Current Anwer")]
+    public int a;
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
         if (targetPlayer != null && targetPlayer.Equals(photonView.Owner))
         {
-            SelectionIndex = (int)changedProps["SelectOption"];
+            References.SelectedAnswer = (int)changedProps["SelectOption"];
+            a = References.SelectedAnswer;
         }
     }
 
@@ -275,6 +275,21 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         {
             Pile_Handle.sprite = null;
         }
+
+    }
+
+    public void CallReset()
+    {
+        photonView.RPC(nameof(ResetAfterRound), RpcTarget.All);
+    }
+
+
+    [PunRPC]
+    public void ResetAfterRound()
+    {
+        Pile_Handle.sprite = null;
+        IsPile = false;
+        IsPileBase = false;
     }
 
     [PunRPC]

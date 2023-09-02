@@ -134,4 +134,10 @@ public class Pile_Base : Pile_Common
         Lock.gameObject.SetActive(isLock);
     }
 
+    public void ResetData()
+    {
+        isActive = false;
+        photonView.RPC(nameof(SyncActivation), RpcTarget.All, isActive);
+    }
+
 }
