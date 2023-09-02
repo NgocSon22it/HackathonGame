@@ -1,4 +1,4 @@
-using Assets.Scripts.Common;
+﻿using Assets.Scripts.Common;
 using Assets.Scripts.Database.Entity;
 using Cinemachine;
 using Pathfinding;
@@ -22,6 +22,9 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     [SerializeField] RectTransform UI_Transform;
     [SerializeField] TMP_Text PlayerNameTxt;
     [SerializeField] UnityEngine.UI.Slider BlockProgress;
+
+    [Header("OutLine")]
+    [SerializeField] GameObject PlayerOutLine;
 
     [Header("Component")]
     [SerializeField] public string playerName;
@@ -67,8 +70,11 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     private float targetValue;
     private float startTime;
 
+    [Header("Current Spell")]
+    public Spell_Entity Spell_Entity;
+
     [Header("Select Question")]
-    [SerializeField] public int SelectionIndex;
+    public int SelectionIndex;
 
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
@@ -163,23 +169,32 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     private void OnMouseOver()
     {
-        if (!photonView.IsMine)
+        if (photonView.IsMine)
         {
             isMouseOver = true;
+            PlayerOutLine.SetActive(true);
         }
     }
 
     private void OnMouseExit()
     {
         isMouseOver = false;
-
+        PlayerOutLine.SetActive(false);
     }
 
     private void OnMouseDown()
     {
-        if (isMouseOver)
+        if (isMouseOver && Spell_Entity != null)
         {
-            photonView.RPC(nameof(BlockPlayer), RpcTarget.All);
+            if (Spell_Entity.Spell_Target == Spell_Target.Player)
+            {
+                photonView.RPC(nameof(BlockPlayer), RpcTarget.All);
+            }
+            else if (Spell_Entity.Spell_Target == Spell_Target.PileBase)
+            {
+                PlayerAllUIInstance.GetComponent<Player_AllUI>()
+                    .Message_On(string.Format(Message.Game_WrongTarget, Spell_Entity.Name, "Bãi cắm cọc"));
+            }
         }
     }
 
@@ -201,16 +216,6 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             }
         }
     }
-
-    public void Click(InputAction.CallbackContext context)
-    {
-        if (context.performed && photonView.IsMine)
-        {
-
-
-        }
-    }
-
 
     public bool GetIsPile()
     {
@@ -280,7 +285,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         {
             StopCoroutine(BlockPlayer_Coroutine);
         }
-
+        Spell_Entity = null;
+        Spell_Manager.Instance.SetUp_SkillUse();
         BlockPlayer_Coroutine = StartCoroutine(BlockPlayer_Start());
 
     }

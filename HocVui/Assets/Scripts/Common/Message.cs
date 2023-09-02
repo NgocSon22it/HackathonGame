@@ -32,12 +32,10 @@ namespace Assets.Scripts.Common
         public static string Buff_X2Score = "Nhận gấp đôi số điểm cho câu hỏi này";
         public static string Buff_TimeFreeze = "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này";
 
-
-
         public static string Game_SpellUseAlready = "Phép bổ trợ {0} đã sử dụng rồi";
 
-
-
+        public static string Game_WrongTarget = "Phép bổ trợ {0} chỉ sử dụng lên {1}";
+        public static string Game_PileBaseLock = "Bãi cắm cọc đang bị khóa!";
 
         public static string Lobby_RoomName = "Hãy nhập tên phòng!";
         public static string Lobby_ChooseRoom = "Hãy chọn phòng!";
