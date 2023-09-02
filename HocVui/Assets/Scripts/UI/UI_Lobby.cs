@@ -1,7 +1,9 @@
+using Assets.Scripts.Common;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UI_Lobby : MonoBehaviour
 {
@@ -56,5 +58,10 @@ public class UI_Lobby : MonoBehaviour
     private void hide()
     {
         gameObject.SetActive(false);
+    }
+
+    public void CustomPLayer()
+    {
+        SceneManager.LoadScene(Scenes.Creator);
     }
 }
