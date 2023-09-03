@@ -25,6 +25,10 @@ namespace Assets.Scripts.Game
         [Header("BXH")]
         public GameObject BXH;
 
+        [Header("Control Button")]
+        public GameObject ControlBtn;
+        public GameObject NextBtn;
+
         public static Playing_Manager Instance;
 
         Collection_Entity collection;
@@ -47,6 +51,11 @@ namespace Assets.Scripts.Game
 
             listQuestion = Question_DAO.GetAllbyCollectionID(CollectionID);
 
+            ControlBtn.SetActive(false);
+            if (PhotonNetwork.IsMasterClient)
+            {
+                ControlBtn.SetActive(true);
+            }
         }
 
         public void StartGame()
@@ -127,7 +136,14 @@ namespace Assets.Scripts.Game
         public void EndTimeAnswer()
         {
             Debug.Log("End Time Answer");
-            ShowResult();
+            if (PhotonNetwork.IsMasterClient == false)
+            {
+                ShowResult();
+            }
+            else
+            {
+                ShowListResult();
+            }
         }
 
         public void ShowResult()
@@ -137,14 +153,14 @@ namespace Assets.Scripts.Game
                 if (References.SelectedAnswer == KeyAnswer)
                 {
                     GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
-                .PlayerAllUIInstance.GetComponent<Player_AllUI>().
-                StartPopupResult(true, References.TimeAnswer * 10);
+                        .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+                        StartPopupResult(true, References.TimeAnswer * 10);
                 }
                 else
                 {
                     GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
-                .PlayerAllUIInstance.GetComponent<Player_AllUI>().
-                StartPopupResult(false, References.TimeAnswer * 0);
+                        .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+                        StartPopupResult(false, References.TimeAnswer * 0);
                 }
             }
         }
@@ -153,21 +169,37 @@ namespace Assets.Scripts.Game
         {
             GameManager.Instance.Ranking_Sort();
             BXH.GetComponent<Panel_setting>().fadeIn();
-        }
 
-        public void EndListResult()
-        {
-            if (indexQuestion < listQuestion.Count)
+            if (PhotonNetwork.IsMasterClient == true)
             {
-                BXH.GetComponent<Panel_setting>().fadeOut();
-                NextQuestion();
+                StartCoroutine(Waiting5f());
             }
         }
 
+        IEnumerator Waiting5f()
+        {
+            yield return new WaitForSeconds(5f);
+            NextBtn.SetActive(true);
+        }
+
+        //public void EndListResult()
+        //{
+        //    if (indexQuestion < listQuestion.Count)
+        //    {
+        //        BXH.GetComponent<Panel_setting>().fadeOut();
+        //        NextQuestion();
+        //    }
+        //}
+
         public void NextQuestion()
         {
-            ++indexQuestion;
-            ControlQuestion();
+            if (indexQuestion < listQuestion.Count)
+            {
+                NextBtn.SetActive(false);
+                BXH.GetComponent<Panel_setting>().fadeOut();
+                ++indexQuestion;
+                ControlQuestion();
+            }
         }
 
         public void ShowBXH()

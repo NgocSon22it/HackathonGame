@@ -18,7 +18,7 @@ public class Panel_setting : MonoBehaviour
         menu.transform.localScale = Vector3.zero;
         LeanTween.scale(menu, Vector3.one, duration).setEase(typeOpen);
 
-        StartCoroutine(Waiting5f());
+        //StartCoroutine(Waiting5f());
     }
 
     public void fadeOut()
@@ -27,12 +27,12 @@ public class Panel_setting : MonoBehaviour
         Invoke(nameof(close), duration);
     }
 
-    IEnumerator Waiting5f()
-    {
-        yield return new WaitForSeconds(5f);
-        Playing_Manager.Instance.EndListResult();
+    //IEnumerator Waiting5f()
+    //{
+    //    yield return new WaitForSeconds(5f);
+    //    Playing_Manager.Instance.EndListResult();
 
-    }
+    //}
 
     public void open()
     {
