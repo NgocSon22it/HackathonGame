@@ -45,3 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MasterCamera: {fileID: 6856317532798008215, guid: 11926b298aa23f248a8b64d8cf0d2585, type: 3}
+  AllUI: {fileID: 5361401713192937681, guid: f94a5d9308256474fba7a9726d355667, type: 3}

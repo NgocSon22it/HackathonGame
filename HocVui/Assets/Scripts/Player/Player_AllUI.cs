@@ -29,9 +29,13 @@ public class Player_AllUI : MonoBehaviour
 
     public static Player_AllUI Instance;
 
+    [Header("Panel")]
+    [SerializeField] GameObject SpellPanel;
+
     private void Awake()
     {
         Instance = this;
+        SpellPanel.SetActive((bool)PhotonNetwork.CurrentRoom.CustomProperties["UseSpell"]);
         // Set the render mode to "Screen Space - Overlay"
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
         Camera mainCamera = Camera.main;

@@ -11,11 +11,13 @@ public class MasterClient : MonoBehaviour
     private float targetX;     // Stores the target X position for the object
 
     [SerializeField] GameObject MasterCamera;
+    [SerializeField] GameObject AllUI;
 
     GameObject CameraInstance;
     private void Start()
     {    
         CameraInstance = Instantiate(MasterCamera);
+        Instantiate(AllUI);
         CameraInstance.GetComponent<CinemachineVirtualCamera>().m_Follow = gameObject.transform;
         CameraInstance.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D = GameManager.Instance.CameraBox;
     }

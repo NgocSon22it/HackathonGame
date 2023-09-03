@@ -20,5 +20,7 @@ public static class EventCode
 
     public const byte Play_ResetBoat = 7;
 
+    public const byte Play_BoatStart = 8;
+
 
 }

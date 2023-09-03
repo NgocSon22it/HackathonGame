@@ -27,6 +27,7 @@ public class Spell_Manager : MonoBehaviour
     List<GameObject> ListPlayer = new List<GameObject>();
     string PlayerTag = "Player";
 
+
     int CurrentSelect = -1;
 
     private void Awake()
@@ -46,6 +47,7 @@ public class Spell_Manager : MonoBehaviour
         {
             ListSpell[i].sprite = Resources.Load<Sprite>(References.ListSpell_Own[i].Image);
         }
+
     }
 
     public void SpellInformation_On(int Index)
