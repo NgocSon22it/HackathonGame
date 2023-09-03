@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Database.DAO
 {
@@ -40,7 +41,7 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.LogError("SQL Exception: " + ex.Message);
                 }
                 finally
                 {

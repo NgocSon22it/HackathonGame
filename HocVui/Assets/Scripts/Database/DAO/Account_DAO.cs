@@ -29,11 +29,11 @@ public static class Account_DAO
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("SQL Exception: " + ex.Message);
+                Debug.LogError("SQL Exception: " + ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + ex.Message);
+                Debug.LogError("Exception: " + ex.Message);
             }
             finally
             {
@@ -78,7 +78,7 @@ public static class Account_DAO
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("SQL Exception: " + ex.Message);
+                Debug.LogError("SQL Exception: " + ex.Message);
             }
             finally
             {
@@ -108,7 +108,7 @@ public static class Account_DAO
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("SQL Exception: " + ex.Message);
+                Debug.LogError("SQL Exception: " + ex.Message);
             }
             finally
             {
@@ -139,7 +139,7 @@ public static class Account_DAO
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("SQL Exception: " + ex.Message);
+                Debug.LogError("SQL Exception: " + ex.Message);
             }
             finally
             {
@@ -176,11 +176,11 @@ public static class Account_DAO
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("SQL Exception: " + ex.Message);
+                Debug.LogError("SQL Exception: " + ex.Message);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Exception: " + ex.Message);
+                Debug.LogError("Exception: " + ex.Message);
             }
             finally
             {

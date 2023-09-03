@@ -42,7 +42,7 @@ namespace Assets.Scripts.Game
         {
             collection = Collection_DAO.GetbyID(CollectionID);
 
-            listQuestion = Question_DAO.GetbyID(CollectionID);
+            listQuestion = Question_DAO.GetAllbyCollectionID(CollectionID);
 
         }
 
@@ -128,7 +128,6 @@ namespace Assets.Scripts.Game
 
         public void ShowResult()
         {
-
             if (References.SelectedAnswer == KeyAnswer)
             {
                 Player_AllUI.Instance.StartPopupResult(true, References.TimeAnswer * 10);
@@ -141,6 +140,7 @@ namespace Assets.Scripts.Game
 
         public void ShowListResult()
         {
+            GameManager.Instance.Ranking_Sort();
             BXH.GetComponent<Panel_setting>().fadeIn();
         }
 
@@ -160,7 +160,7 @@ namespace Assets.Scripts.Game
         }
 
         public void ShowBXH()
-        {
+        {            
             ManagerPlayingUI.Instance.ShowPanelBXH();
         }
 
