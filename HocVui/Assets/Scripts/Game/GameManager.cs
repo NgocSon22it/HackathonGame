@@ -82,7 +82,7 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void SetUp_Player()
     {
-        if (PhotonNetwork.IsMasterClient != false)
+        if (PhotonNetwork.IsMasterClient == false)
         {
             PlayerManager = PhotonNetwork.Instantiate("Player/" + PlayerPrefabs.name, SpawnPosition.position, Quaternion.identity);
             PlayerManager.GetComponent<Player_Base>().CameraBox = CameraBox;
