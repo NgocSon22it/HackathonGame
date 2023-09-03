@@ -1,4 +1,7 @@
 using Assets.Scripts.Game;
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,6 +59,16 @@ public class Boat : MonoBehaviour
     private void next()
     {
         Playing_Manager.Instance.ShowResultBoat();
+    }
+
+    public void ResetBoatPosition()
+    {
+        transform.position = new Vector3(28.05f, 0.38f,0);
+    }
+
+    public void ResetBoat()
+    {
+        PhotonNetwork.RaiseEvent(EventCode.Play_ResetBoat, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }
 
 

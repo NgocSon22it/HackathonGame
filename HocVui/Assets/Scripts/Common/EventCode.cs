@@ -18,4 +18,7 @@ public static class EventCode
 
     public const byte Play_ShowVideo = 6;
 
+    public const byte Play_ResetBoat = 7;
+
+
 }

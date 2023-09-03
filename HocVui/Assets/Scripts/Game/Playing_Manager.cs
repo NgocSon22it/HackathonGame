@@ -271,6 +271,10 @@ namespace Assets.Scripts.Game
                 PanelVideo.GetComponent<PanelVideo>().show(collection.LinkVideo);
 
             }
+            else if (photonEvent.Code == EventCode.Play_ResetBoat)
+            {
+                Boat.Instance.ResetBoatPosition();
+            }
 
         }
 

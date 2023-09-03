@@ -212,6 +212,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             {
                 playerObject.GetComponent<Pile_Base>().ResetData();
             }
+            Boat.Instance.ResetBoat();
         }
 
 

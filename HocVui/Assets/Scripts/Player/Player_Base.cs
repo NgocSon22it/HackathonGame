@@ -359,6 +359,9 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(transform.localScale);
             stream.SendNext(UI_Transform.localScale);
 
+            stream.SendNext(IsPile);
+            stream.SendNext(IsPileBase);
+
             stream.SendNext(aIPath.canMove);
 
 
@@ -368,6 +371,9 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
             realPosition = (Vector3)stream.ReceiveNext();
             transform.localScale = (Vector3)stream.ReceiveNext();
             UI_Transform.localScale = (Vector3)stream.ReceiveNext();
+
+            IsPile = (bool)stream.ReceiveNext();
+            IsPileBase = (bool)stream.ReceiveNext();
 
             aIPath.canMove = (bool)stream.ReceiveNext();
 
