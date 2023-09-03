@@ -1562,7 +1562,6 @@ MonoBehaviour:
     Spell_Type: 0
     Spell_Target: 0
     IsUse: 0
-  CurrentAnswer: 0
 --- !u!114 &6996134925189043956
 MonoBehaviour:
   m_ObjectHideFlags: 0

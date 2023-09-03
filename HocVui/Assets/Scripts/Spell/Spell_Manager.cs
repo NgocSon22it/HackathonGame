@@ -185,6 +185,7 @@ public class Spell_Manager : MonoBehaviour
         References.ListSpell_Own[Index].IsUse = true;
         ListSpellCooldown[Index].fillAmount = 1f;
 
+        References.X2 = 2;
         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
             .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_X2Score);
     }
@@ -193,6 +194,7 @@ public class Spell_Manager : MonoBehaviour
     {
         References.ListSpell_Own[Index].IsUse = true;
         ListSpellCooldown[Index].fillAmount = 1f;
+        References.TimeFreeze = true;
 
         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
             .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_TimeFreeze);
@@ -205,22 +207,5 @@ public class Spell_Manager : MonoBehaviour
         ListContainer[CurrentSelect].sprite = DefaultContainer;
     }
 
-
-    /* private void FindNonLocalPlayers()
-      {
-         // Find all GameObjects with the specified tag
-         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-         // Iterate through each GameObject and check if PhotonView.isMine is false
-         foreach (GameObject player in players)
-         {
-             PhotonView photonView = player.GetComponent<PhotonView>();
-             if (photonView != null && !photonView.IsMine)
-             {
-                 // Add the GameObject to the list
-                 ListPlayer.Add(player);
-             }
-         }
-     }*/
 
 }

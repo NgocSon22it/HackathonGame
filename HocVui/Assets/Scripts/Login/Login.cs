@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Common;
+using Photon.Pun;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
@@ -43,6 +44,11 @@ namespace Assets.Scripts.Login
                 References.account = Account_DAO.Login(usernametxt, passtxt);
                 if (References.account != null)
                 {
+                    PhotonNetwork.NickName = References.account.Name;
+                    PhotonNetwork.ConnectUsingSettings();
+                    PhotonNetwork.EnableCloseConnection = true;
+                    PhotonNetwork.JoinLobby();
+
                     if (References.account.IsFirst) SceneManager.LoadScene(Scenes.Creator);
                     else SceneManager.LoadScene(Scenes.Lobby);
                 }
