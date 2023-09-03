@@ -4,20 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Assets.Scripts.Database.Entity
+[Serializable]
+public class Account_Entity
 {
-    public class Account_Entity
-    {
-        public int Id { get; set; } 
-        public string Name { get; set; }
-        public string Password { get; set; }
-        public string Username { get; set; }
-        public int RoleID { get; set; }
-        public string HairID { get; set; }
-        public string EyeID { get; set; }
-        public string SkinID { get; set; }
-        public string MouthID { get; set; }
-        public bool IsFirst { get; set; }
+    public int Id;
+    public string Name;
+    public string Password;
+    public string Username;
+    public int RoleID;
+    public string HairID;
+    public string EyeID;
+    public string SkinID;
+    public string MouthID;
+    public bool IsFirst;
 
-    }
 }
+

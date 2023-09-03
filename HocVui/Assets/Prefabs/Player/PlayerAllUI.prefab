@@ -3426,6 +3426,7 @@ MonoBehaviour:
   BuffInfo_Panel: {fileID: 5975594697410243565}
   BuffInfo_Message: {fileID: 1404315969333845985}
   PopupUI: {fileID: 1472261711}
+  SpellPanel: {fileID: 5361401714000442772}
 --- !u!1 &5361401713322495571
 GameObject:
   m_ObjectHideFlags: 0
