@@ -47,6 +47,8 @@ namespace Assets.Scripts.Creator
 
             if (References.account != null)
             {
+                References.account = Account_DAO.GetLayout(References.account.Username);
+                
                 Name.text = References.account.Name;
                 Debug.Log(References.account.HairID + " - " + References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
                 Debug.Log(References.account.EyeID + " - " + References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
