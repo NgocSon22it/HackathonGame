@@ -7,18 +7,24 @@ using UnityEngine;
 
 public static class References
 {
-    public static Account_Entity account;
-    //public static Account_Entity account = new Account_Entity
-    //{
-    //    Id = 4,
-    //    Username = "thienthien"
-    //};
+    //public static Account_Entity account;
+    public static Account_Entity account = new Account_Entity
+    {
+        Id = 4,
+        Username = "thienthien"
+    };
 
 
-    public static int SelectedAnswer = 0;
+    public static int SelectedAnswer = -1;
     public static int Streak = 0;
     public static int Score = 0;
-    public static int TimeAnswer = 30;
+    public static int TimeAnswer = 0;
+
+
+
+    public static int X2 = 1;
+    public static bool TimeFreeze = false;
+
 
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {

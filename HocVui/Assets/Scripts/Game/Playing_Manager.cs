@@ -9,7 +9,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Video;
+using static UnityEngine.EventSystems.EventTrigger;
 
 namespace Assets.Scripts.Game
 {
@@ -18,6 +20,7 @@ namespace Assets.Scripts.Game
         [Header("Show Video")]
         //public VideoPlayer VideoObj;
         public GameObject PanelVideo;
+        public GameObject PanelVideoBtn;
 
         [Header("Oclock")]
         public GameObject Oclock;
@@ -40,13 +43,21 @@ namespace Assets.Scripts.Game
         private int KeyAnswer;
         public bool isFinish = false;
 
+
         private void Awake()
         {
             Instance = this;
         }
 
+        private void Start()
+        {
+            int Id = (int)PhotonNetwork.CurrentRoom.CustomProperties["CollectionID"];
+            Init(Id);
+        }
+
         public void Init(int CollectionID)
         {
+            time = (int)PhotonNetwork.CurrentRoom.CustomProperties["AnswerTime"];
             collection = Collection_DAO.GetbyID(CollectionID);
 
             listQuestion = Question_DAO.GetAllbyCollectionID(CollectionID);
@@ -55,6 +66,11 @@ namespace Assets.Scripts.Game
             if (PhotonNetwork.IsMasterClient)
             {
                 ControlBtn.SetActive(true);
+            }
+
+            if(collection.LinkVideo != null)
+            {
+                PanelVideoBtn.SetActive(true);
             }
         }
 
@@ -74,24 +90,24 @@ namespace Assets.Scripts.Game
 
         public void EndMessage()
         {
-            if (collection.LinkVideo != null)
-            {
-                ShowVideo(collection.LinkVideo);
-            }
+            ControlQuestion();
         }
         #endregion
 
         #region Control Video 
 
-        public void ShowVideo(string LinkVideo)
+        public void ShowVideo()
         {
-            PanelVideo.GetComponent<PanelVideo>().show(LinkVideo);
+
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.RaiseEvent(EventCode.Play_ShowVideo, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+            }
         }
 
         public void CloseVideo()
         {
             Debug.Log("CloseVideo()");
-            ControlQuestion();
         }
         #endregion
 
@@ -104,7 +120,6 @@ namespace Assets.Scripts.Game
             {
                 ManagerPlayingUI.Instance.QuestionUI.GetComponent<QuestionPanel>()
                     .SetupQuestion(indexQuestion, listQuestion[indexQuestion - 1]);
-                this.time = listQuestion[indexQuestion - 1].Time;
                 this.KeyAnswer = listQuestion[indexQuestion - 1].correctAnswerIndex;
                 Debug.Log("correctAnswerIndex " + listQuestion[indexQuestion - 1].correctAnswerIndex);
                 Debug.Log("Time " + listQuestion[indexQuestion - 1].Time);
@@ -135,6 +150,11 @@ namespace Assets.Scripts.Game
         }
         public void EndTimeAnswer()
         {
+            Boat.Instance.MoveAnswers(KeyAnswer);
+        }
+
+        public void ShowResultBoat()
+        {
             Debug.Log("End Time Answer");
             if (PhotonNetwork.IsMasterClient == false)
             {
@@ -142,7 +162,7 @@ namespace Assets.Scripts.Game
             }
             else
             {
-                ShowListResult();
+                Invoke(nameof(ShowListResult), 2f);
             }
         }
 
@@ -152,17 +172,33 @@ namespace Assets.Scripts.Game
             {
                 if (References.SelectedAnswer == KeyAnswer)
                 {
-                    GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+                    if (References.TimeFreeze)
+                    {
+                        GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
                         .PlayerAllUIInstance.GetComponent<Player_AllUI>().
-                        StartPopupResult(true, References.TimeAnswer * 10);
+                        StartPopupResult(true, References.TimeAnswer * 10 * References.X2);
+                        GameManager.Instance.AddScore(PhotonNetwork.NickName, (int)PhotonNetwork.CurrentRoom.CustomProperties["AnswerTime"] * 10 * References.X2);
+                    }
+                    else
+                    {
+                        GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+                        .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+                        StartPopupResult(true, References.TimeAnswer * 10 * References.X2);
+                        GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 10 * References.X2);
+                    }
+                    
                 }
                 else
                 {
                     GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
                         .PlayerAllUIInstance.GetComponent<Player_AllUI>().
                         StartPopupResult(false, References.TimeAnswer * 0);
+                    GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 0);
                 }
+
+                GameManager.Instance.Ranking_Sort();
             }
+
         }
 
         public void ShowListResult()
@@ -191,15 +227,11 @@ namespace Assets.Scripts.Game
         //    }
         //}
 
+
+
         public void NextQuestion()
         {
-            if (indexQuestion < listQuestion.Count)
-            {
-                NextBtn.SetActive(false);
-                BXH.GetComponent<Panel_setting>().fadeOut();
-                ++indexQuestion;
-                ControlQuestion();
-            }
+            PhotonNetwork.RaiseEvent(EventCode.Play_NextEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
         }
 
         public void ShowBXH()
@@ -216,9 +248,27 @@ namespace Assets.Scripts.Game
         {
             if (photonEvent.Code == EventCode.Play_StartEventCode)
             {
-                Init(9);
+                
                 ShowMessage();
-                Debug.Log("Ok nha");
+            }
+            else if (photonEvent.Code == EventCode.Play_NextEventCode)
+            {
+                if (indexQuestion < listQuestion.Count)
+                {
+                    NextBtn.SetActive(false);
+                    BXH.GetComponent<Panel_setting>().fadeOut();
+                    ++indexQuestion;
+                    ControlQuestion();
+                }
+            }
+            else if (photonEvent.Code == EventCode.Play_ResetPile)
+            {
+                GameManager.Instance.SetRandomPile();
+            }
+            else if (photonEvent.Code == EventCode.Play_ShowVideo)
+            {
+                PanelVideo.GetComponent<PanelVideo>().show(collection.LinkVideo);
+
             }
 
         }

@@ -20,9 +20,9 @@ public class PanelVideo : MonoBehaviour
         gameObject.SetActive(true);
         VideoObj.Prepare();
         VideoObj.Play();
-        //VideoObj.loopPointReached += OnVideoEnd;
+        VideoObj.loopPointReached += OnVideoEnd;
         menu.LeanScale(Vector3.one, duration).setEase(LeanTweenType.pingPong);
-        Invoke(nameof(fadeOut), 5f);
+        //Invoke(nameof(fadeOut), 5f);
     }
 
     private void OnVideoEnd(VideoPlayer source)

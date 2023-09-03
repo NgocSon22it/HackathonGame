@@ -12,4 +12,10 @@ public static class EventCode
 
     public const byte Play_SortRankEventCode = 3;
 
+    public const byte Play_NextEventCode = 4;
+
+    public const byte Play_ResetPile = 5;
+
+    public const byte Play_ShowVideo = 6;
+
 }

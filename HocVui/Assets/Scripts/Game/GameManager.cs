@@ -19,12 +19,16 @@ public class GameManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] GameObject PlayerPrefabs;
 
+    [SerializeField] GameObject MasterClientPrefabs;
+
+    [SerializeField] GameObject StartBtn;
+
     [Header("Player")]
     public GameObject PlayerManager;
 
     [SerializeField] Transform SpawnPosition;
 
-    [SerializeField] PolygonCollider2D CameraBox;
+    [SerializeField] public PolygonCollider2D CameraBox;
 
     [Header("Instance")]
     public static GameManager Instance;
@@ -74,7 +78,6 @@ public class GameManager : MonoBehaviourPunCallbacks
     {
         InitRank();
         SetUp_Player();
-
     }
 
     public void SetUp_Player()
@@ -83,6 +86,12 @@ public class GameManager : MonoBehaviourPunCallbacks
         {
             PlayerManager = PhotonNetwork.Instantiate("Player/" + PlayerPrefabs.name, SpawnPosition.position, Quaternion.identity);
             PlayerManager.GetComponent<Player_Base>().CameraBox = CameraBox;
+            StartBtn.SetActive(false);
+        }
+        else
+        {
+            StartBtn.SetActive(true);
+            Instantiate(MasterClientPrefabs, new(0, 0, 0), Quaternion.identity);
         }
 
     }
@@ -90,6 +99,8 @@ public class GameManager : MonoBehaviourPunCallbacks
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
     {
         base.OnRoomPropertiesUpdate(propertiesThatChanged);
+        List = (Dictionary<string, int>)propertiesThatChanged["List"];
+
     }
 
     #region Set Up Pile
@@ -170,43 +181,11 @@ public class GameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public void SetResult()
-    {
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Result", out object randomValueObj))
-        {
-            int randomValue = (int)randomValueObj;
-            ResultTxt.text = randomValue.ToString();
-        }
-    }
-
-    public void SubmitValue(string playerName, int playerSelection)
-    {
-        if (PhotonNetwork.CurrentRoom.CustomProperties.TryGetValue("Result", out object randomValueObj))
-        {
-            int randomValue = (int)ResultIndex;
-
-            if (playerSelection == ResultIndex)
-            {
-                AddScore(playerName, 100);
-            }
-            else
-            {
-                AddScore(playerName, 0);
-            }
-        }
-    }
-
     public void AddScore(string PlayerName, int Score)
     {
-        if (References.RankingList.ContainsKey(PlayerName))
+        if (List.ContainsKey(PlayerName))
         {
             List[PlayerName] += Score;
-
-        }
-        else
-        {
-            List.Add(PlayerName, Score);
-
         }
 
         PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "List", List } });
@@ -214,19 +193,28 @@ public class GameManager : MonoBehaviourPunCallbacks
 
     public void ResetRound()
     {
-
         if (PhotonNetwork.IsMasterClient == false)
         {
+            References.X2 = 1;
+            References.TimeAnswer = 0;
+            References.SelectedAnswer = -1;
+            References.TimeFreeze = false;
+
 
             GameManager.Instance.PlayerManager.GetComponent<Player_Base>().CallReset();
             GameManager.Instance.PlayerManager.GetComponent<Player_Base>().PlayerAllUIInstance.GetComponent<Player_AllUI>().SelectedAnswer_Off();
+            GameManager.Instance.PlayerManager.GetComponent<Player_Base>().PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_Off();
 
             foreach (var playerObject in ListPileBase)
             {
                 playerObject.GetComponent<Pile_Base>().ResetData();
             }
-
-            SetRandomPile();
         }
+        else
+        {
+            PhotonNetwork.RaiseEvent(EventCode.Play_ResetPile, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+        }
+
+
     }
 }

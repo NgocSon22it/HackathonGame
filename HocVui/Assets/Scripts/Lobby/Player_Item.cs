@@ -20,7 +20,7 @@ public class Player_Item : MonoBehaviourPunCallbacks
     public void SetUp(Player _player)
     {
         player = _player;
-        PlayerNameTxt.text = player.ActorNumber.ToString();
+        PlayerNameTxt.text = player.NickName.ToString();
 
         if(PhotonNetwork.IsMasterClient)
         {
