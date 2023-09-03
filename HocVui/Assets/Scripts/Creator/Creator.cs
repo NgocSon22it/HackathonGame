@@ -21,21 +21,13 @@ namespace Assets.Scripts.Creator
 
 
         public TMP_InputField Name;
-        List<Skin_Entity> listSkin;
-        List<Eye_Enity> listEye;
-        List<Mouth_Entity> listMouth;
-        List<Hair_Entity> listHair;
+
 
         public static Creator Instance;
 
         private void Awake()
         {
             Instance = this;
-
-            listSkin = Skin_DAO.GetAll();
-            listEye = Eye_DAO.GetAll();
-            listMouth = Mouth_DAO.GetAll();
-            listHair = Hair_DAO.GetAll();
 
             Skinbtn.onClick.AddListener(GetSkin);
             Hairbtn.onClick.AddListener(GetHair);
@@ -48,23 +40,23 @@ namespace Assets.Scripts.Creator
         {
             GetSkin();
 
-            LoadHair(listHair[0].ID, listHair[0].Link);
-            LoadEye(listEye[0].ID, listEye[0].Link);
-            LoadMouth(listMouth[0].ID, listMouth[0].Link);
-            LoadSkin(listSkin[0].ID, listSkin[0].Link);
+            LoadHair(References.listHair[0].ID, References.listHair[0].Link);
+            LoadEye(References.listEye[0].ID, References.listEye[0].Link);
+            LoadMouth(References.listMouth[0].ID, References.listMouth[0].Link);
+            LoadSkin(References.listSkin[0].ID, References.listSkin[0].Link);
 
             if (References.account != null)
             {
                 Name.text = References.account.Name;
-                Debug.Log(References.account.HairID + " - " +  listHair.Find(obj => obj.ID == References.account.HairID).Link);
-                Debug.Log(References.account.EyeID + " - " + listEye.Find(obj => obj.ID == References.account.EyeID).Link);
-                Debug.Log(References.account.MouthID + " - " + listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
-                Debug.Log(References.account.SkinID + " - " + listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
+                Debug.Log(References.account.HairID + " - " + References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
+                Debug.Log(References.account.EyeID + " - " + References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
+                Debug.Log(References.account.MouthID + " - " + References.listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
+                Debug.Log(References.account.SkinID + " - " + References.listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
                 
-                LoadHair(References.account.HairID, listHair.Find(obj => obj.ID == References.account.HairID).Link);
-                LoadEye(References.account.EyeID, listEye.Find(obj => obj.ID == References.account.EyeID).Link);
-                LoadMouth(References.account.MouthID, listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
-                LoadSkin(References.account.SkinID, listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
+                LoadHair(References.account.HairID, References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
+                LoadEye(References.account.EyeID, References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
+                LoadMouth(References.account.MouthID, References.listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
+                LoadSkin(References.account.SkinID, References.listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
             }
         }
 
@@ -74,7 +66,7 @@ namespace Assets.Scripts.Creator
             DestroyContent();
             Transform parentTransform = Content.transform;
 
-            foreach (var item in listSkin)
+            foreach (var item in References.listSkin)
             {
                 var child = Instantiate(ItemPrefabs, parentTransform);
                 child.GetComponent<ItemLoad>().Setup(item.ID, item.Name, item.Link, TypeLayout.Skin);
@@ -87,7 +79,7 @@ namespace Assets.Scripts.Creator
             DestroyContent();
             Transform parentTransform = Content.transform;
 
-            foreach (var item in listEye)
+            foreach (var item in References.listEye)
             {
                 var child = Instantiate(ItemPrefabs, parentTransform);
                 child.GetComponent<ItemLoad>().Setup(item.ID, item.Name, item.Link, TypeLayout.Eye);
@@ -100,7 +92,7 @@ namespace Assets.Scripts.Creator
             DestroyContent();
             Transform parentTransform = Content.transform;
 
-            foreach (var item in listHair)
+            foreach (var item in References.listHair)
             {
                 var child = Instantiate(ItemPrefabs, parentTransform);
                 child.GetComponent<ItemLoad>().Setup(item.ID, item.Name, item.Link, TypeLayout.Hair);
@@ -113,7 +105,7 @@ namespace Assets.Scripts.Creator
             DestroyContent();
             Transform parentTransform = Content.transform;
 
-            foreach (var item in listMouth)
+            foreach (var item in References.listMouth)
             {
                 var child = Instantiate(ItemPrefabs, parentTransform);
                 child.GetComponent<ItemLoad>().Setup(item.ID, item.Name, item.Link, TypeLayout.Mouth);
