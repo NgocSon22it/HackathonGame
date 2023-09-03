@@ -34,20 +34,20 @@ public static class References
 
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
     {
-        new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty, Spell_Type.ClickToUse, Spell_Target.None),
-        new Spell_Entity("X2 điểm", "Nhận gấp đôi số điểm cho câu hỏi này","Spell/Image_Skill_1", Spell.DoubleScore, Spell_Type.ClickToUse, Spell_Target.None),
-        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Image_Skill_2", Spell.TimeFreeze, Spell_Type.ClickToUse, Spell_Target.None),
-        new Spell_Entity("Khóa chân", "Khiến 1 người chơi không thể di chuyển trong 5 giây","Spell/Image_Skill_4", Spell.PlayerFreeze, Spell_Type.ConfirmToUse, Spell_Target.Player),
-        new Spell_Entity("Khóa cửa", "Khóa vùng cắm cọc trong 5 giây","Spell/Image_Skill_9", Spell.Lock, Spell_Type.ConfirmToUse, Spell_Target.PileBase),
+        new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/5050", Spell.FiftyFifty, Spell_Type.ClickToUse, Spell_Target.None),
+        new Spell_Entity("X2 điểm", "Nhận gấp đôi số điểm cho câu hỏi này","Spell/X2", Spell.DoubleScore, Spell_Type.ClickToUse, Spell_Target.None),
+        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Oclock", Spell.TimeFreeze, Spell_Type.ClickToUse, Spell_Target.None),
+        new Spell_Entity("Khóa chân", "Khiến 1 người chơi không thể di chuyển trong 5 giây","Spell/Freeze", Spell.PlayerFreeze, Spell_Type.ConfirmToUse, Spell_Target.Player),
+        new Spell_Entity("Khóa cửa", "Khóa vùng cắm cọc trong 5 giây","Spell/Lock", Spell.Lock, Spell_Type.ConfirmToUse, Spell_Target.PileBase),
     };
 
     public static List<Question_Entity> ListQuestionCreate = new List<Question_Entity>();
 
     public static List<Spell_Entity> ListSpell_Own = new List<Spell_Entity>()
     {
-        new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/Image_Skill_0", Spell.FiftyFifty, Spell_Type.ClickToUse, Spell_Target.None),
-        new Spell_Entity("X2 điểm", "Nhận gấp đôi số điểm cho câu hỏi này","Spell/Image_Skill_1", Spell.DoubleScore, Spell_Type.ClickToUse, Spell_Target.None),
-        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Image_Skill_2", Spell.TimeFreeze, Spell_Type.ClickToUse, Spell_Target.None),
+        new Spell_Entity("50/50", "Bạn sẽ thấy 2 phương án sai (chỉ cho mình bạn)", "Spell/5050", Spell.FiftyFifty, Spell_Type.ClickToUse, Spell_Target.None),
+        new Spell_Entity("X2 điểm", "Nhận gấp đôi số điểm cho câu hỏi này","Spell/X2", Spell.DoubleScore, Spell_Type.ClickToUse, Spell_Target.None),
+        new Spell_Entity("Ngưng thòi gian", "Điểm số của bạn sẽ không bị ảnh hưởng bởi thời gian trong câu hỏi này","Spell/Oclock", Spell.TimeFreeze, Spell_Type.ClickToUse, Spell_Target.None),
     };
 
 

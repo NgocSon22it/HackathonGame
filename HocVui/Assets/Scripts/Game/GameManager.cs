@@ -93,7 +93,7 @@ public class GameManager : MonoBehaviourPunCallbacks
             StartBtn.SetActive(true);
             Instantiate(MasterClientPrefabs, new(0, 0, 0), Quaternion.identity);
         }
-
+            LoadSkin();
     }
 
     public override void OnRoomPropertiesUpdate(ExitGames.Client.Photon.Hashtable propertiesThatChanged)
@@ -145,9 +145,10 @@ public class GameManager : MonoBehaviourPunCallbacks
         ListPlayer = GameObject.FindGameObjectsWithTag(PlayerTag);
     }
 
-    public void SelectOption(int Index)
+    public void LoadSkin()
     {
-        PlayerProperties["SelectOption"] = Index;
+        string AccountJson = JsonUtility.ToJson(References.account);
+        PlayerProperties["Account"] = AccountJson;
 
         PhotonNetwork.LocalPlayer.SetCustomProperties(PlayerProperties);
     }
@@ -214,8 +215,6 @@ public class GameManager : MonoBehaviourPunCallbacks
             }
             Boat.Instance.ResetBoat();
         }
-
-
-
     }
+
 }
