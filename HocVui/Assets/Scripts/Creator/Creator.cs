@@ -52,6 +52,20 @@ namespace Assets.Scripts.Creator
             LoadEye(listEye[0].ID, listEye[0].Link);
             LoadMouth(listMouth[0].ID, listMouth[0].Link);
             LoadSkin(listSkin[0].ID, listSkin[0].Link);
+
+            if (References.account != null)
+            {
+                Name.text = References.account.Name;
+                Debug.Log(References.account.HairID + " - " +  listHair.Find(obj => obj.ID == References.account.HairID).Link);
+                Debug.Log(References.account.EyeID + " - " + listEye.Find(obj => obj.ID == References.account.EyeID).Link);
+                Debug.Log(References.account.MouthID + " - " + listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
+                Debug.Log(References.account.SkinID + " - " + listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
+                
+                LoadHair(References.account.HairID, listHair.Find(obj => obj.ID == References.account.HairID).Link);
+                LoadEye(References.account.EyeID, listEye.Find(obj => obj.ID == References.account.EyeID).Link);
+                LoadMouth(References.account.MouthID, listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
+                LoadSkin(References.account.SkinID, listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
+            }
         }
 
         #region Setup Content
@@ -153,9 +167,13 @@ namespace Assets.Scripts.Creator
 
         public void SaveLayout()
         {
-            References.account = new Account_Entity();
-            References.account.Username = "thienthien";
-            if (Account_DAO.CheckName(Name.text, References.account.Username))
+            //References.account = new Account_Entity();
+            //References.account.Username = "thienthien";
+            if (string.IsNullOrEmpty(Name.text.Trim()))
+            {
+                MessageError.GetComponent<UI_Login>().ShowMessage(Message.NameNull);
+            }
+            else if (Account_DAO.CheckName(Name.text, References.account.Username))
             {
                 Account_DAO.UpdateLayout(References.account.Username, Name.text, HairID, EyeID, MouthID, SkinID);
                 SceneManager.LoadScene(Scenes.Lobby);
@@ -166,5 +184,18 @@ namespace Assets.Scripts.Creator
             }
         }
         #endregion
+
+        public void BacktoHome()
+        {
+            if(!References.account.IsFirst)
+            {
+                SceneManager.LoadScene(Scenes.Lobby);
+            }
+            else
+            {
+                References.account = null;
+                SceneManager.LoadScene(Scenes.Login);
+            }
+        }
     }
 }

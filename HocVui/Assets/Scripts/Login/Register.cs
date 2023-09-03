@@ -14,7 +14,6 @@ namespace Assets.Scripts.Login
     public class Register : MonoBehaviour
     {
         public TMP_InputField username, pass, confirm;
-        public Toggle student, teacher;
         public UI_Login PopupMessage;
         public GameObject LoginPanel, RegisterPanel;
 
@@ -28,7 +27,7 @@ namespace Assets.Scripts.Login
             {
                 PopupMessage.ShowMessage(Message.UsernameNull);
             }
-            else if (usernametxt.Length <= 4 || usernametxt.Contains(" "))
+            else if (usernametxt.Length < 4 || usernametxt.Contains(" "))
             {
                 PopupMessage.ShowMessage(Message.UsernameLength);
             }
@@ -36,7 +35,7 @@ namespace Assets.Scripts.Login
             {
                 PopupMessage.ShowMessage(Message.PassNull);
             }
-            else if (passtxt.Length <= 4 || passtxt.Contains(" "))
+            else if (passtxt.Length < 8 || passtxt.Contains(" "))
             {
                 PopupMessage.ShowMessage(Message.PassLength);
             }
@@ -49,9 +48,6 @@ namespace Assets.Scripts.Login
                 if (Account_DAO.CheckUsername(usernametxt))
                 {
                     var roleID = Role.Student;
-
-                    if (teacher.isOn) roleID = Role.Teacher;
-                    if (student.isOn) roleID = Role.Student;
 
                     Account_DAO.CreateAccount(usernametxt, passtxt, ((int)roleID));
 

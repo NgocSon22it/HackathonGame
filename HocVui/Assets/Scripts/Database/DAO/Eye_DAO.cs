@@ -37,7 +37,7 @@ public static class Eye_DAO
             }
             catch (SqlException ex)
             {
-                Console.WriteLine("SQL Exception: " + ex.Message);
+                Debug.LogError("SQL Exception: " + ex.Message);
             }
             finally
             {

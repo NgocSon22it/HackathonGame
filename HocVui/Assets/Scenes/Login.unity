@@ -3358,8 +3358,6 @@ MonoBehaviour:
   username: {fileID: 1429705949}
   pass: {fileID: 1398096356}
   confirm: {fileID: 83134629}
-  student: {fileID: 0}
-  teacher: {fileID: 0}
   PopupMessage: {fileID: 1446018392}
   LoginPanel: {fileID: 1138915263}
   RegisterPanel: {fileID: 949319375}
