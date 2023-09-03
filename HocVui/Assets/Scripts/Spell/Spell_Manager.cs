@@ -208,21 +208,4 @@ public class Spell_Manager : MonoBehaviour
     }
 
 
-    /* private void FindNonLocalPlayers()
-      {
-         // Find all GameObjects with the specified tag
-         GameObject[] players = GameObject.FindGameObjectsWithTag("Player");
-
-         // Iterate through each GameObject and check if PhotonView.isMine is false
-         foreach (GameObject player in players)
-         {
-             PhotonView photonView = player.GetComponent<PhotonView>();
-             if (photonView != null && !photonView.IsMine)
-             {
-                 // Add the GameObject to the list
-                 ListPlayer.Add(player);
-             }
-         }
-     }*/
-
 }
