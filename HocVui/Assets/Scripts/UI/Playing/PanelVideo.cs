@@ -22,7 +22,7 @@ public class PanelVideo : MonoBehaviour
         VideoObj.Play();
         VideoObj.loopPointReached += OnVideoEnd;
         menu.LeanScale(Vector3.one, duration).setEase(LeanTweenType.pingPong);
-        //Invoke(nameof(fadeOut), time);
+        //Invoke(nameof(fadeOut), 5f);
     }
 
     private void OnVideoEnd(VideoPlayer source)

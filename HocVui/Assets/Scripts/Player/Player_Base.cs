@@ -73,19 +73,6 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     [Header("Current Spell")]
     public Spell_Entity Spell_Entity;
 
-    [Header("Current Anwer")]
-    public int CurrentAnswer;
-    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
-    {
-        if (targetPlayer != null && targetPlayer.Equals(photonView.Owner))
-        {
-            if (changedProps.ContainsKey("SelectOption"))
-            {
-                CurrentAnswer = (int)changedProps["SelectOption"];
-            }
-        }
-    }
-
     // Lag Reduce
     Vector3 realPosition;
     Quaternion realRotation;
@@ -258,8 +245,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
                 {
                     PlayerAllUIInstance.GetComponent<Player_AllUI>().SelectedAnswer_On(answer);
                     photonView.RPC(nameof(SyncSpriteChange), RpcTarget.All, false);
-                    GameManager.Instance.SelectOption(answer);
-                    GameManager.Instance.SubmitValue(photonView.Owner.NickName, answer);
+                    References.SelectedAnswer = answer;
+                    References.TimeAnswer = Oclock.Instance.getTime;
                     IsPileBase = true;
                 }
                 else

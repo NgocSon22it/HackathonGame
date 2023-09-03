@@ -1,3 +1,4 @@
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class ManagerPlayingUI : MonoBehaviour
     public void HidePanelBXH()
     {
         BXH_UI.GetComponent<PanelBXH>().StopAnimation();
+        PhotonNetwork.LeaveRoom();
+        PhotonNetwork.LoadLevel("Lobby");
     }
     public void StartMessageEvent()
     {

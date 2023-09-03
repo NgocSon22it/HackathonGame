@@ -86,13 +86,13 @@ public class Player_AllUI : MonoBehaviour
     {
         switch(answer)
         {
-            case 1:
+            case 0:
                 return "A";
-            case 2:
+            case 1:
                 return "B";
-            case 3:
+            case 2:
                 return "C";
-            case 4:
+            case 3:
                 return "D";
         }
         return "0";
@@ -106,7 +106,7 @@ public class Player_AllUI : MonoBehaviour
 
     public void StartPopupResult(bool isCorrect, int score)
     {
-        PopupUI.GetComponent<PopupResult>().run   (isCorrect, score);
+        PopupUI.GetComponent<PopupResult>().run(isCorrect, score);
     }
 
 }

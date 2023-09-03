@@ -448,7 +448,7 @@ public class Question_Manager : MonoBehaviour
     public void SelectImageUpload()
     {
         // Use Unity's cross-platform file picker
-       var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
+        var FilePath = EditorUtility.OpenFilePanel("Select a Video File", "", "png,jpg,jpeg,gif,svg");
 
         if (!string.IsNullOrEmpty(FilePath))
         {
