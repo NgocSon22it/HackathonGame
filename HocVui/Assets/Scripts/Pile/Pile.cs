@@ -38,19 +38,6 @@ public class Pile : Pile_Common
         gameObject.SetActive(isActive);
     }
 
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        if (stream.IsWriting)
-        {
-            stream.SendNext(isActive);
-        }
-        else
-        {
-            isActive = (bool)stream.ReceiveNext();
-            gameObject.SetActive(isActive);
-        }
-    }
-
     private void CollectWood()
     {
         Player_Base refer = GameManager.Instance.PlayerManager.GetComponent<Player_Base>();
