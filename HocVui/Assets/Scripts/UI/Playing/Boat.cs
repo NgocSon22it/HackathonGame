@@ -1,3 +1,4 @@
+using Assets.Scripts.Game;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,20 +17,22 @@ public class Boat : MonoBehaviour
     [SerializeField] GameObject AnsC;
     [SerializeField] GameObject AnsD;
     [SerializeField] float timeMove;
-    private void Start()
+
+    public static Boat Instance;
+
+    private void Awake()
     {
-        InvokeRepeating(nameof(idle), 0, duration);
-        MoveAnswers(1);       
+        Instance = this;
     }
 
-    private void MoveAnswers(int Ans)
+    public void MoveAnswers(int Ans)
     {
         switch (Ans)
         {
-            case 1: Move(AnsA); break;
-            case 2: Move(AnsB); break;
-            case 3: Move(AnsC); break;
-            case 4: Move(AnsD); break;
+            case 0: Move(AnsA); break;
+            case 1: Move(AnsB); break;
+            case 2: Move(AnsC); break;
+            case 3: Move(AnsD); break;
         }
     }
 
@@ -40,13 +43,20 @@ public class Boat : MonoBehaviour
     }
     private void idle()
     {
-
-        LeanTween.rotate(gameObject, new Vector3(0 ,0 ,goc), duration).setEase(type);
+        LeanTween.rotate(gameObject, new Vector3(0, 0, goc), duration).setEase(type);
         goc *= -1;
     }
 
     private void MoveGo(Vector3 position, float time)
     {
         LeanTween.move(gameObject, position, time);
+        Invoke(nameof(next), time);
     }
+    
+    private void next()
+    {
+        Playing_Manager.Instance.ShowResultBoat();
+    }
+
+
 }

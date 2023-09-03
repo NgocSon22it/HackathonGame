@@ -1,7 +1,10 @@
 using Assets.Scripts.Game;
+using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -24,6 +27,15 @@ public class ShowLeader : MonoBehaviour
     [SerializeField] GameObject Top3Player;
     [SerializeField] GameObject Leader;
 
+    [Header("Ranking")]
+    public TMP_Text rankingText;
+    [SerializeField] GameObject Player_RankItem;
+    [SerializeField] Transform RankItem_Content;
+    private List<Transform> sortObjects = new List<Transform>();
+
+    [SerializeField] List<TMP_Text> ListName = new List<TMP_Text>();
+
+    public static Dictionary<string, int> List = new Dictionary<string, int>();
 
     public List<Sprite> TopRank;
     Coroutine animation;
@@ -42,14 +54,21 @@ public class ShowLeader : MonoBehaviour
     {
         Background.SetActive(true);
 
-        StartCoroutine(AnimationShowPlayerTop(3, 100, "", "Thien"));
-        yield return new WaitForSeconds(6);
-        StartCoroutine(AnimationShowPlayerTop(2, 200, "", "Son"));
-        yield return new WaitForSeconds(6);
-        StartCoroutine(AnimationShowPlayerTop(1, 300, "", "Tien"));
-        yield return new WaitForSeconds(6);
-        ShowListRank();
-        Background.SetActive(false);
+        List = (Dictionary<string, int>)PhotonNetwork.CurrentRoom.CustomProperties["List"];
+
+        var sortedDict = List.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+        if (sortedDict.Count > 2)
+        {
+            for (int i = 2; i >= 0; i--)
+            {
+                StartCoroutine(AnimationShowPlayerTop(i + 1, sortedDict.ElementAt(i).Value, "", sortedDict.ElementAt(i).Key));
+                ListName[i].text = sortedDict.ElementAt(i).Key;
+                yield return new WaitForSeconds(6);
+            }
+
+            ShowListRank();
+            Background.SetActive(false);
+        }
     }
 
     private void ResetUI()
@@ -61,13 +80,34 @@ public class ShowLeader : MonoBehaviour
 
     private void ShowListRank()
     {
+        List = (Dictionary<string, int>)PhotonNetwork.CurrentRoom.CustomProperties["List"];
+
+        int rank = 1;
+        foreach (KeyValuePair<string, int> entry in List)
+        {
+            Instantiate(Player_RankItem, RankItem_Content).GetComponent<Player_RankItem>().SetUp(rank, entry.Key, entry.Value);
+            rank++;
+        }
+
+        foreach (Transform child in RankItem_Content)
+        {
+            sortObjects.Add(child);
+        }
+
+        var sortedDict = List.OrderByDescending(x => x.Value).ToDictionary(x => x.Key, x => x.Value);
+
+        for (int i = 0; i < sortObjects.Count; i++)
+        {
+            sortObjects[i].gameObject.GetComponent<Player_RankItem>().SetUp(i + 1, sortedDict.ElementAt(i).Key, sortedDict.ElementAt(i).Value);
+        }
+
         ListScore.SetActive(true);
         Playing_Manager.Instance.EndBXH();
     }
 
     IEnumerator AnimationShowPlayerTop(int rank, float score, string avatar, string name)
     {
-        RankImg.GetComponent<Image>().sprite = TopRank[rank - 1 ];
+        RankImg.GetComponent<Image>().sprite = TopRank[rank - 1];
         ScorePlayer.GetComponent<TMP_Text>().text = score.ToString();
         /*AvatarPlayer.GetComponent<Image>().sprite = avatar;*/
         PlayerName.GetComponent<TMP_Text>().text = name;
@@ -80,11 +120,11 @@ public class ShowLeader : MonoBehaviour
         yield return new WaitForSeconds(duration * 2);
         StartCoroutine(EffectAnimation(PlayerName));
         yield return new WaitForSeconds(duration * 2);
-        
-        switch(rank)
+
+        switch (rank)
         {
             case 1: StartCoroutine(Top1Effect()); break;
-            case 2: StartCoroutine(Top2Effect()); break;    
+            case 2: StartCoroutine(Top2Effect()); break;
             case 3: StartCoroutine(Top3Effect()); break;
 
             default: break;

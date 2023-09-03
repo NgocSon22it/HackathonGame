@@ -25,6 +25,8 @@ public class Oclock : MonoBehaviour
 
     public static Oclock Instance;
 
+    public int getTime;
+
     private void Awake()
     {
         Instance = this;
@@ -100,6 +102,7 @@ public class Oclock : MonoBehaviour
         {
             yield return new WaitForSeconds(0.1f);
             counter -= 0.1f;
+            getTime = Convert.ToInt32(counter);
             handleBar(counter);
             handeBarOclock(counter);
             if (counter <= 0)

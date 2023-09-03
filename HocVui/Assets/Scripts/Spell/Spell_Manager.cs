@@ -185,6 +185,7 @@ public class Spell_Manager : MonoBehaviour
         References.ListSpell_Own[Index].IsUse = true;
         ListSpellCooldown[Index].fillAmount = 1f;
 
+        References.X2 = 2;
         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
             .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_X2Score);
     }
@@ -193,6 +194,7 @@ public class Spell_Manager : MonoBehaviour
     {
         References.ListSpell_Own[Index].IsUse = true;
         ListSpellCooldown[Index].fillAmount = 1f;
+        References.TimeFreeze = true;
 
         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
             .PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_On(Message.Buff_TimeFreeze);
