@@ -48,6 +48,7 @@ MonoBehaviour:
   - BlockBase
   - ResetAfterRound
   - Reset
+  - LoadLayout
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 0

@@ -12,6 +12,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Video;
 using static UnityEngine.EventSystems.EventTrigger;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace Assets.Scripts.Game
 {
@@ -43,6 +44,11 @@ namespace Assets.Scripts.Game
         private int KeyAnswer;
         public bool isFinish = false;
 
+        public Transform StartPoint, EndPoint;
+        public GameObject BoxPush;
+        public GameObject Wave;
+        bool isMoving;
+
 
         private void Awake()
         {
@@ -53,6 +59,20 @@ namespace Assets.Scripts.Game
         {
             int Id = (int)PhotonNetwork.CurrentRoom.CustomProperties["CollectionID"];
             Init(Id);
+        }
+
+        private void Update()
+        {
+            if (isMoving)
+            {
+                BoxPush.transform.position = Vector3.MoveTowards(BoxPush.transform.position, EndPoint.position, 5f * Time.deltaTime);
+                
+            }
+        }
+
+        public void SetUp_Wave()
+        {
+            PhotonNetwork.RaiseEvent(EventCode.Play_BoatStart, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
         }
 
         public void Init(int CollectionID)
@@ -68,7 +88,7 @@ namespace Assets.Scripts.Game
                 ControlBtn.SetActive(true);
             }
 
-            if(collection.LinkVideo != null)
+            if (collection.LinkVideo != null)
             {
                 PanelVideoBtn.SetActive(true);
             }
@@ -187,7 +207,7 @@ namespace Assets.Scripts.Game
                         StartPopupResult(true, References.TimeAnswer * 10 * References.X2);
                         GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 10 * References.X2);
                     }
-                    
+
                 }
                 else
                 {
@@ -245,11 +265,27 @@ namespace Assets.Scripts.Game
             Debug.Log("End Collection");
         }
 
+        public void Wave_On()
+        {
+            Wave.SetActive(true);
+        }
+
+        public void Wave_Off()
+        {
+            Wave.SetActive(false);
+        }
+
+        public void ResetPushBox()
+        {
+            BoxPush.transform.position = StartPoint.transform.position;
+            isMoving = false;
+        }
+
         public void OnEvent(EventData photonEvent)
         {
             if (photonEvent.Code == EventCode.Play_StartEventCode)
             {
-                
+
                 ShowMessage();
             }
             else if (photonEvent.Code == EventCode.Play_NextEventCode)
@@ -275,7 +311,11 @@ namespace Assets.Scripts.Game
             {
                 Boat.Instance.ResetBoatPosition();
             }
-
+            else if (photonEvent.Code == EventCode.Play_BoatStart)
+            {
+                isMoving = true;
+                Invoke(nameof(Wave_On), 2f);
+            }
         }
 
         #endregion

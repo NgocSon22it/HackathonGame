@@ -53,17 +53,20 @@ public class Boat : MonoBehaviour
     private void MoveGo(Vector3 position, float time)
     {
         LeanTween.move(gameObject, position, time);
+        Playing_Manager.Instance.SetUp_Wave();
         Invoke(nameof(next), time);
     }
     
     private void next()
     {
+        Playing_Manager.Instance.Wave_Off();
         Playing_Manager.Instance.ShowResultBoat();
     }
 
     public void ResetBoatPosition()
     {
         transform.position = new Vector3(28.05f, 0.38f,0);
+        Playing_Manager.Instance.ResetPushBox();
     }
 
     public void ResetBoat()
