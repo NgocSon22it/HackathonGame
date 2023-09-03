@@ -204,16 +204,16 @@ public class GameManager : MonoBehaviourPunCallbacks
             GameManager.Instance.PlayerManager.GetComponent<Player_Base>().CallReset();
             GameManager.Instance.PlayerManager.GetComponent<Player_Base>().PlayerAllUIInstance.GetComponent<Player_AllUI>().SelectedAnswer_Off();
             GameManager.Instance.PlayerManager.GetComponent<Player_Base>().PlayerAllUIInstance.GetComponent<Player_AllUI>().BuffInfo_Off();
-
+        }
+        else
+        {
+            PhotonNetwork.RaiseEvent(EventCode.Play_ResetPile, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
             foreach (var playerObject in ListPileBase)
             {
                 playerObject.GetComponent<Pile_Base>().ResetData();
             }
         }
-        else
-        {
-            PhotonNetwork.RaiseEvent(EventCode.Play_ResetPile, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
-        }
+
 
 
     }
