@@ -15,6 +15,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
+using static UnityEngine.InputManagerEntry;
 
 public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 {
@@ -73,6 +74,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     [Header("Current Spell")]
     public Spell_Entity Spell_Entity;
 
+    public SpriteRenderer HairSpr, EyeSpr, MouthSpr, ShirtSpr, LeftHandSpr, RightHandSpr, LeftFootSpr, RightFootSpr;
+
     // Lag Reduce
     Vector3 realPosition;
     Quaternion realRotation;
@@ -92,6 +95,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
         playerName = photonView.Owner.NickName;
         PlayerNameTxt.text = playerName;
+
+        LoadLayout();
 
         if (photonView.IsMine)
         {
@@ -397,6 +402,20 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         BlockProgress.value = targetValue;
         BlockProgress.gameObject.SetActive(false);
         photonView.RPC(nameof(ClearEffect), RpcTarget.All);
+    }
+
+
+    public void LoadLayout()
+    {
+        HairSpr.sprite = Resources.Load<Sprite>(References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
+        EyeSpr.sprite = Resources.Load<Sprite>(References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
+        MouthSpr.sprite = Resources.Load<Sprite>(References.listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
+        var link = References.listSkin.Find(obj => obj.ID == References.account.SkinID).Link;
+        ShirtSpr.sprite = Resources.Load<Sprite>(link + "_Shirt");
+        LeftFootSpr.sprite = Resources.Load<Sprite>(link + "_LeftFoot");
+        LeftHandSpr.sprite = Resources.Load<Sprite>(link + "_LeftHand");
+        RightFootSpr.sprite = Resources.Load<Sprite>(link + "_RightFoot");
+        RightHandSpr.sprite = Resources.Load<Sprite>(link + "_RightHand");
     }
 
 }
