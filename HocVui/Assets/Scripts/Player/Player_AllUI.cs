@@ -79,7 +79,7 @@ public class Player_AllUI : MonoBehaviour
 
     public void BuffInfo_Off()
     {
-        Answer_Panel.SetActive(false);
+        BuffInfo_Panel.SetActive(false);
     }
 
     public string ShowAnswer(int answer)
