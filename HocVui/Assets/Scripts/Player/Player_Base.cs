@@ -74,13 +74,15 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     public Spell_Entity Spell_Entity;
 
     [Header("Current Anwer")]
-    public int a;
+    public int CurrentAnswer;
     public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
     {
         if (targetPlayer != null && targetPlayer.Equals(photonView.Owner))
         {
-            References.SelectedAnswer = (int)changedProps["SelectOption"];
-            a = References.SelectedAnswer;
+            if (changedProps.ContainsKey("SelectOption"))
+            {
+                CurrentAnswer = (int)changedProps["SelectOption"];
+            }
         }
     }
 
@@ -134,6 +136,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (photonView.IsMine)
         {
+            if (GameManager.Instance.IsBusy == true) return;
+
             if (LoseControl)
             {
                 aIPath.canMove = false;
@@ -202,6 +206,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
     {
         if (context.performed && photonView.IsMine)
         {
+            if (GameManager.Instance.IsBusy == true) return;
+
             TargetPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TargetPoint.z = transform.position.z;
 

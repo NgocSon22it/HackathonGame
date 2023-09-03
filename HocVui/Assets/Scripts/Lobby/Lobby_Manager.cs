@@ -233,11 +233,21 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         Inroom_CountPlayer();
         Instantiate(PlayerItem, PlayerContent).GetComponent<Player_Item>().SetUp(newPlayer);
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            References.RankingList.Add(newPlayer.NickName, 0);
+        }
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
         Inroom_CountPlayer();
+
+        if (PhotonNetwork.IsMasterClient)
+        {
+            References.RankingList.Remove(otherPlayer.NickName);
+        }
     }
 
     public override void OnJoinRoomFailed(short returnCode, string message)
@@ -275,6 +285,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         SelectedRoom = null;
         SetUp_Inroom(false);
         cachedRoomList.Clear();
+        References.RankingList.Clear();
         Debug.Log("LeftRoom");
     }
 
