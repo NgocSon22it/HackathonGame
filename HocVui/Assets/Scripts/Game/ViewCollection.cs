@@ -36,6 +36,7 @@ namespace Assets.Scripts.Game
 
         [Header("Paging")]
         public TMP_Text Paging;
+        public GameObject NextBtn, PrevBtn;
 
         public Collection_Entity Collection;
         public List<Question_Entity> ListQuestion;
@@ -49,10 +50,16 @@ namespace Assets.Scripts.Game
 
         public void ShowInfo()
         {
-            CollectionName.text = Collection.Name;
-            Paging.text = (index + 1).ToString() + "/" + (ListQuestion.Count).ToString();
-            ShowVideo();
-            ShowQuestion();
+            NextBtn.SetActive(false); PrevBtn.SetActive(false);
+            if (Collection != null)
+            {
+                CollectionName.text = Collection.Name;
+                Paging.text = (index + 1).ToString() + "/" + (ListQuestion.Count).ToString();
+                ShowVideo();
+                ShowQuestion();
+                NextBtn.SetActive(true); PrevBtn.SetActive(true);
+            }
+
         }
 
         public void ShowVideo()
@@ -66,7 +73,8 @@ namespace Assets.Scripts.Game
                 VideoPlayer.url = Collection.LinkVideo;
                 VideoPlayer.Prepare();
                 VideoPlayer.Pause();
-            }else
+            }
+            else
             {
                 VideoBtn.interactable = false;
             }
