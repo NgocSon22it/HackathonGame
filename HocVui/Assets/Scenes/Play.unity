@@ -1600,6 +1600,7 @@ MonoBehaviour:
   PlayerPrefabs: {fileID: 6996134925189043936, guid: 64c1c598b26d3a7489da1e747139172b, type: 3}
   PlayerManager: {fileID: 0}
   SpawnPosition: {fileID: 146235113}
+  list: 
   CameraBox: {fileID: 1751748236}
   Countdown_ShowQuestionTxt: {fileID: 0}
   ListPile:
@@ -1901,7 +1902,7 @@ MonoBehaviour:
   DetectGroundTransform: {fileID: 126878406}
   DetectGroundDistance: 0
   IsPile: {fileID: 368544088}
-  answer: 2
+  answer: 1
   Outline: {fileID: 1498826808}
   WrongAnswer: {fileID: 2044084156}
   Lock: {fileID: 1778894788}
@@ -14493,7 +14494,7 @@ MonoBehaviour:
   DetectGroundTransform: {fileID: 1393918864}
   DetectGroundDistance: 0
   IsPile: {fileID: 313136193}
-  answer: 4
+  answer: 3
   Outline: {fileID: 451272744}
   WrongAnswer: {fileID: 1980358207}
   Lock: {fileID: 466926015}
@@ -19076,7 +19077,7 @@ MonoBehaviour:
   DetectGroundTransform: {fileID: 1786865277}
   DetectGroundDistance: 0
   IsPile: {fileID: 488259296}
-  answer: 3
+  answer: 2
   Outline: {fileID: 1599093022}
   WrongAnswer: {fileID: 2001894044}
   Lock: {fileID: 932409481}
@@ -19589,7 +19590,7 @@ MonoBehaviour:
   DetectGroundTransform: {fileID: 1806612956}
   DetectGroundDistance: 0
   IsPile: {fileID: 1007673036}
-  answer: 1
+  answer: 0
   Outline: {fileID: 1600871267}
   WrongAnswer: {fileID: 878974308}
   Lock: {fileID: 189458740}

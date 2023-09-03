@@ -540,6 +540,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         {
             PhotonNetwork.CurrentRoom.IsOpen = false;
             PhotonNetwork.CurrentRoom.IsVisible = false;
+            PhotonNetwork.CurrentRoom.SetCustomProperties(new ExitGames.Client.Photon.Hashtable() { { "List", References.RankingList } });
         }
         PhotonNetwork.RaiseEvent(EventCode.StartGameEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
     }

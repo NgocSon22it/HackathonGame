@@ -1,4 +1,7 @@
 ﻿using Assets.Scripts.Database.DAO;
+using ExitGames.Client.Photon;
+using Photon.Pun;
+using Photon.Realtime;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,7 +13,7 @@ using UnityEngine.Video;
 
 namespace Assets.Scripts.Game
 {
-    public class Playing_Manager : MonoBehaviour
+    public class Playing_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     {
         [Header("Show Video")]
         //public VideoPlayer VideoObj;
@@ -48,9 +51,10 @@ namespace Assets.Scripts.Game
 
         public void StartGame()
         {
-            Init(9);
-            ShowMessage();
-
+            if (PhotonNetwork.IsMasterClient)
+            {
+                PhotonNetwork.RaiseEvent(EventCode.Play_StartEventCode, null, new RaiseEventOptions { Receivers = ReceiverGroup.All }, SendOptions.SendReliable);
+            }
         }
 
         #region Show message
@@ -128,13 +132,20 @@ namespace Assets.Scripts.Game
 
         public void ShowResult()
         {
-            if (References.SelectedAnswer == KeyAnswer)
+            if (PhotonNetwork.IsMasterClient == false)
             {
-                Player_AllUI.Instance.StartPopupResult(true, References.TimeAnswer * 10);
-            }
-            else
-            {
-                Player_AllUI.Instance.StartPopupResult(false, References.TimeAnswer * 0);
+                if (References.SelectedAnswer == KeyAnswer)
+                {
+                    GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+                .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+                StartPopupResult(true, References.TimeAnswer * 10);
+                }
+                else
+                {
+                    GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
+                .PlayerAllUIInstance.GetComponent<Player_AllUI>().
+                StartPopupResult(false, References.TimeAnswer * 0);
+                }
             }
         }
 
@@ -160,13 +171,24 @@ namespace Assets.Scripts.Game
         }
 
         public void ShowBXH()
-        {            
+        {
             ManagerPlayingUI.Instance.ShowPanelBXH();
         }
 
         public void EndBXH()
         {
             Debug.Log("End Collection");
+        }
+
+        public void OnEvent(EventData photonEvent)
+        {
+            if (photonEvent.Code == EventCode.Play_StartEventCode)
+            {
+                Init(9);
+                ShowMessage();
+                Debug.Log("Ok nha");
+            }
+
         }
 
         #endregion
