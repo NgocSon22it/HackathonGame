@@ -8,4 +8,8 @@ public static class EventCode
 
     public const byte StartGameEventCode = 1;
 
+    public const byte Play_StartEventCode = 2;
+
+    public const byte Play_SortRankEventCode = 3;
+
 }

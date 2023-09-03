@@ -6,6 +6,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace Assets.Scripts.Database.DAO
 {
@@ -22,7 +23,8 @@ namespace Assets.Scripts.Database.DAO
                 {
                     connection.Open();
                     SqlCommand cmd = connection.CreateCommand();
-                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @UserID";
+                    cmd.CommandText = "SELECT * FROM [dbo].[Collection] where AccountID = @AccountID";
+                    cmd.Parameters.AddWithValue("@AccountID", AccountID);
                     SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                     DataTable dataTable = new DataTable();
                     adapter.Fill(dataTable);
@@ -42,7 +44,7 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.LogError("SQL Exception: " + ex.Message);
                 }
                 finally
                 {
@@ -72,11 +74,11 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.LogError("SQL Exception: " + ex.Message);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Exception: " + ex.Message);
+                    Debug.LogError("Exception: " + ex.Message);
                 }
                 finally
                 {
@@ -109,7 +111,7 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.LogError("SQL Exception: " + ex.Message);
                 }
                 finally
                 {
@@ -150,7 +152,7 @@ namespace Assets.Scripts.Database.DAO
                 }
                 catch (SqlException ex)
                 {
-                    Console.WriteLine("SQL Exception: " + ex.Message);
+                    Debug.LogError("SQL Exception: " + ex.Message);
                 }
                 finally
                 {
