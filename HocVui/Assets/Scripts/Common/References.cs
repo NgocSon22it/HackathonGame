@@ -1,4 +1,5 @@
-﻿using Assets.Scripts.Database.Entity;
+﻿using Assets.Scripts.Database.DAO;
+using Assets.Scripts.Database.Entity;
 using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,6 +25,11 @@ public static class References
 
     public static int X2 = 1;
     public static bool TimeFreeze = false;
+
+    public static List<Skin_Entity> listSkin = Skin_DAO.GetAll();
+    public static List<Eye_Enity> listEye = Eye_DAO.GetAll();
+    public static List<Mouth_Entity> listMouth = Mouth_DAO.GetAll();
+    public static List<Hair_Entity> listHair = Hair_DAO.GetAll();
 
 
     public static List<Spell_Entity> ListSpell = new List<Spell_Entity>()
