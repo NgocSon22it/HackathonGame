@@ -452,62 +452,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
         SpellInformation_Panel.SetActive(false);
     }
 
-    public void Information_LoadCurrentQuestion(int Index)
-    {
-        Information_Question.text = (Index + 1) + ". " + References.ListQuestionCreate[Index].questionText;
-
-        for (int i = 0; i < 4; i++)
-        {
-            Information_Answer[i].text = References.ListQuestionCreate[Index].answers[i];
-        }
-
-        foreach (var item in Information_IsCorrect)
-        {
-            item.gameObject.SetActive(false);
-        }
-
-        foreach (var item in Information_IsCorrectColor)
-        {
-            item.color = Color.white;
-        }
-
-
-        Information_IsCorrect[References.ListQuestionCreate[Index].correctAnswerIndex].gameObject.SetActive(true);
-
-        Information_IsCorrectColor[References.ListQuestionCreate[Index].correctAnswerIndex].color = Color.yellow;
-
-        //CurrentPaging.text = (CurrentIndex + 1) + " / " + (References.SelectCollection.ListQuestion.Count).ToString();
-    }
-
-    public void Next()
-    {
-        //if (References.SelectCollection.ListQuestion.Count > 0)
-        //{
-        //    CurrentIndex++;
-        //    if (CurrentIndex >= References.SelectCollection.ListQuestion.Count)
-        //    {
-        //        CurrentIndex = 0;
-        //    }
-
-        //    Information_LoadCurrentQuestion(CurrentIndex);
-        //}
-    }
-
-
-    public void Previous()
-    {
-        //if (References.SelectCollection.ListQuestion.Count > 0)
-        //{
-        //    CurrentIndex--;
-        //    if (CurrentIndex < 0)
-        //    {
-        //        CurrentIndex = References.SelectCollection.ListQuestion.Count - 1;
-        //    }
-
-        //    Information_LoadCurrentQuestion(CurrentIndex);
-        //}
-    }
-
     public void OnEvent(EventData photonEvent)
     {
         if (photonEvent.Code == EventCode.StartGameEventCode)
