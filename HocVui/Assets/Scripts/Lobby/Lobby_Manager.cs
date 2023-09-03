@@ -1,4 +1,5 @@
 ﻿using Assets.Scripts.Common;
+using Assets.Scripts.Game;
 using ExitGames.Client.Photon;
 using Photon.Pun;
 using Photon.Realtime;
@@ -84,13 +85,9 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     private void Awake()
     {
         Instance = this;
-    }
+        Debug.Log(PhotonNetwork.NickName + " Join");
 
-    void Start()
-    {
-        ConnectServer();
     }
-
     public void JoinRoom()
     {
         if (SelectedRoom != null)
@@ -126,6 +123,12 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
             }
         }
 
+    }
+
+    public override void OnConnectedToMaster()
+    {
+        base.OnConnectedToMaster();
+        PhotonNetwork.JoinLobby();
     }
 
     public void JoinRoom_RoomPasswordPanel_On()
@@ -166,7 +169,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
                 if (roomPassword.Length > 0)
                 {
                     roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-                    roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell", "Password" };
+                    roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell", "Password", "CollectionID" };
 
                     roomOptions.CustomRoomProperties.Add("RoomID", roomID);
                     roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
@@ -174,6 +177,7 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
                     roomOptions.CustomRoomProperties.Add("Map", map);
                     roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
                     roomOptions.CustomRoomProperties.Add("Password", roomPassword);
+                    roomOptions.CustomRoomProperties.Add("CollectionID", ViewCollection.Instance.Collection.ID);
                     PhotonNetwork.CreateRoom(roomName, roomOptions);
                 }
                 else
@@ -185,13 +189,14 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
             else
             {
                 roomOptions.CustomRoomProperties = new ExitGames.Client.Photon.Hashtable();
-                roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell" };
+                roomOptions.CustomRoomPropertiesForLobby = new string[] { "AnswerTime", "Creator", "Map", "RoomID", "UseSpell", "CollectionID" };
 
                 roomOptions.CustomRoomProperties.Add("RoomID", roomID);
                 roomOptions.CustomRoomProperties.Add("Creator", PhotonNetwork.NickName);
                 roomOptions.CustomRoomProperties.Add("AnswerTime", AnswerTime);
                 roomOptions.CustomRoomProperties.Add("Map", map);
                 roomOptions.CustomRoomProperties.Add("UseSpell", useSpell);
+                roomOptions.CustomRoomProperties.Add("CollectionID", ViewCollection.Instance.Collection.ID);
                 PhotonNetwork.CreateRoom(roomName, roomOptions);
             }
         }
@@ -398,22 +403,6 @@ public class Lobby_Manager : MonoBehaviourPunCallbacks, IOnEventCallback
     public void SelectRoom(RoomInfo roomInfo)
     {
         SelectedRoom = roomInfo;
-    }
-
-    public override void OnConnectedToMaster()
-    {
-        PhotonNetwork.JoinLobby();
-        Debug.Log("OnConnectedToMaster");
-    }
-
-    public void ConnectServer()
-    {
-        PhotonNetwork.NickName = References.GenerateRandomString(10);
-        PhotonNetwork.ConnectUsingSettings();
-        PhotonNetwork.EnableCloseConnection = true;
-        PhotonNetwork.JoinLobby();
-        Debug.Log(PhotonNetwork.NickName + " JoinLobby");
-        Debug.Log("Connect to Server");
     }
 
     public void SetRandomSpell()
