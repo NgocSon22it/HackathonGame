@@ -106,7 +106,7 @@ public class Player_AllUI : MonoBehaviour
 
     public void StartPopupResult(bool isCorrect, int score)
     {
-        PopupUI.GetComponent<PopupResult>().run   (isCorrect, score);
+        PopupUI.GetComponent<PopupResult>().run(isCorrect, score);
     }
 
 }
