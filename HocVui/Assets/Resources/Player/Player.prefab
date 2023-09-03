@@ -1531,6 +1531,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc67b5e6cacea364595bdaacfcc64b51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  account_Entity:
+    Id: 0
+    Name: 
+    Password: 
+    Username: 
+    RoleID: 0
+    HairID: 
+    EyeID: 
+    SkinID: 
+    MouthID: 
+    IsFirst: 0
   UI_Transform: {fileID: 6996134925564191416}
   PlayerNameTxt: {fileID: 6996134924384332746}
   BlockProgress: {fileID: 757582260378973520}

@@ -15,10 +15,13 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
-using static UnityEngine.InputManagerEntry;
 
 public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 {
+
+    [Header("Account")]
+    public Account_Entity account_Entity;
+
     [Header("UI")]
     [SerializeField] RectTransform UI_Transform;
     [SerializeField] TMP_Text PlayerNameTxt;
@@ -96,10 +99,8 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         playerName = photonView.Owner.NickName;
         PlayerNameTxt.text = playerName;
 
-
         if (photonView.IsMine)
         {
-            photonView.RPC(nameof(LoadLayout), RpcTarget.AllBuffered);
             PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
             PlayerCameraInstance = Instantiate(PlayerCameraPrefabs);
 
@@ -111,6 +112,23 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
         }
 
+    }
+
+    public override void OnPlayerPropertiesUpdate(Player targetPlayer, ExitGames.Client.Photon.Hashtable changedProps)
+    {
+        if (targetPlayer != null && targetPlayer.Equals(photonView.Owner))
+        {
+            var accountJson = (string)changedProps["Account"];
+            account_Entity = JsonUtility.FromJson<Account_Entity>(accountJson);
+
+            SetUpAccountData();
+            Debug.Log("Update");
+        }
+    }
+
+    public void SetUpAccountData()
+    {
+        LoadLayout();
     }
 
     // Update is called once per frame
@@ -410,13 +428,12 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         photonView.RPC(nameof(ClearEffect), RpcTarget.All);
     }
 
-    [PunRPC]
     public void LoadLayout()
     {
-        HairSpr.sprite = Resources.Load<Sprite>(References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
-        EyeSpr.sprite = Resources.Load<Sprite>(References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
-        MouthSpr.sprite = Resources.Load<Sprite>(References.listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
-        var link = References.listSkin.Find(obj => obj.ID == References.account.SkinID).Link;
+        HairSpr.sprite = Resources.Load<Sprite>(References.listHair.Find(obj => obj.ID == account_Entity.HairID).Link);
+        EyeSpr.sprite = Resources.Load<Sprite>(References.listEye.Find(obj => obj.ID == account_Entity.EyeID).Link);
+        MouthSpr.sprite = Resources.Load<Sprite>(References.listMouth.Find(obj => obj.ID == account_Entity.MouthID).Link);
+        var link = References.listSkin.Find(obj => obj.ID == account_Entity.SkinID).Link;
         ShirtSpr.sprite = Resources.Load<Sprite>(link + "_Shirt");
         LeftFootSpr.sprite = Resources.Load<Sprite>(link + "_LeftFoot");
         LeftHandSpr.sprite = Resources.Load<Sprite>(link + "_LeftHand");
