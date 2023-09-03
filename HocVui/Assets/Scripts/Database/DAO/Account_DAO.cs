@@ -89,6 +89,52 @@ public static class Account_DAO
         return null;
     }
 
+    public static Account_Entity GetLayout(string Username)
+    {
+        using (SqlConnection connection = new SqlConnection(ConnectionStr))
+        {
+            try
+            {
+                connection.Open();
+                SqlCommand cmd = connection.CreateCommand();
+                cmd.CommandText = "SELECT * FROM [dbo].[Account] where Username = @Username";
+                cmd.Parameters.AddWithValue("@Username", Username);
+                SqlDataAdapter adapter = new SqlDataAdapter(cmd);
+                DataTable dataTable = new DataTable();
+                adapter.Fill(dataTable);
+
+                foreach (DataRow row in dataTable.Rows)
+                {
+                    var acc = new Account_Entity
+                    {
+                        Id = Convert.ToInt32(row["ID"]),
+                        Username = row["Username"].ToString(),
+                        Name = row["Name"].ToString(),
+                        Password = row["Pass"].ToString(),
+                        RoleID = Convert.ToInt32(row["RoleID"]),
+                        EyeID = row["EyeID"].ToString(),
+                        HairID = row["HairID"].ToString(),
+                        SkinID = row["SkinID"].ToString(),
+                        MouthID = row["MouthID"].ToString(),
+                        IsFirst = Convert.ToBoolean(row["IsFirst"])
+                    };
+
+                    return acc;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Debug.LogError("SQL Exception: " + ex.Message);
+            }
+            finally
+            {
+                connection.Close();
+            }
+
+        }
+        return null;
+    }
+
     public static bool CheckUsername(string Username)
     {
         using (SqlConnection connection = new SqlConnection(ConnectionStr))
