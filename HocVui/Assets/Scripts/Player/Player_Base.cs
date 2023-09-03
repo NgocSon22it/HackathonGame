@@ -96,10 +96,10 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         playerName = photonView.Owner.NickName;
         PlayerNameTxt.text = playerName;
 
-        LoadLayout();
 
         if (photonView.IsMine)
         {
+            photonView.RPC(nameof(LoadLayout), RpcTarget.AllBuffered);
             PlayerAllUIInstance = Instantiate(PlayerAllUIPrefabs);
             PlayerCameraInstance = Instantiate(PlayerCameraPrefabs);
 
@@ -165,7 +165,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
 
     private void OnMouseOver()
     {
-        if (photonView.IsMine)
+        if (!photonView.IsMine)
         {
             isMouseOver = true;
             PlayerOutLine.SetActive(true);
@@ -404,7 +404,7 @@ public class Player_Base : MonoBehaviourPunCallbacks, IPunObservable
         photonView.RPC(nameof(ClearEffect), RpcTarget.All);
     }
 
-
+    [PunRPC]
     public void LoadLayout()
     {
         HairSpr.sprite = Resources.Load<Sprite>(References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
