@@ -3,6 +3,7 @@ using Assets.Scripts.Creator.Item;
 using Assets.Scripts.Database.DAO;
 using Assets.Scripts.Database.Entity;
 using Assets.Scripts.Login;
+using Photon.Pun;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -50,11 +51,8 @@ namespace Assets.Scripts.Creator
                 References.account = Account_DAO.GetLayout(References.account.Username);
                 
                 Name.text = References.account.Name;
-                Debug.Log(References.account.HairID + " - " + References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
-                Debug.Log(References.account.EyeID + " - " + References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
-                Debug.Log(References.account.MouthID + " - " + References.listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
-                Debug.Log(References.account.SkinID + " - " + References.listSkin.Find(obj => obj.ID == References.account.SkinID).Link);
-                
+                PhotonNetwork.NickName = References.account.Name;
+
                 LoadHair(References.account.HairID, References.listHair.Find(obj => obj.ID == References.account.HairID).Link);
                 LoadEye(References.account.EyeID, References.listEye.Find(obj => obj.ID == References.account.EyeID).Link);
                 LoadMouth(References.account.MouthID, References.listMouth.Find(obj => obj.ID == References.account.MouthID).Link);
