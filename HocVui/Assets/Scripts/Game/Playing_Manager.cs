@@ -193,26 +193,29 @@ namespace Assets.Scripts.Game
                 {
                     if (References.TimeFreeze)
                     {
+                        GameManager.Instance.AddScore(PhotonNetwork.NickName, (int)PhotonNetwork.CurrentRoom.CustomProperties["AnswerTime"] * 10 * References.X2);
+
                         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
                         .PlayerAllUIInstance.GetComponent<Player_AllUI>().
-                        StartPopupResult(true, References.TimeAnswer * 10 * References.X2);
-                        GameManager.Instance.AddScore(PhotonNetwork.NickName, (int)PhotonNetwork.CurrentRoom.CustomProperties["AnswerTime"] * 10 * References.X2);
+                        StartPopupResult(true, (int)PhotonNetwork.CurrentRoom.CustomProperties["AnswerTime"] * 10 * References.X2);
                     }
                     else
                     {
+                        GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 10 * References.X2);
+
                         GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
                         .PlayerAllUIInstance.GetComponent<Player_AllUI>().
                         StartPopupResult(true, References.TimeAnswer * 10 * References.X2);
-                        GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 10 * References.X2);
                     }
 
                 }
                 else
                 {
+                    GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 0);
+
                     GameManager.Instance.PlayerManager.GetComponent<Player_Base>()
                         .PlayerAllUIInstance.GetComponent<Player_AllUI>().
                         StartPopupResult(false, References.TimeAnswer * 0);
-                    GameManager.Instance.AddScore(PhotonNetwork.NickName, References.TimeAnswer * 0);
                 }
 
                 GameManager.Instance.Ranking_Sort();
