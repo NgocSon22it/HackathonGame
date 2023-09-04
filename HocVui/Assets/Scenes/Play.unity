@@ -3356,7 +3356,7 @@ MonoBehaviour:
   distance: -950
   typeFadeInImage: 32
   typeFadeOutImage: 18
-  defaultTime: 5
+  defaultTime: 30
   TextCount: {fileID: 1413219280}
   TimeShow: {fileID: 1644828960}
 --- !u!1 &311113581
