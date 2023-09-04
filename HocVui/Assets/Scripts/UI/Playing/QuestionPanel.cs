@@ -35,7 +35,7 @@ public class QuestionPanel : MonoBehaviour
     [SerializeField] LeanTweenType typeFadeInImage;
     [SerializeField] LeanTweenType typeFadeOutImage;
 
-    [SerializeField] float defaultTime = 30;
+    [SerializeField] float defaultTime;
     [SerializeField] TMP_Text TextCount;
     [SerializeField] GameObject TimeShow;
     Coroutine Timer;
