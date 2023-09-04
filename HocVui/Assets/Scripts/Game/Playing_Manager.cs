@@ -142,8 +142,6 @@ namespace Assets.Scripts.Game
                     .SetupQuestion(indexQuestion, listQuestion[indexQuestion - 1]);
                 this.KeyAnswer = listQuestion[indexQuestion - 1].correctAnswerIndex;
                 GameManager.Instance.ResultIndex = KeyAnswer;
-                Debug.Log("correctAnswerIndex " + listQuestion[indexQuestion - 1].correctAnswerIndex);
-                Debug.Log("Time " + listQuestion[indexQuestion - 1].Time);
                 ShowQuestion();
             }
             else
